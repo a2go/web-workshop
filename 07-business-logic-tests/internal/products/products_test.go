@@ -68,7 +68,7 @@ func testDB(t *testing.T) (*sqlx.DB, func()) {
 		t.Fatal(errors.Wrap(err, "connecting to db"))
 	}
 
-	schema, err := ioutil.ReadFile(os.ExpandEnv("$GOPATH/src/github.com/nstogner/tbdsvc/8-unit-tests/schema.sql"))
+	schema, err := ioutil.ReadFile(os.ExpandEnv("$GOPATH/src/github.com/ardanlabs/service-training/07-business-logic-tests/schema.sql"))
 	if err != nil {
 		t.Fatal(errors.Wrap(err, "reading schema file"))
 	}
