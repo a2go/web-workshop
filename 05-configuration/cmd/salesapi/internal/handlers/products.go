@@ -7,7 +7,6 @@ import (
 
 	"github.com/ardanlabs/service-training/05-configuration/internal/products"
 	"github.com/jmoiron/sqlx"
-	"github.com/pkg/errors"
 )
 
 type Products struct {
@@ -17,7 +16,7 @@ type Products struct {
 func (s *Products) List(w http.ResponseWriter, r *http.Request) {
 	list, err := products.List(s.DB)
 	if err != nil {
-		log.Println(errors.Wrap(err, "listing products"))
+		log.Printf("error: listing products: %s", err)
 		w.WriteHeader(500)
 		return
 	}
@@ -25,7 +24,7 @@ func (s *Products) List(w http.ResponseWriter, r *http.Request) {
 	// TODO: Don't return an array (return an object with an array).
 	//       Make a named response type.
 	if err := json.NewEncoder(w).Encode(list); err != nil {
-		log.Println(errors.Wrap(err, "encoding response"))
+		log.Printf("error: encoding response: %s", err)
 		return
 	}
 }

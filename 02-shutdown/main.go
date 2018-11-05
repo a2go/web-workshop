@@ -9,8 +9,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
-	"github.com/pkg/errors"
 )
 
 func main() {
@@ -31,7 +29,8 @@ func main() {
 
 	select {
 	case err := <-serverErrors:
-		log.Fatal(errors.Wrap(err, "listening and serving"))
+		log.Fatalf("error: listening and serving: %s", err)
+
 	case <-osSignals:
 		log.Print("caught signal, shutting down")
 
@@ -41,9 +40,9 @@ func main() {
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			log.Printf("error: %s", errors.Wrap(err, "shutting down server"))
+			log.Printf("error: gracefully shutting down server: %s", err)
 			if err := server.Close(); err != nil {
-				log.Printf("error: %s", errors.Wrap(err, "forcing server to close"))
+				log.Printf("error: closing server: %s", err)
 			}
 		}
 	}
@@ -67,6 +66,6 @@ func ListProducts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(products); err != nil {
-		log.Println(errors.Wrap(err, "encoding response"))
+		log.Printf("error: encoding response: %s", err)
 	}
 }

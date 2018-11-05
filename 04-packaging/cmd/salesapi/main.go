@@ -13,14 +13,13 @@ import (
 	"github.com/ardanlabs/service-training/04-packaging/internal/products"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/pkg/errors"
 )
 
 func main() {
 	// Initialize dependencies.
 	db, err := sqlx.Connect("postgres", products.DBConn("postgres", "postgres", "localhost", "postgres", true))
 	if err != nil {
-		log.Fatal(errors.Wrap(err, "connecting to db"))
+		log.Fatalf("error: connecting to db: %s", err)
 	}
 	defer db.Close()
 
@@ -42,19 +41,20 @@ func main() {
 
 	select {
 	case err := <-serverErrors:
-		log.Fatal(errors.Wrap(err, "listening and serving"))
+		log.Fatalf("error: listening and serving: %s", err)
+
 	case <-osSignals:
 		log.Print("caught signal, shutting down")
 
-		// Give outstanding requests 30 seconds to complete.
-		const timeout = 30 * time.Second
+		// Give outstanding requests 15 seconds to complete.
+		const timeout = 15 * time.Second
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			log.Printf("error: %s", errors.Wrap(err, "shutting down server"))
+			log.Printf("error: gracefully shutting down server: %s", err)
 			if err := server.Close(); err != nil {
-				log.Printf("error: %s", errors.Wrap(err, "forcing server to close"))
+				log.Printf("error: closing server: %s", err)
 			}
 		}
 	}

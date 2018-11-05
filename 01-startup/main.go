@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-
-	"github.com/pkg/errors"
 )
 
 func main() {
 	if err := http.ListenAndServe(":8000", http.HandlerFunc(ListProducts)); err != nil {
-		log.Fatal(errors.Wrap(err, "listening and serving"))
+		log.Printf("error: listening and serving: %s", err)
+		return
 	}
 }
 
@@ -27,6 +26,6 @@ func ListProducts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(products); err != nil {
-		log.Println(errors.Wrap(err, "encoding response"))
+		log.Printf("error: encoding response: %s", err)
 	}
 }

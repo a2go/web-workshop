@@ -12,9 +12,9 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+
 	// TODO: Mention the idiosyncrasies of using the sql pkg.
 	_ "github.com/lib/pq"
-	"github.com/pkg/errors"
 )
 
 // 1. Start postgres in another terminal:
@@ -33,7 +33,7 @@ func main() {
 	db, err := sqlx.Connect("postgres", fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable&timezone=utc",
 		user, pass, host, name))
 	if err != nil {
-		log.Fatal(errors.Wrap(err, "connecting to db"))
+		log.Fatalf("error: connecting to db: %s", err)
 	}
 	defer db.Close()
 
@@ -56,7 +56,8 @@ func main() {
 
 	select {
 	case err := <-serverErrors:
-		log.Fatal(errors.Wrap(err, "listening and serving"))
+		log.Fatalf("error: listening and serving: %s", err)
+
 	case <-osSignals:
 		log.Print("caught signal, shutting down")
 
@@ -66,9 +67,9 @@ func main() {
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			log.Printf("error: %s", errors.Wrap(err, "shutting down server"))
+			log.Printf("error: gracefully shutting down server: %s", err)
 			if err := server.Close(); err != nil {
-				log.Printf("error: %s", errors.Wrap(err, "forcing server to close"))
+				log.Printf("error: closing server: %s", err)
 			}
 		}
 	}
@@ -94,13 +95,13 @@ func (s *Service) ListProducts(w http.ResponseWriter, r *http.Request) {
 	// TODO: Seperate layers of concern in later section.
 	// TODO: Talk about issues of using '*'.
 	if err := s.db.Select(&products, "SELECT * FROM products"); err != nil {
-		log.Println(errors.Wrap(err, "selecting products"))
+		log.Printf("error: selecting products: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(products); err != nil {
-		log.Println(errors.Wrap(err, "encoding response"))
+		log.Printf("error: encoding response: %s", err)
 		return
 	}
 }

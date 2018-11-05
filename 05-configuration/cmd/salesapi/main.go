@@ -17,7 +17,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/kelseyhightower/envconfig"
 	_ "github.com/lib/pq"
-	"github.com/pkg/errors"
 )
 
 // This is the application name.
@@ -41,6 +40,7 @@ type config struct {
 }
 
 func main() {
+	// Process inputs.
 	var flags struct {
 		configOnly bool
 	}
@@ -56,20 +56,20 @@ func main() {
 
 	var cfg config
 	if err := envconfig.Process(name, &cfg); err != nil {
-		log.Fatal(errors.Wrap(err, "parsing config"))
+		log.Fatalf("error: parsing config: %s", err)
 	}
 
 	if flags.configOnly {
 		if err := json.NewEncoder(os.Stdout).Encode(cfg); err != nil {
-			log.Fatal(errors.Wrap(err, "encoding config as json"))
+			log.Fatalf("error: encoding config as json: %s", err)
 		}
-		os.Exit(2)
+		return
 	}
 
 	// Initialize dependencies.
 	db, err := sqlx.Connect("postgres", products.DBConn(cfg.DB.User, cfg.DB.Password, cfg.DB.Host, cfg.DB.Name, cfg.DB.DisableTLS))
 	if err != nil {
-		log.Fatal(errors.Wrap(err, "connecting to db"))
+		log.Fatalf("error: connecting to db: %s", err)
 	}
 	defer db.Close()
 
@@ -92,7 +92,8 @@ func main() {
 
 	select {
 	case err := <-serverErrors:
-		log.Fatal(errors.Wrap(err, "listening and serving"))
+		log.Fatalf("error: listening and serving: %s", err)
+
 	case <-osSignals:
 		log.Print("caught signal, shutting down")
 
@@ -102,9 +103,9 @@ func main() {
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			log.Printf("error: %s", errors.Wrap(err, "shutting down server"))
+			log.Printf("error: gracefully shutting down server: %s", err)
 			if err := server.Close(); err != nil {
-				log.Printf("error: %s", errors.Wrap(err, "forcing server to close"))
+				log.Printf("error: closing server: %s", err)
 			}
 		}
 	}
