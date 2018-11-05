@@ -1,5 +1,5 @@
-# 7. Business-Logic Tests
+# 8. Fatal
 
-- Add test incorporating Create, Get, & List
-- Add test helper function for setting up the database
+- Create `run() error` function
+- Remove any calls to `log.Fatal`
 
