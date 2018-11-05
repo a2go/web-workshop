@@ -95,8 +95,8 @@ func main() {
 	case <-osSignals:
 		log.Print("caught signal, shutting down")
 
-		// Give outstanding requests 30 seconds to complete.
-		const timeout = 30 * time.Second
+		// Give outstanding requests 15 seconds to complete.
+		const timeout = 15 * time.Second
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		defer cancel()
 
