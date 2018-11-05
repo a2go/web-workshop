@@ -1,5 +1,5 @@
 # 1. Startup
 
-- Startup an HTTP server
+- Startup a HTTP server
 - Respond with JSON
 
