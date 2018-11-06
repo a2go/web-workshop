@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,11 +12,12 @@ import (
 	"time"
 
 	"github.com/ardanlabs/service-training/09-refactor-handlers/cmd/salesapi/internal/handlers"
+	"github.com/ardanlabs/service-training/09-refactor-handlers/internal/platform/log"
 	"github.com/ardanlabs/service-training/09-refactor-handlers/internal/products"
 	"github.com/jmoiron/sqlx"
 	"github.com/kelseyhightower/envconfig"
-
 	_ "github.com/lib/pq"
+	"github.com/pkg/errors"
 )
 
 // This is the application name.
@@ -41,6 +41,13 @@ type config struct {
 }
 
 func main() {
+	if err := run(); err != nil {
+		log.Log("shutting down", "error", err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
 	// Process inputs.
 	var flags struct {
 		configOnly bool
@@ -57,20 +64,20 @@ func main() {
 
 	var cfg config
 	if err := envconfig.Process(name, &cfg); err != nil {
-		log.Fatalf("error: parsing config: %s", err)
+		return errors.Wrap(err, "parsing config")
 	}
 
 	if flags.configOnly {
 		if err := json.NewEncoder(os.Stdout).Encode(cfg); err != nil {
-			log.Fatalf("error: encoding config as json: %s", err)
+			return errors.Wrap(err, "encoding config as json")
 		}
-		return
+		return nil
 	}
 
 	// Initialize dependencies.
 	db, err := sqlx.Connect("postgres", products.DBConn(cfg.DB.User, cfg.DB.Password, cfg.DB.Host, cfg.DB.Name, cfg.DB.DisableTLS))
 	if err != nil {
-		log.Fatalf("error: connecting to db: %s", err)
+		return errors.Wrap(err, "connecting to db")
 	}
 	defer db.Close()
 
@@ -87,14 +94,14 @@ func main() {
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
 
-	log.Print("startup complete")
+	log.Log("startup complete")
 
 	select {
 	case err := <-serverErrors:
-		log.Fatalf("error: listening and serving: %s", err)
+		return errors.Wrap(err, "listening and serving")
 
 	case <-osSignals:
-		log.Print("caught signal, shutting down")
+		log.Log("caught signal, shutting down")
 
 		// Give outstanding requests 15 seconds to complete.
 		const timeout = 15 * time.Second
@@ -102,12 +109,14 @@ func main() {
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			log.Printf("error: gracefully shutting down server: %s", err)
+			log.Log("gracefully shutting down server", "error", err)
 			if err := server.Close(); err != nil {
-				log.Printf("error: closing server: %s", err)
+				log.Log("closing server", "error", err)
 			}
 		}
 	}
 
-	log.Print("done")
+	log.Log("done")
+
+	return nil
 }
