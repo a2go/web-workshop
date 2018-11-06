@@ -1,4 +1,4 @@
-# 6. CRUD
+# 8. CRUD
 
 - Add `Create` & `Get` endpoints
 - Add `ServeHTTP` method with router

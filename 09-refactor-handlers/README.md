@@ -1,4 +1,4 @@
-# 7. Refactor Handlers
+# 9. Refactor Handlers
 
 - Add `internal/platform/web` package
 - Update handler methods to match `web.HandlerFunc`
