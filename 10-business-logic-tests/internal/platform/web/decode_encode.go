@@ -23,11 +23,12 @@ func Encode(f HandlerFunc) http.HandlerFunc {
 		if err != nil {
 			log.Log("request resulted in error", "error", err)
 
-			w.WriteHeader(statusFromError(err))
+			serr := toStatusError(err)
+			w.WriteHeader(serr.status)
 
 			res = struct {
 				Error string `json:"error"`
-			}{err.Error()}
+			}{serr.ExternalError()}
 		}
 
 		if err := json.NewEncoder(w).Encode(res); err != nil {

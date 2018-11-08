@@ -14,12 +14,19 @@ type statusError struct {
 }
 
 func (se *statusError) Error() string {
-	return se.Error()
+	return se.err.Error()
 }
 
-func statusFromError(err error) int {
-	if se, ok := err.(*statusError); ok {
-		return se.status
+func (se *statusError) ExternalError() string {
+	if se.status < 500 {
+		return se.err.Error()
 	}
-	return http.StatusInternalServerError
+	return http.StatusText(se.status)
+}
+
+func toStatusError(err error) *statusError {
+	if se, ok := err.(*statusError); ok {
+		return se
+	}
+	return &statusError{err, http.StatusInternalServerError}
 }
