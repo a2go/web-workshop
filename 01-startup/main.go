@@ -8,8 +8,7 @@ import (
 
 func main() {
 	if err := http.ListenAndServe(":8000", http.HandlerFunc(ListProducts)); err != nil {
-		log.Printf("error: listening and serving: %s", err)
-		return
+		log.Fatalf("error: listening and serving: %s", err)
 	}
 }
 
