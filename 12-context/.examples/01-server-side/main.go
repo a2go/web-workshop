@@ -14,7 +14,9 @@ func main() {
 		longOperation()
 	})
 
-	log.Print(http.ListenAndServe(":8080", nil))
+	addr := ":8080"
+	log.Printf("listening on address %q", addr)
+	log.Fatal(http.ListenAndServe(addr, nil))
 }
 
 func longOperation() {
