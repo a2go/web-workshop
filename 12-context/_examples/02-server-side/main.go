@@ -30,6 +30,6 @@ func longOperation(ctx context.Context) {
 
 		time.Sleep(time.Second)
 
-		log.Printf("%v percent complete", i*n)
+		log.Printf("%v/%v", i, n)
 	}
 }

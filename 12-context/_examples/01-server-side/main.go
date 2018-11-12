@@ -23,6 +23,6 @@ func longOperation() {
 	for i, n := 1, 10; i <= n; i++ {
 		time.Sleep(time.Second)
 
-		log.Printf("%v percent complete", i*n)
+		log.Printf("%v/%v", i, n)
 	}
 }
