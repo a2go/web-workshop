@@ -4,24 +4,40 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/ardanlabs/service-training/04-packaging/cmd/salesapi/internal/handlers"
-	"github.com/ardanlabs/service-training/04-packaging/internal/products"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
 func main() {
 	// Initialize dependencies.
-	db, err := sqlx.Connect("postgres", products.DBConn("postgres", "postgres", "localhost", "postgres", true))
-	if err != nil {
-		log.Fatalf("error: connecting to db: %s", err)
+	var db *sqlx.DB
+	{
+		u := url.URL{
+			Scheme: "postgres",
+			User:   url.UserPassword("postgres", "postgres"),
+			Host:   "localhost",
+			Path:   "postgres",
+			RawQuery: (url.Values{
+				"sslmode":  []string{"disable"},
+				"timezone": []string{"utc"},
+			}).Encode(),
+		}
+
+		var err error
+		db, err = sqlx.Connect("postgres", u.String())
+		if err != nil {
+			log.Fatalf("error: connecting to db: %s", err)
+		}
+
+		defer db.Close()
 	}
-	defer db.Close()
 
 	productsHandler := handlers.Products{DB: db}
 	server := http.Server{

@@ -2,7 +2,6 @@ package products
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -14,15 +13,6 @@ type Product struct {
 	Name     string `db:"name"`
 	Cost     int    `db:"cost"`
 	Quantity int    `db:"quantity"`
-}
-
-func DBConn(user, pass, host, name string, disableSSL bool) string {
-	sslMode := "require"
-	if disableSSL {
-		sslMode = "disable"
-	}
-	return fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s&timezone=utc",
-		user, pass, host, name, sslMode)
 }
 
 func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {

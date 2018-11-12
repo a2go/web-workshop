@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
@@ -29,13 +29,27 @@ import (
 
 func main() {
 	// Initialize dependencies.
-	user, pass, host, name := "postgres", "postgres", "localhost", "postgres"
-	db, err := sqlx.Connect("postgres", fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable&timezone=utc",
-		user, pass, host, name))
-	if err != nil {
-		log.Fatalf("error: connecting to db: %s", err)
+	var db *sqlx.DB
+	{
+		u := url.URL{
+			Scheme: "postgres",
+			User:   url.UserPassword("postgres", "postgres"),
+			Host:   "localhost",
+			Path:   "postgres",
+			RawQuery: (url.Values{
+				"sslmode":  []string{"disable"},
+				"timezone": []string{"utc"},
+			}).Encode(),
+		}
+
+		var err error
+		db, err = sqlx.Connect("postgres", u.String())
+		if err != nil {
+			log.Fatalf("error: connecting to db: %s", err)
+		}
+
+		defer db.Close()
 	}
-	defer db.Close()
 
 	service := Service{db: db}
 

@@ -3,7 +3,7 @@ package products_test
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
+	"net/url"
 	"strings"
 	"testing"
 	"time"
@@ -55,7 +55,18 @@ func testDB(t *testing.T) (*sqlx.DB, func()) {
 	}
 	envconfig.MustProcess("TEST", &cfg)
 
-	db0, err := sqlx.Connect("postgres", products.DBConn(cfg.DB.User, cfg.DB.Password, cfg.DB.Host, cfg.DB.Name, true))
+	u := url.URL{
+		Scheme: "postgres",
+		User:   url.UserPassword(cfg.DB.User, cfg.DB.Password),
+		Host:   cfg.DB.Host,
+		Path:   cfg.DB.Name,
+		RawQuery: (url.Values{
+			"sslmode":  []string{"disable"},
+			"timezone": []string{"utc"},
+		}).Encode(),
+	}
+
+	db0, err := sqlx.Connect("postgres", u.String())
 	if err != nil {
 		t.Fatal(errors.Wrap(err, "connecting to db"))
 	}
@@ -63,12 +74,13 @@ func testDB(t *testing.T) (*sqlx.DB, func()) {
 	newDB := fmt.Sprintf("%v_%v", strings.ToLower(t.Name()), time.Now().UnixNano())
 	db0.Exec("CREATE DATABASE " + newDB)
 
-	db, err := sqlx.Connect("postgres", products.DBConn(cfg.DB.User, cfg.DB.Password, cfg.DB.Host, newDB, true))
+	u.Path = newDB
+	db, err := sqlx.Connect("postgres", u.String())
 	if err != nil {
 		t.Fatal(errors.Wrap(err, "connecting to db"))
 	}
 
-	schema, err := ioutil.ReadFile(os.ExpandEnv("$GOPATH/src/github.com/ardanlabs/service-training/07-business-logic-tests/schema.sql"))
+	schema, err := ioutil.ReadFile("../../schema.sql")
 	if err != nil {
 		t.Fatal(errors.Wrap(err, "reading schema file"))
 	}

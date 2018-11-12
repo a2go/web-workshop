@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,7 +14,6 @@ import (
 
 	"github.com/ardanlabs/service-training/07-logging/cmd/salesapi/internal/handlers"
 	"github.com/ardanlabs/service-training/07-logging/internal/platform/log"
-	"github.com/ardanlabs/service-training/07-logging/internal/products"
 	"github.com/jmoiron/sqlx"
 	"github.com/kelseyhightower/envconfig"
 	_ "github.com/lib/pq"
@@ -75,11 +75,31 @@ func run() error {
 	}
 
 	// Initialize dependencies.
-	db, err := sqlx.Connect("postgres", products.DBConn(cfg.DB.User, cfg.DB.Password, cfg.DB.Host, cfg.DB.Name, cfg.DB.DisableTLS))
-	if err != nil {
-		return errors.Wrap(err, "connecting to db")
+	var db *sqlx.DB
+	{
+		sslMode := "require"
+		if cfg.DB.DisableTLS {
+			sslMode = "disable"
+		}
+		u := url.URL{
+			Scheme: "postgres",
+			User:   url.UserPassword(cfg.DB.User, cfg.DB.Password),
+			Host:   cfg.DB.Host,
+			Path:   cfg.DB.Name,
+			RawQuery: (url.Values{
+				"sslmode":  []string{sslMode},
+				"timezone": []string{"utc"},
+			}).Encode(),
+		}
+
+		var err error
+		db, err = sqlx.Connect("postgres", u.String())
+		if err != nil {
+			return errors.Wrap(err, "connecting to db")
+		}
+
+		defer db.Close()
 	}
-	defer db.Close()
 
 	productsHandler := handlers.Products{DB: db}
 

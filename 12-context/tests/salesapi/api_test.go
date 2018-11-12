@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ardanlabs/service-training/11-api-tests/internal/products"
+	"github.com/ardanlabs/service-training/12-context/internal/products"
 	"github.com/kelseyhightower/envconfig"
 )
 
