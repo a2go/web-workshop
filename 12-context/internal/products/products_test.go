@@ -21,7 +21,11 @@ func TestProducts(t *testing.T) {
 	defer drop()
 
 	{ // Create and Get.
-		p0 := products.Product{}
+		p0 := products.Product{
+			Name:     "Comic Book",
+			Cost:     10,
+			Quantity: 55,
+		}
 		if err := products.Create(context.Background(), db, &p0); err != nil {
 			t.Fatal(errors.Wrap(err, "creating product p0"))
 		}
