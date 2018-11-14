@@ -72,7 +72,9 @@ func testDB(t *testing.T) (*sqlx.DB, func()) {
 	}
 
 	newDB := fmt.Sprintf("%v_%v", strings.ToLower(t.Name()), time.Now().UnixNano())
-	db0.Exec("CREATE DATABASE " + newDB)
+	if _, err := db0.Exec("CREATE DATABASE " + newDB); err != nil {
+		t.Fatal(errors.Wrapf(err, "creating database %q", newDB))
+	}
 
 	u.Path = newDB
 	db, err := sqlx.Connect("postgres", u.String())
@@ -91,7 +93,7 @@ func testDB(t *testing.T) (*sqlx.DB, func()) {
 	return db, func() {
 		// Cleanup
 		db.Close()
-		db0.Exec("DROP DATABASE " + newDB)
+		//		db0.Exec("DROP DATABASE " + newDB)
 		db0.Close()
 	}
 }
