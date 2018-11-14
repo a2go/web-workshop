@@ -23,7 +23,7 @@ func main() {
 	}()
 
 	osSignals := make(chan os.Signal, 1)
-	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(osSignals, syscall.SIGINT, syscall.SIGTERM)
 
 	log.Print("initialized")
 
