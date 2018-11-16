@@ -7,10 +7,10 @@ import (
 )
 
 type Product struct {
-	ID       string `db:"product_id"`
-	Name     string `db:"name"`
-	Cost     int    `db:"cost"`
-	Quantity int    `db:"quantity"`
+	ID       string `db:"product_id" json:"id"`
+	Name     string `db:"name" json:"name"`
+	Cost     int    `db:"cost" json:"cost"`
+	Quantity int    `db:"quantity" json:"quantity"`
 }
 
 func List(db *sqlx.DB) ([]Product, error) {
