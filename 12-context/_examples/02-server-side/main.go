@@ -24,6 +24,7 @@ func longOperation(ctx context.Context) {
 	for i, n := 1, 10; i <= n; i++ {
 		select {
 		case <-ctx.Done():
+			log.Println("context was canceled: abort")
 			return
 		default:
 		}

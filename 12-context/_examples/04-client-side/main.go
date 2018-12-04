@@ -16,9 +16,11 @@ func main() {
 		log.Fatalf("making request: %s", err)
 	}
 
-	// Add context to request.
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, 5*time.Second)
+	// Make a new cancellable context with a timeout that derives from the
+	// request's Context.
+	ctx, cancel := context.WithTimeout(req.Context(), 5*time.Second)
+	defer cancel()
+
 	req = req.WithContext(ctx) // Note assignment
 
 	log.Print("sending request")
