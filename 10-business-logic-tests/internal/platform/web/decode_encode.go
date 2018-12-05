@@ -11,7 +11,7 @@ type HandlerFunc func(r *http.Request) (interface{}, error)
 
 func Decode(r *http.Request, x interface{}) error {
 	if err := json.NewDecoder(r.Body).Decode(x); err != nil {
-		return ErrorWithStatus(err, http.StatusUnprocessableEntity)
+		return ErrorWithStatus(err, http.StatusBadRequest)
 	}
 
 	return nil

@@ -32,7 +32,7 @@ func (s *Products) Create(w http.ResponseWriter, r *http.Request) {
 	var p products.Product
 	if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
 		log.Log("decoding product", "error", err)
-		w.WriteHeader(http.StatusUnprocessableEntity)
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
