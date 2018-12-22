@@ -8,10 +8,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/products"
 	"github.com/jmoiron/sqlx"
 	"github.com/kelseyhightower/envconfig"
 	_ "github.com/lib/pq"
+
+	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/products"
 )
 
 func TestProducts(t *testing.T) {

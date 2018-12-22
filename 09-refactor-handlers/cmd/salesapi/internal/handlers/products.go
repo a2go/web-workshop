@@ -3,11 +3,12 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/ardanlabs/service-training/09-refactor-handlers/internal/platform/web"
-	"github.com/ardanlabs/service-training/09-refactor-handlers/internal/products"
 	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+
+	"github.com/ardanlabs/service-training/09-refactor-handlers/internal/platform/web"
+	"github.com/ardanlabs/service-training/09-refactor-handlers/internal/products"
 )
 
 type Products struct {

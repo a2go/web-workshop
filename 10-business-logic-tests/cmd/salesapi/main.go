@@ -12,12 +12,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ardanlabs/service-training/10-business-logic-tests/cmd/salesapi/internal/handlers"
-	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/platform/log"
 	"github.com/jmoiron/sqlx"
 	"github.com/kelseyhightower/envconfig"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
+
+	"github.com/ardanlabs/service-training/10-business-logic-tests/cmd/salesapi/internal/handlers"
+	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/platform/log"
 )
 
 // This is the application name.

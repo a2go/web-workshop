@@ -5,8 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ardanlabs/service-training/06-fatal/internal/products"
 	"github.com/jmoiron/sqlx"
+
+	"github.com/ardanlabs/service-training/06-fatal/internal/products"
 )
 
 type Products struct {

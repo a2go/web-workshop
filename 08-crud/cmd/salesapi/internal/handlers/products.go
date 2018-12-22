@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/ardanlabs/service-training/08-crud/internal/platform/log"
-	"github.com/ardanlabs/service-training/08-crud/internal/products"
 	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
+
+	"github.com/ardanlabs/service-training/08-crud/internal/platform/log"
+	"github.com/ardanlabs/service-training/08-crud/internal/products"
 )
 
 type Products struct {

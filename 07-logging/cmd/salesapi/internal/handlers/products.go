@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/jmoiron/sqlx"
+
 	"github.com/ardanlabs/service-training/07-logging/internal/platform/log"
 	"github.com/ardanlabs/service-training/07-logging/internal/products"
-	"github.com/jmoiron/sqlx"
 )
 
 type Products struct {

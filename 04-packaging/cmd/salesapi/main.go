@@ -10,9 +10,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ardanlabs/service-training/04-packaging/cmd/salesapi/internal/handlers"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+
+	"github.com/ardanlabs/service-training/04-packaging/cmd/salesapi/internal/handlers"
 )
 
 func main() {
