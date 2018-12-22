@@ -1,3 +1,7 @@
+// This program shows a server that uses an incoming request's context to
+// control cancellation for a long operation like an outgoing request to
+// another server.
+
 package main
 
 import (

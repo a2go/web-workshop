@@ -1,3 +1,7 @@
+// This program adds cancellation to a client request. Timeouts can be handled
+// by setting the Timeout field on the client or by cancelling a Context
+// associated with the request.
+
 package main
 
 import (
@@ -9,7 +13,7 @@ import (
 
 func main() {
 	c := http.Client{
-		/*Timeout: time.Minute,*/
+		/*Timeout: 5 * time.Second,*/
 	}
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:8080", nil)
 	if err != nil {

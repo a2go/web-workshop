@@ -1,3 +1,7 @@
+// This program shows a simple server that launches a long-running operation
+// with no cancellation. Run a "curl" to this server and quickly abort it. See
+// what happens.
+
 package main
 
 import (

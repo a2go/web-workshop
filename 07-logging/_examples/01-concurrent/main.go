@@ -1,3 +1,6 @@
+// This program has 2 goroutines each logging a message. Will logging in one
+// block the other? Inspect the internals of log.Printf to find out.
+
 package main
 
 import (

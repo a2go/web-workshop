@@ -1,3 +1,6 @@
+// This program shows an HTTP client making a request. By default there is no
+// timeout or cancellation that happens from the client's end.
+
 package main
 
 import (

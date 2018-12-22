@@ -1,3 +1,7 @@
+// This program shows adds cancellation to a long-running operation. Start a
+// request and quickly cancel it. Notice the longOperation terminates before
+// going all the way to 10.
+
 package main
 
 import (
