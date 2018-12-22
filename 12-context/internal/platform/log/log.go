@@ -10,14 +10,19 @@ import (
 	"github.com/go-kit/kit/log"
 )
 
-var logger = func() log.Logger {
-	var lg = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
+// logger is initialized by `func init` then used by `func Log` to print
+// messages in a structured format.
+var logger log.Logger
 
+func init() {
+
+	// Use a logfmt logger that writes to stderr.
+	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
+
+	// Add some default key/value data for all calls to Log.
 	// User Caller(4) to expose the caller of this function.
-	lg = log.WithPrefix(lg, "ts", log.DefaultTimestampUTC, "caller", log.Caller(4))
-
-	return lg
-}()
+	logger = log.WithPrefix(logger, "ts", log.DefaultTimestampUTC, "caller", log.Caller(4))
+}
 
 // Log a human readible message with a variadic sequence of alternating
 // key-value pairs. Output format is `logfmt` (See: https://brandur.org/logfmt).
