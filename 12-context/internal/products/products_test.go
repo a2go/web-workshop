@@ -3,7 +3,6 @@ package products_test
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net/url"
 	"strings"
 	"testing"
@@ -14,6 +13,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/ardanlabs/service-training/12-context/internal/products"
+	"github.com/ardanlabs/service-training/12-context/internal/schema"
 )
 
 func TestProducts(t *testing.T) {
@@ -76,7 +76,7 @@ func testDB(t *testing.T) (*sqlx.DB, func()) {
 		t.Fatalf("connecting to db: %s", err)
 	}
 
-	newDB := fmt.Sprintf("%v_%v", strings.ToLower(t.Name()), time.Now().UnixNano())
+	newDB := fmt.Sprintf("%v_test_%v", strings.ToLower(t.Name()), time.Now().UnixNano())
 	if _, err := db0.Exec("CREATE DATABASE " + newDB); err != nil {
 		t.Fatalf("creating database %q: %s", newDB, err)
 	}
@@ -87,11 +87,7 @@ func testDB(t *testing.T) (*sqlx.DB, func()) {
 		t.Fatalf("connecting to db: %s", err)
 	}
 
-	schema, err := ioutil.ReadFile("../../schema.sql")
-	if err != nil {
-		t.Fatalf("reading schema file: %s", err)
-	}
-	if _, err := db.Exec(string(schema)); err != nil {
+	if err := schema.Migrate(db.DB); err != nil {
 		t.Fatalf("migrating: %s", err)
 	}
 

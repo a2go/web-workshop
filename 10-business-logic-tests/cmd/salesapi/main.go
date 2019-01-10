@@ -19,6 +19,7 @@ import (
 
 	"github.com/ardanlabs/service-training/10-business-logic-tests/cmd/salesapi/internal/handlers"
 	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/platform/log"
+	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/schema"
 )
 
 // This is the application name.
@@ -100,6 +101,22 @@ func run() error {
 		}
 
 		defer db.Close()
+	}
+
+	switch flag.Arg(0) {
+	case "migrate":
+		if err := schema.Migrate(db.DB); err != nil {
+			return errors.Wrap(err, "applying migrations")
+		}
+		log.Log("Migrations complete")
+		return nil
+
+	case "seed":
+		if err := schema.Seed(db.DB); err != nil {
+			return errors.Wrap(err, "seeding database")
+		}
+		log.Log("Seed data complete")
+		return nil
 	}
 
 	server := http.Server{
