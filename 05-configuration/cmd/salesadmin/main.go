@@ -1,31 +1,24 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
 	"net/url"
 	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/kelseyhightower/envconfig"
 	_ "github.com/lib/pq"
 
-	"github.com/ardanlabs/service-training/05-configuration/cmd/salesapi/internal/handlers"
+	"github.com/ardanlabs/service-training/05-configuration/internal/schema"
 )
 
 // This is the application name.
 const name = "salesapi"
 
 type config struct {
-	// NOTE: We don't pass in a connection string b/c our application may assume
-	//       certain parameters are set.
 	DB struct {
 		User     string `default:"postgres"`
 		Password string `default:"postgres" json:"-"` // Prevent the marshalling of secrets.
@@ -33,10 +26,6 @@ type config struct {
 		Name     string `default:"postgres"`
 
 		DisableTLS bool `default:"false" envconfig:"disable_tls"`
-	}
-
-	HTTP struct {
-		Address string `default:":8000"`
 	}
 }
 
@@ -46,7 +35,7 @@ func main() {
 		configOnly bool
 	}
 	flag.Usage = func() {
-		fmt.Print("This daemon is a service which manages products.\n\nUsage of sales-api:\n\nsales-api [flags]\n\n")
+		fmt.Print("This program administers the salesapi project.\n\nUsage of salesadmin:\n\nsalesadmin [flags]\n\n")
 		flag.CommandLine.SetOutput(os.Stdout)
 		flag.PrintDefaults()
 		fmt.Print("\nConfiguration:\n\n")
@@ -94,42 +83,21 @@ func main() {
 		defer db.Close()
 	}
 
-	productsHandler := handlers.Products{DB: db}
-
-	server := http.Server{
-		Addr:    cfg.HTTP.Address,
-		Handler: http.HandlerFunc(productsHandler.List),
-	}
-
-	serverErrors := make(chan error, 1)
-	go func() {
-		serverErrors <- server.ListenAndServe()
-	}()
-
-	osSignals := make(chan os.Signal, 1)
-	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
-
-	log.Print("startup complete")
-
-	select {
-	case err := <-serverErrors:
-		log.Fatalf("error: listening and serving: %s", err)
-
-	case <-osSignals:
-		log.Print("caught signal, shutting down")
-
-		// Give outstanding requests 15 seconds to complete.
-		const timeout = 15 * time.Second
-		ctx, cancel := context.WithTimeout(context.Background(), timeout)
-		defer cancel()
-
-		if err := server.Shutdown(ctx); err != nil {
-			log.Printf("error: gracefully shutting down server: %s", err)
-			if err := server.Close(); err != nil {
-				log.Printf("error: closing server: %s", err)
-			}
+	switch flag.Arg(0) {
+	case "migrate":
+		if err := schema.Migrate(db.DB); err != nil {
+			log.Println("error applying migrations", err)
+			os.Exit(1)
 		}
-	}
+		log.Println("Migrations complete")
+		return
 
-	log.Print("done")
+	case "seed":
+		if err := schema.Seed(db.DB); err != nil {
+			log.Println("error seeding database", err)
+			os.Exit(1)
+		}
+		log.Println("Seed data complete")
+		return
+	}
 }

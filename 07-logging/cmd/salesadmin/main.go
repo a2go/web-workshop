@@ -1,24 +1,19 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"net/http"
 	"net/url"
 	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/kelseyhightower/envconfig"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 
-	"github.com/ardanlabs/service-training/08-crud/cmd/salesapi/internal/handlers"
-	"github.com/ardanlabs/service-training/08-crud/internal/platform/log"
+	"github.com/ardanlabs/service-training/07-logging/internal/platform/log"
+	"github.com/ardanlabs/service-training/07-logging/internal/schema"
 )
 
 // This is the application name.
@@ -34,10 +29,6 @@ type config struct {
 		Name     string `default:"postgres"`
 
 		DisableTLS bool `default:"false" envconfig:"disable_tls"`
-	}
-
-	HTTP struct {
-		Address string `default:":8000"`
 	}
 }
 
@@ -102,42 +93,21 @@ func run() error {
 		defer db.Close()
 	}
 
-	server := http.Server{
-		Addr:    cfg.HTTP.Address,
-		Handler: handlers.NewProducts(db),
-	}
-
-	serverErrors := make(chan error, 1)
-	go func() {
-		serverErrors <- server.ListenAndServe()
-	}()
-
-	osSignals := make(chan os.Signal, 1)
-	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
-
-	log.Log("startup complete")
-
-	select {
-	case err := <-serverErrors:
-		return errors.Wrap(err, "listening and serving")
-
-	case <-osSignals:
-		log.Log("caught signal, shutting down")
-
-		// Give outstanding requests 15 seconds to complete.
-		const timeout = 15 * time.Second
-		ctx, cancel := context.WithTimeout(context.Background(), timeout)
-		defer cancel()
-
-		if err := server.Shutdown(ctx); err != nil {
-			log.Log("gracefully shutting down server", "error", err)
-			if err := server.Close(); err != nil {
-				log.Log("closing server", "error", err)
-			}
+	switch flag.Arg(0) {
+	case "migrate":
+		if err := schema.Migrate(db.DB); err != nil {
+			return errors.Wrap(err, "applying migrations")
 		}
-	}
+		log.Log("Migrations complete")
+		return nil
 
-	log.Log("done")
+	case "seed":
+		if err := schema.Seed(db.DB); err != nil {
+			return errors.Wrap(err, "seeding database")
+		}
+		log.Log("Seed data complete")
+		return nil
+	}
 
 	return nil
 }

@@ -19,7 +19,6 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/ardanlabs/service-training/06-fatal/cmd/salesapi/internal/handlers"
-	"github.com/ardanlabs/service-training/06-fatal/internal/schema"
 )
 
 // This is the application name.
@@ -101,22 +100,6 @@ func run() error {
 		}
 
 		defer db.Close()
-	}
-
-	switch flag.Arg(0) {
-	case "migrate":
-		if err := schema.Migrate(db.DB); err != nil {
-			return errors.Wrap(err, "applying migrations")
-		}
-		log.Println("Migrations complete")
-		return nil
-
-	case "seed":
-		if err := schema.Seed(db.DB); err != nil {
-			return errors.Wrap(err, "seeding database")
-		}
-		log.Println("Seed data complete")
-		return nil
 	}
 
 	productsHandler := handlers.Products{DB: db}
