@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"net/http"
 	"net/url"
@@ -17,6 +18,9 @@ import (
 )
 
 func main() {
+
+	flag.Parse()
+
 	// Initialize dependencies.
 	var db *sqlx.DB
 	{

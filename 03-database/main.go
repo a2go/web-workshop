@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"flag"
 	"log"
 	"net/http"
 	"net/url"
@@ -11,23 +12,28 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jmoiron/sqlx"
-
 	// TODO: Mention the idiosyncrasies of using the sql pkg.
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+
+	"github.com/ardanlabs/service-training/03-database/schema"
 )
 
-// 1. Start postgres in another terminal:
-// docker run --rm -p 5432:5432 postgres
+// 1. Start postgres:
+// docker-compose up -d
 //
-// 2. Connect to postgres:
-// docker run --rm -it --network="host" postgres psql -U postgres -h localhost
-// > CREATE TABLE products (id SERIAL PRIMARY KEY, name VARCHAR(255), cost INT, quantity INT);
-// > INSERT INTO products (name, quantity, cost) VALUES ('Comic Books', 50, 42);
-// > INSERT INTO products (name, quantity, cost) VALUES ('McDonalds Toys', 75, 120);
-// > \q
+// 2. Create the schema and insert some seed data.
+// go build
+// ./03-database migrate
+// ./03-database seed
+//
+// 3. Run the app then make requests.
+// ./03-database
 
 func main() {
+
+	flag.Parse()
+
 	// Initialize dependencies.
 	var db *sqlx.DB
 	{
@@ -49,6 +55,24 @@ func main() {
 		}
 
 		defer db.Close()
+	}
+
+	switch flag.Arg(0) {
+	case "migrate":
+		if err := schema.Migrate(db.DB); err != nil {
+			log.Println("error applying migrations", err)
+			os.Exit(1)
+		}
+		log.Println("Migrations complete")
+		return
+
+	case "seed":
+		if err := schema.Seed(db.DB); err != nil {
+			log.Println("error seeding database", err)
+			os.Exit(1)
+		}
+		log.Println("Seed data complete")
+		return
 	}
 
 	service := Service{db: db}
