@@ -50,12 +50,14 @@ func main() {
 	log.Print("done")
 }
 
+// Product is something we sell.
 type Product struct {
 	Name     string
 	Cost     int
 	Quantity int
 }
 
+// ListProducts is an HTTP Handler for returning a list of Products.
 func ListProducts(w http.ResponseWriter, r *http.Request) {
 	// Simulate a long-running request.
 	time.Sleep(10 * time.Second)

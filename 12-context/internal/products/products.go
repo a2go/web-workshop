@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Product is an item we sell.
 type Product struct {
 	ID       string `db:"product_id" json:"id"`
 	Name     string `db:"name" json:"name"`
@@ -15,8 +16,8 @@ type Product struct {
 	Quantity int    `db:"quantity" json:"quantity"`
 }
 
+// List gets all Products from the database.
 func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {
-	// TODO: Catch "null" in tests with empty list.
 	var products []Product
 
 	// TODO: Talk about issues of using '*' after talking about migrations.
@@ -27,6 +28,8 @@ func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {
 	return products, nil
 }
 
+// Create uses the provided *Product to insert a new product record. The ID
+// field provided is populated.
 func Create(ctx context.Context, db *sqlx.DB, p *Product) error {
 	p.ID = uuid.New().String()
 
@@ -43,13 +46,13 @@ func Create(ctx context.Context, db *sqlx.DB, p *Product) error {
 	return nil
 }
 
+// Get finds the product identified by a given ID.
 func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
 	var p Product
 
 	err := db.GetContext(ctx, &p, `
 		SELECT * FROM products
-		WHERE product_id = $1
-		LIMIT 1`,
+		WHERE product_id = $1`,
 		id,
 	)
 	if err != nil {

@@ -116,6 +116,8 @@ func main() {
 }
 
 // TODO: Mention JSON conventions / consistency and `json` tags in later (API) session.
+
+// Product is an item we sell.
 type Product struct {
 	ID       string `db:"product_id"`
 	Name     string `db:"name"`
@@ -123,10 +125,13 @@ type Product struct {
 	Quantity int    `db:"quantity"`
 }
 
+// Service holds business logic related to Products.
 type Service struct {
 	db *sqlx.DB
 }
 
+// ListProducts gets all Products from the database then encodes them in a
+// response to the client.
 func (s *Service) ListProducts(w http.ResponseWriter, r *http.Request) {
 	var products []Product
 

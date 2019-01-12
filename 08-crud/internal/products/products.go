@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Product is an item we sell.
 type Product struct {
 	ID       string `db:"product_id"`
 	Name     string `db:"name"`
@@ -13,8 +14,8 @@ type Product struct {
 	Quantity int    `db:"quantity"`
 }
 
+// List gets all Products from the database.
 func List(db *sqlx.DB) ([]Product, error) {
-	// TODO: Catch "null" in tests with empty list.
 	var products []Product
 
 	// TODO: Talk about issues of using '*' after talking about migrations.
@@ -25,6 +26,8 @@ func List(db *sqlx.DB) ([]Product, error) {
 	return products, nil
 }
 
+// Create uses the provided *Product to insert a new product record. The ID
+// field provided is populated.
 func Create(db *sqlx.DB, p *Product) error {
 	p.ID = uuid.New().String()
 
@@ -41,13 +44,13 @@ func Create(db *sqlx.DB, p *Product) error {
 	return nil
 }
 
+// Get finds the product identified by a given ID.
 func Get(db *sqlx.DB, id string) (*Product, error) {
 	var p Product
 
 	err := db.Get(&p, `
 		SELECT * FROM products
-		WHERE product_id = $1
-		LIMIT 1`,
+		WHERE product_id = $1`,
 		id,
 	)
 	if err != nil {
