@@ -28,6 +28,9 @@ func Decode(r *http.Request, val interface{}) error {
 // knows how to encode the returned value for the client response.
 func Encode(fn HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
 		res, err := fn(r)
 		if err != nil {
 			log.Log("request resulted in error", "error", err)

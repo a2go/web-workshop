@@ -48,6 +48,8 @@ func (s *Products) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
 	if err := json.NewEncoder(w).Encode(p); err != nil {
 		log.Log("encoding response", "error", err)
 		return
@@ -63,6 +65,8 @@ func (s *Products) List(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	// TODO: Don't return an array (return an object with an array).
 	//       Make a named response type.
@@ -82,6 +86,8 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	if err := json.NewEncoder(w).Encode(p); err != nil {
 		log.Log("encoding response", "error", err)

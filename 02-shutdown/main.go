@@ -67,6 +67,8 @@ func ListProducts(w http.ResponseWriter, r *http.Request) {
 		{Name: "McDonalds Toys", Cost: 75, Quantity: 120},
 	}
 
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
 	if err := json.NewEncoder(w).Encode(products); err != nil {
 		log.Printf("error: encoding response: %s", err)
 	}
