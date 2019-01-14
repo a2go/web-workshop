@@ -99,14 +99,12 @@ func run() error {
 			return errors.Wrap(err, "applying migrations")
 		}
 		log.Log("Migrations complete")
-		return nil
 
 	case "seed":
 		if err := schema.Seed(db.DB); err != nil {
 			return errors.Wrap(err, "seeding database")
 		}
 		log.Log("Seed data complete")
-		return nil
 	}
 
 	return nil
