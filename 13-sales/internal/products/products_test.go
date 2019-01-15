@@ -33,7 +33,7 @@ func TestProducts(t *testing.T) {
 		if err != nil {
 			t.Fatalf("getting product p0: %s", err)
 		}
-		if *p1 != *p1 {
+		if *p1 != p0 {
 			t.Fatalf("fetched != created: %v != %v", p1, p0)
 		}
 	}
