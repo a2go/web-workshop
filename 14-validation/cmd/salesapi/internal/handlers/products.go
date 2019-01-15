@@ -7,8 +7,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
-	"github.com/ardanlabs/service-training/13-sales/internal/platform/web"
-	"github.com/ardanlabs/service-training/13-sales/internal/products"
+	"github.com/ardanlabs/service-training/14-validation/internal/platform/web"
+	"github.com/ardanlabs/service-training/14-validation/internal/products"
 )
 
 // Products defines all of the handlers related to products. It holds the

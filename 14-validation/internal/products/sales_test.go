@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ardanlabs/service-training/13-sales/internal/products"
+	"github.com/ardanlabs/service-training/14-validation/internal/products"
 )
 
 func TestSales(t *testing.T) {

@@ -12,8 +12,8 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	_ "github.com/lib/pq"
 
-	"github.com/ardanlabs/service-training/13-sales/internal/products"
-	"github.com/ardanlabs/service-training/13-sales/internal/schema"
+	"github.com/ardanlabs/service-training/14-validation/internal/products"
+	"github.com/ardanlabs/service-training/14-validation/internal/schema"
 )
 
 func TestProducts(t *testing.T) {

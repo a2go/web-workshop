@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/ardanlabs/service-training/13-sales/internal/platform/log"
+	"github.com/ardanlabs/service-training/14-validation/internal/platform/log"
 )
 
 // HandlerFunc is the signature used by all application handlers in this
