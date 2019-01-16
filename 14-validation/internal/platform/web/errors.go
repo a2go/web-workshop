@@ -6,12 +6,18 @@ import (
 
 // ErrorWithStatus wraps a provided error with an HTTP status code.
 func ErrorWithStatus(err error, status int) error {
-	return &statusError{err, status}
+	return &statusError{err, status, nil}
+}
+
+type fieldError struct {
+	Field string `json:"field"`
+	Error string `json:"error"`
 }
 
 type statusError struct {
 	err    error
 	status int
+	fields []fieldError
 }
 
 // Error implements the error interface. It uses the default message of the
@@ -44,5 +50,5 @@ func toStatusError(err error) *statusError {
 	if se, ok := err.(*statusError); ok {
 		return se
 	}
-	return &statusError{err, http.StatusInternalServerError}
+	return &statusError{err, http.StatusInternalServerError, nil}
 }

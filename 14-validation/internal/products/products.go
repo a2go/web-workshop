@@ -11,9 +11,9 @@ import (
 // Product is an item we sell.
 type Product struct {
 	ID       string `db:"product_id" json:"id"`
-	Name     string `db:"name" json:"name"`
-	Cost     int    `db:"cost" json:"cost"`
-	Quantity int    `db:"quantity" json:"quantity"`
+	Name     string `db:"name" json:"name" validate:"required"`
+	Cost     int    `db:"cost" json:"cost" validate:"gte=0"`
+	Quantity int    `db:"quantity" json:"quantity" validate:"gte=1"`
 }
 
 // List gets all Products from the database.
