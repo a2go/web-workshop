@@ -18,14 +18,14 @@ type HandlerFunc func(r *http.Request) (interface{}, error)
 //
 // The value provided needs to be a pointer to a value of some struct type.
 //
-// If any of the struct fields use the `validate` tag they will be passed
-// through a validator.
+// If any of the struct fields have special business rules in the `validate`
+// tag they will be passed through a validator.
 func Decode(r *http.Request, val interface{}) error {
 	if err := json.NewDecoder(r.Body).Decode(val); err != nil {
 		return ErrorWithStatus(err, http.StatusBadRequest)
 	}
 
-	return validate(val)
+	return validateFields(val)
 }
 
 // Encode wraps a HandlerFunc as defined in this package in a new function
@@ -46,7 +46,10 @@ func Encode(fn HandlerFunc) http.HandlerFunc {
 			res = struct {
 				Error  string       `json:"error"`
 				Fields []fieldError `json:"fields,omitempty"`
-			}{serr.ExternalError(), serr.fields}
+			}{
+				Error:  serr.ExternalError(),
+				Fields: serr.fields,
+			}
 		}
 
 		if err := json.NewEncoder(w).Encode(res); err != nil {

@@ -10,8 +10,8 @@ import (
 	en_translations "gopkg.in/go-playground/validator.v9/translations/en"
 )
 
-// validator holds the settings and caches for validating request struct values.
-var validatorInstance = validator.New()
+// v holds the settings and caches for validating request struct values.
+var v = validator.New()
 
 // translator is a cache of locale and translation information.
 var translator *ut.UniversalTranslator
@@ -26,12 +26,13 @@ func init() {
 	translator = ut.New(enLocale, enLocale)
 
 	// Register the english error messages for validation errors.
-	en_translations.RegisterDefaultTranslations(validatorInstance, translator.GetFallback())
+	lang, _ := translator.GetTranslator("en")
+	en_translations.RegisterDefaultTranslations(v, lang)
 }
 
-// validate must be called with a struct value. It
-func validate(val interface{}) error {
-	if err := validatorInstance.Struct(val); err != nil {
+// validateFields must be called with a struct value. It
+func validateFields(val interface{}) error {
+	if err := v.Struct(val); err != nil {
 
 		// Use a type assertion to get the real error value.
 		verr := err.(validator.ValidationErrors)
@@ -39,7 +40,7 @@ func validate(val interface{}) error {
 		// lang controls the language of the error messages. You could pass in the
 		// *http.Request and look at the Accept-Language header if you intend to
 		// support multiple languages.
-		lang := translator.GetFallback()
+		lang, _ := translator.GetTranslator("en")
 
 		var fields []fieldError
 		for field, msg := range verr.Translate(lang) {
