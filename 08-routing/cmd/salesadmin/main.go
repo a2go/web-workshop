@@ -12,8 +12,8 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 
-	"github.com/ardanlabs/service-training/08-crud/internal/platform/log"
-	"github.com/ardanlabs/service-training/08-crud/internal/schema"
+	"github.com/ardanlabs/service-training/08-routing/internal/platform/log"
+	"github.com/ardanlabs/service-training/08-routing/internal/schema"
 )
 
 // This is the application name.
