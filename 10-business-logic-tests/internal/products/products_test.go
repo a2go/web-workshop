@@ -2,15 +2,14 @@ package products_test
 
 import (
 	"fmt"
-	"net/url"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/kelseyhightower/envconfig"
-	_ "github.com/lib/pq"
 
+	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/platform/database"
 	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/products"
 	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/schema"
 )
@@ -50,27 +49,11 @@ func TestProducts(t *testing.T) {
 
 func testDB(t *testing.T) (*sqlx.DB, func()) {
 	var cfg struct {
-		DB struct {
-			User     string `default:"postgres"`
-			Password string `default:"postgres"`
-			Host     string `default:"localhost"`
-			Name     string `default:"postgres"`
-		}
+		DB database.Config
 	}
 	envconfig.MustProcess("TEST", &cfg)
 
-	u := url.URL{
-		Scheme: "postgres",
-		User:   url.UserPassword(cfg.DB.User, cfg.DB.Password),
-		Host:   cfg.DB.Host,
-		Path:   cfg.DB.Name,
-		RawQuery: (url.Values{
-			"sslmode":  []string{"disable"},
-			"timezone": []string{"utc"},
-		}).Encode(),
-	}
-
-	db0, err := sqlx.Connect("postgres", u.String())
+	db0, err := database.Open(cfg.DB)
 	if err != nil {
 		t.Fatalf("connecting to db: %s", err)
 	}
@@ -80,8 +63,8 @@ func testDB(t *testing.T) (*sqlx.DB, func()) {
 		t.Fatalf("creating database %q: %s", newDB, err)
 	}
 
-	u.Path = newDB
-	db, err := sqlx.Connect("postgres", u.String())
+	cfg.DB.Name = newDB
+	db, err := database.Open(cfg.DB)
 	if err != nil {
 		t.Fatalf("connecting to db: %s", err)
 	}
@@ -90,12 +73,15 @@ func testDB(t *testing.T) (*sqlx.DB, func()) {
 		t.Fatalf("migrating: %s", err)
 	}
 
-	return db, func() {
-		// Cleanup
+	// cleanup is the function that should be invoked when the caller is done
+	// with the database.
+	cleanup := func() {
 		db.Close()
 		if _, err := db0.Exec("DROP DATABASE " + newDB); err != nil {
 			t.Errorf("dropping database: %s", err)
 		}
 		db0.Close()
 	}
+
+	return db, cleanup
 }

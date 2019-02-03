@@ -37,19 +37,20 @@ func main() {
 	// Initialize dependencies.
 	var db *sqlx.DB
 	{
+		q := url.Values{}
+		q.Set("sslmode", "disable")
+		q.Set("timezone", "utc")
+
 		u := url.URL{
-			Scheme: "postgres",
-			User:   url.UserPassword("postgres", "postgres"),
-			Host:   "localhost",
-			Path:   "postgres",
-			RawQuery: (url.Values{
-				"sslmode":  []string{"disable"},
-				"timezone": []string{"utc"},
-			}).Encode(),
+			Scheme:   "postgres",
+			User:     url.UserPassword("postgres", "postgres"),
+			Host:     "localhost",
+			Path:     "postgres",
+			RawQuery: q.Encode(),
 		}
 
 		var err error
-		db, err = sqlx.Connect("postgres", u.String())
+		db, err = sqlx.Open("postgres", u.String())
 		if err != nil {
 			log.Fatalf("error: connecting to db: %s", err)
 		}
