@@ -4,12 +4,13 @@ import (
 	"context"
 	"testing"
 
+	"github.com/ardanlabs/service-training/14-validation/internal/platform/database/databasetest"
 	"github.com/ardanlabs/service-training/14-validation/internal/products"
 )
 
 func TestSales(t *testing.T) {
-	db, drop := testDB(t)
-	defer drop()
+	db, teardown := databasetest.Setup(t)
+	defer teardown()
 
 	// Create a product for Sales to work with.
 	p := products.Product{
