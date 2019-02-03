@@ -30,7 +30,7 @@ CREATE TABLE products (
 CREATE TABLE sales (
 	sale_id    UUID,
 	product_id UUID,
-	amount     INT,
+	quantity   INT,
 	paid       INT,
 
 	PRIMARY KEY (sale_id),
