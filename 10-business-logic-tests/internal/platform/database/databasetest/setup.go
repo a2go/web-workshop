@@ -45,7 +45,6 @@ func Setup(t *testing.T) (*sqlx.DB, func()) {
 	for attempts := 1; attempts <= maxAttempts; attempts++ {
 		pingError = db.Ping()
 		if pingError == nil {
-			t.Log("took", attempts, "tries")
 			break
 		}
 		time.Sleep(time.Duration(attempts) * 500 * time.Millisecond)
