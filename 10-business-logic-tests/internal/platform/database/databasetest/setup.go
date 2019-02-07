@@ -38,7 +38,7 @@ func Setup(t *testing.T) (*sqlx.DB, func()) {
 
 	t.Log("waiting for database to be ready")
 
-	// Wait for the database to be ready. Wait 500ms longer between each attempt.
+	// Wait for the database to be ready. Wait 100ms longer between each attempt.
 	// Do not try more than 20 times.
 	var pingError error
 	maxAttempts := 20
@@ -47,7 +47,7 @@ func Setup(t *testing.T) (*sqlx.DB, func()) {
 		if pingError == nil {
 			break
 		}
-		time.Sleep(time.Duration(attempts) * 500 * time.Millisecond)
+		time.Sleep(time.Duration(attempts) * 100 * time.Millisecond)
 	}
 
 	if pingError != nil {
