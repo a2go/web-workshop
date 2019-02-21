@@ -11,7 +11,7 @@ import (
 
 	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/platform/database"
 	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/platform/log"
-	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/schema"
+	"github.com/ardanlabs/service-training/10-business-logic-tests/internal/platform/database/schema"
 )
 
 // This is for parsing the environment.

@@ -7,7 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 
 	"github.com/ardanlabs/service-training/14-validation/internal/platform/database"
-	"github.com/ardanlabs/service-training/14-validation/internal/schema"
+	"github.com/ardanlabs/service-training/14-validation/internal/platform/database/schema"
 )
 
 // Setup creates a test database inside a Docker container. It creates the

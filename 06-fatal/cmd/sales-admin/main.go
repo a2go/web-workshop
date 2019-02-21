@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/ardanlabs/service-training/06-fatal/internal/platform/database"
-	"github.com/ardanlabs/service-training/06-fatal/internal/schema"
+	"github.com/ardanlabs/service-training/06-fatal/internal/platform/database/schema"
 )
 
 // This is for parsing the environment.

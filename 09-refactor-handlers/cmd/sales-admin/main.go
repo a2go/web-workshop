@@ -11,7 +11,7 @@ import (
 
 	"github.com/ardanlabs/service-training/09-refactor-handlers/internal/platform/database"
 	"github.com/ardanlabs/service-training/09-refactor-handlers/internal/platform/log"
-	"github.com/ardanlabs/service-training/09-refactor-handlers/internal/schema"
+	"github.com/ardanlabs/service-training/09-refactor-handlers/internal/platform/database/schema"
 )
 
 // This is for parsing the environment.

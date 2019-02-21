@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/ardanlabs/service-training/04-packaging/internal/platform/database"
-	"github.com/ardanlabs/service-training/04-packaging/internal/schema"
+	"github.com/ardanlabs/service-training/04-packaging/internal/platform/database/schema"
 )
 
 func main() {
