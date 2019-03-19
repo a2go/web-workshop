@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -16,7 +17,6 @@ import (
 
 	"github.com/ardanlabs/service-training/07-logging/cmd/sales-api/internal/handlers"
 	"github.com/ardanlabs/service-training/07-logging/internal/platform/database"
-	"github.com/ardanlabs/service-training/07-logging/internal/platform/log"
 )
 
 // This is for parsing the environment.
@@ -31,12 +31,14 @@ type config struct {
 
 func main() {
 	if err := run(); err != nil {
-		log.Log("shutting down", "error", err)
+		log.Println("shutting down", "error:", err)
 		os.Exit(1)
 	}
 }
 
 func run() error {
+
+	log := log.New(os.Stderr, "SALES : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 
 	// Process command line flags.
 	var flags struct {
@@ -75,7 +77,7 @@ func run() error {
 	}
 	defer db.Close()
 
-	productsHandler := handlers.Products{DB: db}
+	productsHandler := handlers.Products{DB: db, Log: log}
 
 	server := http.Server{
 		Addr:    cfg.HTTP.Address,
@@ -90,14 +92,14 @@ func run() error {
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
 
-	log.Log("startup complete")
+	log.Println("startup complete")
 
 	select {
 	case err := <-serverErrors:
 		return errors.Wrap(err, "listening and serving")
 
 	case <-osSignals:
-		log.Log("caught signal, shutting down")
+		log.Println("caught signal, shutting down")
 
 		// Give outstanding requests 15 seconds to complete.
 		const timeout = 15 * time.Second
@@ -105,14 +107,14 @@ func run() error {
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			log.Log("gracefully shutting down server", "error", err)
+			log.Println("gracefully shutting down server", "error", err)
 			if err := server.Close(); err != nil {
-				log.Log("closing server", "error", err)
+				log.Println("closing server", "error", err)
 			}
 		}
 	}
 
-	log.Log("done")
+	log.Println("done")
 
 	return nil
 }

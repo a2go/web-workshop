@@ -3,8 +3,10 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -25,7 +27,10 @@ import (
 func TestProducts(t *testing.T) {
 	db, teardown := databasetest.Setup(t)
 	defer teardown()
-	tests := ProductTests{app: handlers.NewProducts(db)}
+
+	log := log.New(os.Stderr, "TEST : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
+
+	tests := ProductTests{app: handlers.NewProducts(db, log)}
 
 	t.Run("ListEmptySuccess", tests.ListEmptySuccess)
 	t.Run("ProductCRUD", tests.ProductCRUD)

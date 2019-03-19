@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
 
 	"github.com/ardanlabs/service-training/13-context/internal/platform/database"
-	"github.com/ardanlabs/service-training/13-context/internal/platform/log"
 	"github.com/ardanlabs/service-training/13-context/internal/platform/database/schema"
 )
 
@@ -23,7 +23,7 @@ type config struct {
 
 func main() {
 	if err := run(); err != nil {
-		log.Log("shutting down", "error", err)
+		log.Printf("error: shutting down: %s", err)
 		os.Exit(1)
 	}
 }
@@ -72,13 +72,13 @@ func run() error {
 		if err := schema.Migrate(db.DB); err != nil {
 			return errors.Wrap(err, "applying migrations")
 		}
-		log.Log("Migrations complete")
+		log.Println("Migrations complete")
 
 	case "seed":
 		if err := schema.Seed(db.DB); err != nil {
 			return errors.Wrap(err, "seeding database")
 		}
-		log.Log("Seed data complete")
+		log.Println("Seed data complete")
 	}
 
 	return nil

@@ -1,5 +1,5 @@
 # 7. Logging
 
-- Create `internal/platform/log` package
-- Replace all calls to stdlib `log` package
+Log actionable events. This is separate from Metrics or Tracing.
 
+- Pass a `*log.Logger` to dependencies.

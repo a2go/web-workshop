@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -14,14 +15,15 @@ import (
 // Products defines all of the handlers related to products. It holds the
 // application state needed by the handler methods.
 type Products struct {
-	db *sqlx.DB
+	db  *sqlx.DB
+	log *log.Logger
 
 	http.Handler
 }
 
 // NewProducts creates a product handler with multiple routes defined.
-func NewProducts(db *sqlx.DB) *Products {
-	p := Products{db: db}
+func NewProducts(db *sqlx.DB, log *log.Logger) *Products {
+	p := Products{db: db, log: log}
 
 	r := chi.NewRouter()
 	r.Post("/v1/products", web.Run(p.Create))
