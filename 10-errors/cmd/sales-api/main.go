@@ -79,7 +79,7 @@ func run() error {
 
 	server := http.Server{
 		Addr:    cfg.HTTP.Address,
-		Handler: handlers.NewProducts(db, log),
+		Handler: handlers.API(db, log),
 	}
 
 	serverErrors := make(chan error, 1)

@@ -1,5 +1,5 @@
 # 8. Routing
 
-- Add `Create` & `Get` endpoints
-- Add `ServeHTTP` method with router
-- Update `Handler` in `main`
+- Add `Create` & `Get` endpoints.
+- Add router in `routes.go` to tie the endpoints together.
+- Update `Handler` in `main`.

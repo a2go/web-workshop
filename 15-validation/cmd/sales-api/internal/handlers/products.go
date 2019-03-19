@@ -17,24 +17,6 @@ import (
 type Products struct {
 	db  *sqlx.DB
 	log *log.Logger
-
-	http.Handler
-}
-
-// NewProducts creates a product handler with multiple routes defined.
-func NewProducts(db *sqlx.DB, log *log.Logger) *Products {
-	p := Products{db: db, log: log}
-
-	r := chi.NewRouter()
-	r.Post("/v1/products", web.Run(p.Create))
-	r.Get("/v1/products", web.Run(p.List))
-	r.Get("/v1/products/{id}", web.Run(p.Get))
-
-	r.Post("/v1/products/{id}/sales", web.Run(p.AddSale))
-	r.Get("/v1/products/{id}/sales", web.Run(p.ListSales))
-	p.Handler = r
-
-	return &p
 }
 
 // Create decodes the body of a request to create a new product. The full
