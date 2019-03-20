@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -30,16 +31,25 @@ func init() {
 	en_translations.RegisterDefaultTranslations(v, lang)
 }
 
-// validateFields must be called with a struct value. It
-func validateFields(val interface{}) error {
+// Decode reads the body of an HTTP request looking for a JSON document. The
+// body is decoded into the provided value.
+//
+// If the provided value is a struct then it is checked for validation tags.
+func Decode(r *http.Request, val interface{}) error {
+	if err := json.NewDecoder(r.Body).Decode(val); err != nil {
+		return ErrorWithStatus(err, http.StatusBadRequest)
+	}
+
 	if err := v.Struct(val); err != nil {
 
 		// Use a type assertion to get the real error value.
-		verr := err.(validator.ValidationErrors)
+		verr, ok := err.(validator.ValidationErrors)
+		if !ok {
+			return err
+		}
 
-		// lang controls the language of the error messages. You could pass in the
-		// *http.Request and look at the Accept-Language header if you intend to
-		// support multiple languages.
+		// lang controls the language of the error messages. You could look at the
+		// Accept-Language header if you intend to support multiple languages.
 		lang, _ := translator.GetTranslator("en")
 
 		var fields []fieldError
@@ -51,7 +61,7 @@ func validateFields(val interface{}) error {
 		}
 
 		return &statusError{
-			err:    errors.New("Field validation error"),
+			err:    errors.New("field validation error"),
 			status: http.StatusBadRequest,
 			fields: fields,
 		}

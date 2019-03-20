@@ -33,6 +33,7 @@ func TestProducts(t *testing.T) {
 	tests := ProductTests{app: handlers.API(db, log)}
 
 	t.Run("ListEmptySuccess", tests.ListEmptySuccess)
+	t.Run("CreateRequiresFields", tests.CreateRequiresFields)
 	t.Run("ProductCRUD", tests.ProductCRUD)
 }
 
@@ -56,6 +57,20 @@ func (p *ProductTests) ListEmptySuccess(t *testing.T) {
 	var list []map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
 		t.Fatalf("decoding: %s", err)
+	}
+}
+
+func (p *ProductTests) CreateRequiresFields(t *testing.T) {
+	body := strings.NewReader(`{}`)
+	req := httptest.NewRequest("POST", "/v1/products", body)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp := httptest.NewRecorder()
+
+	p.app.ServeHTTP(resp, req)
+
+	if resp.Code != http.StatusBadRequest {
+		t.Fatalf("getting: expected status code %v, got %v", http.StatusBadRequest, resp.Code)
 	}
 }
 

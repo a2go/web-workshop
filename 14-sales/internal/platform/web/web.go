@@ -1,17 +1,35 @@
 package web
 
 import (
-	"encoding/json"
+	"log"
 	"net/http"
+
+	"github.com/go-chi/chi"
 )
 
 // Handler is the signature used by all application handlers in this service.
-type Handler func(w http.ResponseWriter, r *http.Request) error
+type Handler func(http.ResponseWriter, *http.Request) error
 
-// Run is the entry point for all handlers. It converts our custom handler type
-// to the std lib Handler type. It captures errors returned from the handler
-// and serves them to the client in a uniform way.
-func Run(h Handler) http.HandlerFunc {
+// App is the entrypoint into our application and what controls the context of
+// each request. Feel free to add any configuration data/logic on this type.
+type App struct {
+	log *log.Logger
+	mux *chi.Mux
+}
+
+// New constructs an App to handle a set of routes.
+func New(log *log.Logger) *App {
+	return &App{
+		log: log,
+		mux: chi.NewRouter(),
+	}
+}
+
+// Handle associates a handler function with a HTTP Method and URL pattern.
+//
+// It converts our custom handler type to the std lib Handler type. It captures
+// errors from the handler and serves them to the client in a uniform way.
+func (a *App) Handle(method, url string, h Handler) {
 
 	fn := func(w http.ResponseWriter, r *http.Request) {
 
@@ -21,42 +39,24 @@ func Run(h Handler) http.HandlerFunc {
 		if err != nil {
 			serr := toStatusError(err)
 
-			res := struct {
-				Error string `json:"error"`
-			}{serr.ExternalError()}
+			// If the error is an internal issue then log it.
+			// Do not log errors that come from client requests.
+			if serr.status >= http.StatusInternalServerError {
+				log.Printf("%+v", err)
+			}
 
+			// Tell the client about the error.
+			res := errorResponse{
+				Error: serr.ExternalError(),
+			}
 			Encode(w, res, serr.status)
 		}
 	}
 
-	return fn
+	a.mux.MethodFunc(method, url, fn)
 }
 
-// Decode reads the body of an HTTP request looking for a JSON document. The
-// body is decoded into the provided value.
-func Decode(r *http.Request, val interface{}) error {
-	if err := json.NewDecoder(r.Body).Decode(val); err != nil {
-		return ErrorWithStatus(err, http.StatusBadRequest)
-	}
-
-	return nil
-}
-
-// Encode converts a Go value to JSON and sends it to the client.
-func Encode(w http.ResponseWriter, data interface{}, status int) error {
-
-	// Convert the response value to JSON.
-	res, err := json.Marshal(data)
-	if err != nil {
-		return err
-	}
-
-	// Respond with the provided JSON.
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(status)
-	if _, err := w.Write([]byte(res)); err != nil {
-		return err
-	}
-
-	return nil
+// ServeHTTP implements the http.Handler interface.
+func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	a.mux.ServeHTTP(w, r)
 }

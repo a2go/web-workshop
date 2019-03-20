@@ -2,16 +2,25 @@ package web
 
 import (
 	"net/http"
+
+	"github.com/pkg/errors"
 )
+
+// errorResponse is the form used for API responses from failures in the API.
+type errorResponse struct {
+	Error string `json:"error"`
+}
+
+// statusError is used to pass errors through the application with web specific
+// context.
+type statusError struct {
+	err    error
+	status int
+}
 
 // ErrorWithStatus wraps a provided error with an HTTP status code.
 func ErrorWithStatus(err error, status int) error {
 	return &statusError{err, status}
-}
-
-type statusError struct {
-	err    error
-	status int
 }
 
 // Error implements the error interface. It uses the default message of the
@@ -38,10 +47,10 @@ func (se *statusError) ExternalError() string {
 }
 
 // toStatusError takes a regular error and converts it to a statusError. If the
-// provided error is already a *statusError it is returned directly. If not
+// original error is already a *statusError it is returned directly. If not
 // then it is defaulted to an error with a 500 status.
 func toStatusError(err error) *statusError {
-	if se, ok := err.(*statusError); ok {
+	if se, ok := errors.Cause(err).(*statusError); ok {
 		return se
 	}
 	return &statusError{err, http.StatusInternalServerError}

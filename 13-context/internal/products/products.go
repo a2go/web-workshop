@@ -2,10 +2,17 @@ package products
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+)
+
+// Predefined errors identify expected failure conditions.
+var (
+	// ErrNotFound is used when a specific Product is requested but does not exist.
+	ErrNotFound = errors.New("product not found")
 )
 
 // Product is an item we sell.
@@ -56,6 +63,10 @@ func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
 		id,
 	)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrNotFound
+		}
+
 		return nil, errors.Wrap(err, "selecting single product")
 	}
 

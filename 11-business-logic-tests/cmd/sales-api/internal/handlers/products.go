@@ -50,6 +50,9 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) error {
 
 	p, err := products.Get(s.db, id)
 	if err != nil {
+		if err == products.ErrNotFound {
+			return web.ErrorWithStatus(err, http.StatusNotFound)
+		}
 		return errors.Wrapf(err, "getting product %q", id)
 	}
 

@@ -6,5 +6,4 @@ Move these behaviors to a dedicated package.
 
 # Tasks:
 
-- Add `internal/platform/web` package
-  - Define `Encode` and `Decode` functions to centralize request/response behavior.
+- Define `Encode` and `Decode` functions to centralize request/response behavior.

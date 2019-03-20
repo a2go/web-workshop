@@ -13,7 +13,7 @@ func TestDecode(t *testing.T) {
 
 	body := strings.NewReader(`{}`)
 
-	r := httptest.NewRequest("GET", "/", body)
+	r := httptest.NewRequest("POST", "/", body)
 
 	err := Decode(r, &u)
 

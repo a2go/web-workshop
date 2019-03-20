@@ -4,20 +4,21 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
+
+	"github.com/ardanlabs/service-training/08-routing/internal/platform/web"
 )
 
 // API constructs an http.Handler with all application routes defined.
 func API(db *sqlx.DB, log *log.Logger) http.Handler {
 
-	r := chi.NewRouter()
+	app := web.New(log)
 
 	p := Products{db: db, log: log}
 
-	r.Post("/v1/products", p.Create)
-	r.Get("/v1/products", p.List)
-	r.Get("/v1/products/{id}", p.Get)
+	app.Handle(http.MethodPost, "/v1/products", p.Create)
+	app.Handle(http.MethodGet, "/v1/products", p.List)
+	app.Handle(http.MethodGet, "/v1/products/{id}", p.Get)
 
-	return r
+	return app
 }
