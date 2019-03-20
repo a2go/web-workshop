@@ -1,4 +1,4 @@
-# 14. Validation
+# 15. Validation
 
 - Add the `go-playground/validator` library and dependencies.
 - Expand the error type in `web` to include specific fields.
