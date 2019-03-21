@@ -3,9 +3,9 @@ package products_test
 import (
 	"testing"
 
-	"github.com/ardanlabs/service-training/11-business-logic-tests/internal/platform/database/databasetest"
-	"github.com/ardanlabs/service-training/11-business-logic-tests/internal/platform/database/schema"
-	"github.com/ardanlabs/service-training/11-business-logic-tests/internal/products"
+	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
+	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
+	"github.com/ardanlabs/garagesale/internal/products"
 )
 
 func TestProducts(t *testing.T) {

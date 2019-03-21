@@ -6,7 +6,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"github.com/ardanlabs/service-training/14-sales/internal/platform/web"
+	"github.com/ardanlabs/garagesale/internal/platform/web"
 )
 
 // API constructs an http.Handler with all application routes defined.

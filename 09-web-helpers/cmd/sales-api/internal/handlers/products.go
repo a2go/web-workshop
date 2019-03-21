@@ -7,8 +7,8 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
 
-	"github.com/ardanlabs/service-training/09-web-helpers/internal/platform/web"
-	"github.com/ardanlabs/service-training/09-web-helpers/internal/products"
+	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"github.com/ardanlabs/garagesale/internal/products"
 )
 
 // Products defines all of the handlers related to products. It holds the

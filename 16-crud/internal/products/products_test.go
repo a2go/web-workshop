@@ -7,10 +7,10 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/ardanlabs/service-training/16-crud/internal/platform/database/databasetest"
-	"github.com/ardanlabs/service-training/16-crud/internal/platform/database/schema"
-	"github.com/ardanlabs/service-training/16-crud/internal/platform/tests"
-	"github.com/ardanlabs/service-training/16-crud/internal/products"
+	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
+	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
+	"github.com/ardanlabs/garagesale/internal/platform/tests"
+	"github.com/ardanlabs/garagesale/internal/products"
 )
 
 func TestProducts(t *testing.T) {

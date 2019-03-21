@@ -16,7 +16,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
-	"github.com/ardanlabs/service-training/03-database/schema"
+	"github.com/ardanlabs/garagesale/schema"
 )
 
 // 1. Start postgres:
@@ -24,11 +24,11 @@ import (
 //
 // 2. Create the schema and insert some seed data.
 // go build
-// ./03-database migrate
-// ./03-database seed
+// ./garagesale migrate
+// ./garagesale seed
 //
 // 3. Run the app then make requests.
-// ./03-database
+// ./garagesale
 
 func main() {
 

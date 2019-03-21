@@ -10,8 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ardanlabs/service-training/04-packaging/cmd/sales-api/internal/handlers"
-	"github.com/ardanlabs/service-training/04-packaging/internal/platform/database"
+	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
+	"github.com/ardanlabs/garagesale/internal/platform/database"
 )
 
 func main() {

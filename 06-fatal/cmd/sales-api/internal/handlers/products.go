@@ -7,7 +7,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"github.com/ardanlabs/service-training/06-fatal/internal/products"
+	"github.com/ardanlabs/garagesale/internal/products"
 )
 
 // Products defines all of the handlers related to products. It holds the

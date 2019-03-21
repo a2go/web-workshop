@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/ardanlabs/service-training/17-health/internal/platform/web"
+	"github.com/ardanlabs/garagesale/internal/platform/web"
 	"github.com/jmoiron/sqlx"
 )
 

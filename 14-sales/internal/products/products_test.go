@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ardanlabs/service-training/14-sales/internal/platform/database/databasetest"
-	"github.com/ardanlabs/service-training/14-sales/internal/platform/database/schema"
-	"github.com/ardanlabs/service-training/14-sales/internal/products"
+	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
+	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
+	"github.com/ardanlabs/garagesale/internal/products"
 )
 
 func TestProducts(t *testing.T) {

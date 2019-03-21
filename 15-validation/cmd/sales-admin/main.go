@@ -10,8 +10,8 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
 
-	"github.com/ardanlabs/service-training/15-validation/internal/platform/database"
-	"github.com/ardanlabs/service-training/15-validation/internal/platform/database/schema"
+	"github.com/ardanlabs/garagesale/internal/platform/database"
+	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
 )
 
 // This is for parsing the environment.

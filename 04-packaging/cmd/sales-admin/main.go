@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/ardanlabs/service-training/04-packaging/internal/platform/database"
-	"github.com/ardanlabs/service-training/04-packaging/internal/platform/database/schema"
+	"github.com/ardanlabs/garagesale/internal/platform/database"
+	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
 )
 
 func main() {

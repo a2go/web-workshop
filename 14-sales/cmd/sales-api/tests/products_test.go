@@ -14,8 +14,8 @@ import (
 	// make the comparison process easier using the go-cmp library.
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/ardanlabs/service-training/14-sales/cmd/sales-api/internal/handlers"
-	"github.com/ardanlabs/service-training/14-sales/internal/platform/database/databasetest"
+	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
+	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 )
 
 // TestProducts runs a series of tests to exercise Product behavior from the

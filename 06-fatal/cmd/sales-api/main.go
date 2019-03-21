@@ -15,8 +15,8 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
 
-	"github.com/ardanlabs/service-training/06-fatal/cmd/sales-api/internal/handlers"
-	"github.com/ardanlabs/service-training/06-fatal/internal/platform/database"
+	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
+	"github.com/ardanlabs/garagesale/internal/platform/database"
 )
 
 // This is for parsing the environment.

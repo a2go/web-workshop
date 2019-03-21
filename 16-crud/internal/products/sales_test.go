@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ardanlabs/service-training/16-crud/internal/platform/database/databasetest"
-	"github.com/ardanlabs/service-training/16-crud/internal/products"
+	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
+	"github.com/ardanlabs/garagesale/internal/products"
 )
 
 func TestSales(t *testing.T) {
