@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	_ "net/http/pprof" // Register the pprof handlers
 	"os"
 	"os/signal"
 	"syscall"
@@ -26,6 +27,7 @@ type config struct {
 	DB   database.Config
 	HTTP struct {
 		Address string `default:":8000"`
+		Debug   string `default:"localhost:6060"`
 	}
 }
 
@@ -77,6 +79,21 @@ func run() error {
 	}
 	defer db.Close()
 
+	// =========================================================================
+	// Start Debug Service
+
+	// /debug/pprof - Added to the default mux by importing the net/http/pprof package.
+
+	// Not concerned with shutting this down when the application is shutdown.
+	go func() {
+		log.Println("debug service listening on", cfg.HTTP.Debug)
+		err := http.ListenAndServe(cfg.HTTP.Debug, http.DefaultServeMux)
+		log.Println("debug service closed", err)
+	}()
+
+	// =========================================================================
+	// Start API Service
+
 	server := http.Server{
 		Addr:    cfg.HTTP.Address,
 		Handler: handlers.API(db, log),
@@ -84,13 +101,12 @@ func run() error {
 
 	serverErrors := make(chan error, 1)
 	go func() {
+		log.Println("server listening on", cfg.HTTP.Address)
 		serverErrors <- server.ListenAndServe()
 	}()
 
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
-
-	log.Println("startup complete")
 
 	select {
 	case err := <-serverErrors:
