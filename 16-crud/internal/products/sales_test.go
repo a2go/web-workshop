@@ -3,6 +3,7 @@ package products_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/ardanlabs/service-training/16-crud/internal/platform/database/databasetest"
 	"github.com/ardanlabs/service-training/16-crud/internal/products"
@@ -13,12 +14,15 @@ func TestSales(t *testing.T) {
 	defer teardown()
 
 	// Create a product for Sales to work with.
-	p := products.Product{
+	newP := products.NewProduct{
 		Name:     "Puzzles",
 		Cost:     25,
 		Quantity: 6,
 	}
-	if err := products.Create(context.Background(), db, &p); err != nil {
+	now := time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)
+
+	p, err := products.Create(context.Background(), db, newP, now)
+	if err != nil {
 		t.Fatalf("creating product: %s", err)
 	}
 

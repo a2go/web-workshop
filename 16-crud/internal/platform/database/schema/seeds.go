@@ -14,9 +14,9 @@ package schema
 // may need to be broken up.
 
 const seeds = `
-INSERT INTO products (product_id, name, cost, quantity) VALUES
-	('a2b0639f-2cc6-44b8-b97b-15d69dbb511e', 'Comic Books', 50, 42),
-	('72f8b983-3eb4-48db-9ed0-e45cc6bd716b', 'McDonalds Toys', 75, 120);
+INSERT INTO products (product_id, name, cost, quantity, date_created, date_updated) VALUES
+	('a2b0639f-2cc6-44b8-b97b-15d69dbb511e', 'Comic Books', 50, 42, '2019-01-01 00:00:01.000001+00', '2019-01-01 00:00:01.000001+00'),
+	('72f8b983-3eb4-48db-9ed0-e45cc6bd716b', 'McDonalds Toys', 75, 120, '2019-01-01 00:00:02.000001+00', '2019-01-01 00:00:02.000001+00');
 
 INSERT INTO sales (sale_id, product_id, quantity, paid) VALUES
 	('98b6d4b8-f04b-4c79-8c2e-a0aef46854b7', 'a2b0639f-2cc6-44b8-b97b-15d69dbb511e', 2, 100),
