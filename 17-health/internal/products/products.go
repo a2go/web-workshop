@@ -50,7 +50,6 @@ type UpdateProduct struct {
 func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {
 	var products []Product
 
-	// TODO: Talk about issues of using '*' after talking about migrations.
 	if err := db.SelectContext(ctx, &products, "SELECT * FROM products"); err != nil {
 		return nil, errors.Wrap(err, "selecting products")
 	}

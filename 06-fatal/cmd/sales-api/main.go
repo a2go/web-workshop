@@ -31,7 +31,7 @@ type config struct {
 
 func main() {
 	if err := run(); err != nil {
-		log.Printf("error: shutting down: %s", err)
+		log.Println("shutting down", "error:", err)
 		os.Exit(1)
 	}
 }
@@ -90,14 +90,14 @@ func run() error {
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
 
-	log.Print("startup complete")
+	log.Println("startup complete")
 
 	select {
 	case err := <-serverErrors:
 		return errors.Wrap(err, "listening and serving")
 
 	case <-osSignals:
-		log.Print("caught signal, shutting down")
+		log.Println("caught signal, shutting down")
 
 		// Give outstanding requests 15 seconds to complete.
 		const timeout = 15 * time.Second
@@ -105,14 +105,14 @@ func run() error {
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			log.Printf("error: gracefully shutting down server: %s", err)
+			log.Println("gracefully shutting down server", "error", err)
 			if err := server.Close(); err != nil {
-				log.Printf("error: closing server: %s", err)
+				log.Println("closing server", "error", err)
 			}
 		}
 	}
 
-	log.Print("done")
+	log.Println("done")
 
 	return nil
 }

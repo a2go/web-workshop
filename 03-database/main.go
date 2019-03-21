@@ -12,7 +12,6 @@ import (
 	"syscall"
 	"time"
 
-	// TODO: Mention the idiosyncrasies of using the sql pkg.
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 
@@ -91,14 +90,14 @@ func main() {
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
 
-	log.Print("startup complete")
+	log.Println("startup complete")
 
 	select {
 	case err := <-serverErrors:
 		log.Fatalf("error: listening and serving: %s", err)
 
 	case <-osSignals:
-		log.Print("caught signal, shutting down")
+		log.Println("caught signal, shutting down")
 
 		// Give outstanding requests 15 seconds to complete.
 		const timeout = 15 * time.Second
@@ -113,7 +112,7 @@ func main() {
 		}
 	}
 
-	log.Print("done")
+	log.Println("done")
 }
 
 // TODO: Mention JSON conventions / consistency and `json` tags in later (API) session.
@@ -136,8 +135,6 @@ type Service struct {
 func (s *Service) ListProducts(w http.ResponseWriter, r *http.Request) {
 	var products []Product
 
-	// TODO: Seperate layers of concern in later section.
-	// TODO: Talk about issues of using '*'.
 	if err := s.db.Select(&products, "SELECT * FROM products"); err != nil {
 		log.Printf("error: selecting products: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)

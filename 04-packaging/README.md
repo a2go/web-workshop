@@ -1,8 +1,6 @@
 # 4. Packaging
 
-- Refactor `main` package
-- Put entrypoint in `cmd/salesapi`
-- Put db administration in `cmd/salesadmin`
-- Put business logic in `internal/products`
-- Put HTTP layer in `cmd/salesapi/internal/handlers`
-
+- Put business logic for Products in `internal/products`
+- Put db administration in `cmd/sales-admin`
+- Put entrypoint in `cmd/sales-api`
+- Put HTTP layer in `cmd/sales-api/internal/handlers`

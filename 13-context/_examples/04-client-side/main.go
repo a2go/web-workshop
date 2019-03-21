@@ -27,7 +27,7 @@ func main() {
 
 	req = req.WithContext(ctx) // Note assignment
 
-	log.Print("sending request")
+	log.Println("sending request")
 
 	resp, err := c.Do(req)
 	if err != nil {

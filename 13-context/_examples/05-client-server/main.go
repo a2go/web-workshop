@@ -14,8 +14,8 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Print("start")
-		defer log.Print("end")
+		log.Println("start")
+		defer log.Println("end")
 
 		if err := getSomething(r.Context(), "http://localhost:8080"); err != nil {
 			log.Printf("doRequest: %s", err)

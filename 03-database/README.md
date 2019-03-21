@@ -10,3 +10,4 @@
 
 - Executing schema changes requires elevated privileges. The normal API service
   should be running as a DB user with less access.
+- Using `SELECT *` has problems.

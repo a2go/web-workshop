@@ -15,7 +15,7 @@ func main() {
 		log.Fatalf("making request: %s", err)
 	}
 
-	log.Print("sending request")
+	log.Println("sending request")
 
 	resp, err := c.Do(req)
 	if err != nil {

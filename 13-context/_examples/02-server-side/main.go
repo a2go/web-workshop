@@ -13,8 +13,8 @@ import (
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Print("start")
-		defer log.Print("end")
+		log.Println("start")
+		defer log.Println("end")
 
 		longOperation(r.Context())
 	})

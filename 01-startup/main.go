@@ -12,7 +12,7 @@ func main() {
 	}
 }
 
-// Product is something we sell.
+// Product is an item we sell.
 type Product struct {
 	Name     string
 	Cost     int

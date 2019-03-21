@@ -18,7 +18,6 @@ type Product struct {
 func List(db *sqlx.DB) ([]Product, error) {
 	var products []Product
 
-	// TODO: Talk about issues of using '*' after talking about migrations.
 	if err := db.Select(&products, "SELECT * FROM products"); err != nil {
 		return nil, errors.Wrap(err, "selecting products")
 	}

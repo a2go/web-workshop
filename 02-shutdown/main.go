@@ -25,14 +25,14 @@ func main() {
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
 
-	log.Print("initialized")
+	log.Println("startup complete")
 
 	select {
 	case err := <-serverErrors:
 		log.Fatalf("error: listening and serving: %s", err)
 
 	case <-osSignals:
-		log.Print("caught signal, shutting down")
+		log.Println("caught signal, shutting down")
 
 		// Give outstanding requests 15 seconds to complete.
 		const timeout = 15 * time.Second
@@ -47,10 +47,10 @@ func main() {
 		}
 	}
 
-	log.Print("done")
+	log.Println("done")
 }
 
-// Product is something we sell.
+// Product is an item we sell.
 type Product struct {
 	Name     string
 	Cost     int
