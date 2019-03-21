@@ -1,6 +1,3 @@
-# 16. CRUD
+# 17. Health Checks
 
-- Add Update and Delete handlers for Product.
-- Add Created and Updated time fields on Product.
-- Use defined types for `NewProduct` and `UpdateProduct`.
-  - Should `UpdateProduct` require all fields to be set?
+- Add a `/v1/health` endpoint that returns 200 when the database is ready.
