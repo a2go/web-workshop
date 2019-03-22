@@ -18,17 +18,6 @@ import (
 	"github.com/ardanlabs/garagesale/schema"
 )
 
-// 1. Start postgres:
-// docker-compose up -d
-//
-// 2. Create the schema and insert some seed data.
-// go build
-// ./garagesale migrate
-// ./garagesale seed
-//
-// 3. Run the app then make requests.
-// ./garagesale
-
 func main() {
 
 	flag.Parse()
@@ -86,13 +75,12 @@ func main() {
 
 	serverErrors := make(chan error, 1)
 	go func() {
+		log.Println("server listening on", server.Addr)
 		serverErrors <- server.ListenAndServe()
 	}()
 
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
-
-	log.Println("startup complete")
 
 	select {
 	case err := <-serverErrors:

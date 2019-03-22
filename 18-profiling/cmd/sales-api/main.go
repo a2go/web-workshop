@@ -106,7 +106,7 @@ func run() error {
 
 	serverErrors := make(chan error, 1)
 	go func() {
-		log.Println("server listening on", cfg.HTTP.Address)
+		log.Println("server listening on", server.Addr)
 		serverErrors <- server.ListenAndServe()
 	}()
 

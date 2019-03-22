@@ -89,13 +89,12 @@ func run() error {
 
 	serverErrors := make(chan error, 1)
 	go func() {
+		log.Println("server listening on", server.Addr)
 		serverErrors <- server.ListenAndServe()
 	}()
 
 	osSignals := make(chan os.Signal, 1)
 	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
-
-	log.Println("startup complete")
 
 	select {
 	case err := <-serverErrors:
