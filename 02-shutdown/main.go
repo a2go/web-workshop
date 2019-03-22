@@ -13,8 +13,10 @@ import (
 
 func main() {
 	server := http.Server{
-		Addr:    ":8000",
-		Handler: http.HandlerFunc(ListProducts),
+		Addr:         ":8000",
+		Handler:      http.HandlerFunc(ListProducts),
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
 	}
 
 	serverErrors := make(chan error, 1)
@@ -34,8 +36,8 @@ func main() {
 	case <-osSignals:
 		log.Println("caught signal, shutting down")
 
-		// Give outstanding requests 15 seconds to complete.
-		const timeout = 15 * time.Second
+		// Give outstanding requests 5 seconds to complete.
+		const timeout = 5 * time.Second
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		defer cancel()
 
@@ -60,7 +62,7 @@ type Product struct {
 // ListProducts is an HTTP Handler for returning a list of Products.
 func ListProducts(w http.ResponseWriter, r *http.Request) {
 	// Simulate a long-running request.
-	time.Sleep(10 * time.Second)
+	time.Sleep(3 * time.Second)
 
 	products := []Product{
 		{Name: "Comic Books", Cost: 50, Quantity: 42},

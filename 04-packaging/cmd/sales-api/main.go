@@ -27,8 +27,10 @@ func main() {
 
 	productsHandler := handlers.Products{DB: db}
 	server := http.Server{
-		Addr:    ":8000",
-		Handler: http.HandlerFunc(productsHandler.List),
+		Addr:         ":8000",
+		Handler:      http.HandlerFunc(productsHandler.List),
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
 	}
 
 	serverErrors := make(chan error, 1)
@@ -48,8 +50,8 @@ func main() {
 	case <-osSignals:
 		log.Println("caught signal, shutting down")
 
-		// Give outstanding requests 15 seconds to complete.
-		const timeout = 15 * time.Second
+		// Give outstanding requests 5 seconds to complete.
+		const timeout = 5 * time.Second
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		defer cancel()
 

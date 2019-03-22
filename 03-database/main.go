@@ -78,8 +78,10 @@ func main() {
 	service := Service{db: db}
 
 	server := http.Server{
-		Addr:    ":8000",
-		Handler: http.HandlerFunc(service.ListProducts),
+		Addr:         ":8000",
+		Handler:      http.HandlerFunc(service.ListProducts),
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
 	}
 
 	serverErrors := make(chan error, 1)
@@ -99,8 +101,8 @@ func main() {
 	case <-osSignals:
 		log.Println("caught signal, shutting down")
 
-		// Give outstanding requests 15 seconds to complete.
-		const timeout = 15 * time.Second
+		// Give outstanding requests 5 seconds to complete.
+		const timeout = 5 * time.Second
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		defer cancel()
 

@@ -25,7 +25,10 @@ const envKey = "sales"
 type config struct {
 	DB   database.Config
 	HTTP struct {
-		Address string `default:":8000"`
+		Address         string        `default:":8000"`
+		ReadTimeout     time.Duration `default:"5s"`
+		WriteTimeout    time.Duration `default:"5s"`
+		ShutdownTimeout time.Duration `default:"5s"`
 	}
 }
 
@@ -80,8 +83,10 @@ func run() error {
 	productsHandler := handlers.Products{DB: db, Log: log}
 
 	server := http.Server{
-		Addr:    cfg.HTTP.Address,
-		Handler: http.HandlerFunc(productsHandler.List),
+		Addr:         cfg.HTTP.Address,
+		Handler:      http.HandlerFunc(productsHandler.List),
+		ReadTimeout:  cfg.HTTP.ReadTimeout,
+		WriteTimeout: cfg.HTTP.WriteTimeout,
 	}
 
 	serverErrors := make(chan error, 1)
@@ -101,9 +106,8 @@ func run() error {
 	case <-osSignals:
 		log.Println("caught signal, shutting down")
 
-		// Give outstanding requests 15 seconds to complete.
-		const timeout = 15 * time.Second
-		ctx, cancel := context.WithTimeout(context.Background(), timeout)
+		// Give outstanding requests a deadline for completion.
+		ctx, cancel := context.WithTimeout(context.Background(), cfg.HTTP.ShutdownTimeout)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
