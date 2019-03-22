@@ -15,25 +15,31 @@ type Handler func(http.ResponseWriter, *http.Request) error
 type App struct {
 	log *log.Logger
 	mux *chi.Mux
+	mw  []Middleware
 }
 
-// New constructs an App to handle a set of routes.
-func New(log *log.Logger) *App {
+// New constructs an App to handle a set of routes. Any Middleware provided
+// will be ran for every request.
+func New(log *log.Logger, mw ...Middleware) *App {
 	return &App{
 		log: log,
 		mux: chi.NewRouter(),
+		mw:  mw,
 	}
 }
 
-// Handle associates a handler function with a HTTP Method and URL pattern.
+// Handle associates a handler function with an HTTP Method and URL pattern.
 //
 // It converts our custom handler type to the std lib Handler type. It captures
 // errors from the handler and serves them to the client in a uniform way.
 func (a *App) Handle(method, url string, h Handler) {
 
+	// wrap the provided handler in the application's middleware.
+	h = wrapMiddleware(h, a.mw)
+
 	fn := func(w http.ResponseWriter, r *http.Request) {
 
-		// Call the handler and catch any propagated error.
+		// Run the handler chain and catch any propagated error.
 		err := h(w, r)
 
 		if err != nil {

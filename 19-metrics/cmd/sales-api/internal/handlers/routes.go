@@ -6,13 +6,14 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
+	"github.com/ardanlabs/garagesale/internal/mid"
 	"github.com/ardanlabs/garagesale/internal/platform/web"
 )
 
 // API constructs an http.Handler with all application routes defined.
 func API(db *sqlx.DB, log *log.Logger) http.Handler {
 
-	app := web.New(log)
+	app := web.New(log, mid.Metrics)
 
 	{
 		c := Checks{db: db}

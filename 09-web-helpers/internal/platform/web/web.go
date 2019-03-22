@@ -25,7 +25,7 @@ func New(log *log.Logger) *App {
 	}
 }
 
-// Handle associates a handler function with a HTTP Method and URL pattern.
+// Handle associates a handler function with an HTTP Method and URL pattern.
 func (a *App) Handle(method, url string, h Handler) {
 	a.mux.Method(method, url, http.HandlerFunc(h))
 }

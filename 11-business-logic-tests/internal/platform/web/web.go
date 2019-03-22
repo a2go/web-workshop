@@ -25,7 +25,7 @@ func New(log *log.Logger) *App {
 	}
 }
 
-// Handle associates a handler function with a HTTP Method and URL pattern.
+// Handle associates a handler function with an HTTP Method and URL pattern.
 //
 // It converts our custom handler type to the std lib Handler type. It captures
 // errors from the handler and serves them to the client in a uniform way.

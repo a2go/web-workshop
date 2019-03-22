@@ -1,6 +1,4 @@
-# 18. Profiling
+# 19. Metrics
 
-- Import `net/http/pprof` to register the pprof profiler.
-  - https://golang.org/pkg/net/http/pprof/
-- Launch a second HTTP service listening on a different port.
-  - https://mmcloughlin.com/posts/your-pprof-is-showing
+- Import `expvar` to expose custom variables to external clients.
+- Add middleware to track number of requests, number of errors, and current goroutine count.
