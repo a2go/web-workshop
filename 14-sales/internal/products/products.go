@@ -21,13 +21,22 @@ type Product struct {
 	Name     string `db:"name" json:"name"`
 	Cost     int    `db:"cost" json:"cost"`
 	Quantity int    `db:"quantity" json:"quantity"`
+	Sold     int    `db:"sold" json:"sold"`
+	Revenue  int    `db:"revenue" json:"revenue"`
 }
 
 // List gets all Products from the database.
 func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {
 	var products []Product
+	const q = `SELECT
+	p.*,
+	COALESCE(SUM(s.quantity) ,0) AS sold,
+	COALESCE(SUM(s.paid), 0) AS revenue
+FROM products AS p
+LEFT JOIN sales AS s ON p.product_id = s.product_id
+GROUP BY p.product_id`
 
-	if err := db.SelectContext(ctx, &products, "SELECT * FROM products"); err != nil {
+	if err := db.SelectContext(ctx, &products, q); err != nil {
 		return nil, errors.Wrap(err, "selecting products")
 	}
 
@@ -56,12 +65,16 @@ func Create(ctx context.Context, db *sqlx.DB, p *Product) error {
 func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
 	var p Product
 
-	err := db.GetContext(ctx, &p, `
-		SELECT * FROM products
-		WHERE product_id = $1`,
-		id,
-	)
-	if err != nil {
+	const q = `SELECT
+	p.*,
+	COALESCE(SUM(s.quantity) ,0) AS sold,
+	COALESCE(SUM(s.paid), 0) AS revenue
+FROM products AS p
+LEFT JOIN sales AS s ON p.product_id = s.product_id
+WHERE p.product_id = $1
+GROUP BY p.product_id`
+
+	if err := db.GetContext(ctx, &p, q, id); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound
 		}

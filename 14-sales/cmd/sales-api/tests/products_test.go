@@ -88,6 +88,8 @@ func (p *ProductTests) ProductCRUD(t *testing.T) {
 			"name":     "product0",
 			"cost":     float64(55),
 			"quantity": float64(6),
+			"sold":     float64(0),
+			"revenue":  float64(0),
 		}
 
 		if diff := cmp.Diff(want, created); diff != "" {

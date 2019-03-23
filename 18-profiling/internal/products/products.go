@@ -22,6 +22,8 @@ type Product struct {
 	Name        string    `db:"name" json:"name"`
 	Cost        int       `db:"cost" json:"cost"`
 	Quantity    int       `db:"quantity" json:"quantity"`
+	Sold        int       `db:"sold" json:"sold"`
+	Revenue     int       `db:"revenue" json:"revenue"`
 	DateCreated time.Time `db:"date_created" json:"date_created"`
 	DateUpdated time.Time `db:"date_updated" json:"date_updated"`
 }
@@ -49,8 +51,15 @@ type UpdateProduct struct {
 // List gets all Products from the database.
 func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {
 	var products []Product
+	const q = `SELECT
+	p.*,
+	COALESCE(SUM(s.quantity) ,0) AS sold,
+	COALESCE(SUM(s.paid), 0) AS revenue
+FROM products AS p
+LEFT JOIN sales AS s ON p.product_id = s.product_id
+GROUP BY p.product_id`
 
-	if err := db.SelectContext(ctx, &products, "SELECT * FROM products"); err != nil {
+	if err := db.SelectContext(ctx, &products, q); err != nil {
 		return nil, errors.Wrap(err, "selecting products")
 	}
 
@@ -86,12 +95,16 @@ func Create(ctx context.Context, db *sqlx.DB, n NewProduct, now time.Time) (*Pro
 func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
 	var p Product
 
-	err := db.GetContext(ctx, &p, `
-		SELECT * FROM products
-		WHERE product_id = $1`,
-		id,
-	)
-	if err != nil {
+	const q = `SELECT
+	p.*,
+	COALESCE(SUM(s.quantity) ,0) AS sold,
+	COALESCE(SUM(s.paid), 0) AS revenue
+FROM products AS p
+LEFT JOIN sales AS s ON p.product_id = s.product_id
+WHERE p.product_id = $1
+GROUP BY p.product_id`
+
+	if err := db.GetContext(ctx, &p, q, id); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound
 		}
@@ -141,14 +154,34 @@ func Update(ctx context.Context, db *sqlx.DB, id string, update UpdateProduct, n
 // Delete removes the product identified by a given ID.
 func Delete(ctx context.Context, db *sqlx.DB, id string) error {
 
-	_, err := db.ExecContext(ctx, `
+	tx, err := db.BeginTxx(ctx, nil)
+	if err != nil {
+		return errors.Wrap(err, "starting transaction")
+	}
+
+	_, err = tx.ExecContext(ctx, `
+		DELETE FROM sales
+		WHERE product_id = $1`,
+		id,
+	)
+	if err != nil {
+		if err := tx.Rollback(); err != nil {
+			return errors.Wrap(err, "rolling back tx")
+		}
+		return errors.Wrap(err, "deleting sales")
+	}
+
+	_, err = tx.ExecContext(ctx, `
 		DELETE FROM products
 		WHERE product_id = $1`,
 		id,
 	)
 	if err != nil {
+		if err := tx.Rollback(); err != nil {
+			return errors.Wrap(err, "rolling back tx")
+		}
 		return errors.Wrap(err, "deleting product")
 	}
 
-	return nil
+	return tx.Commit()
 }
