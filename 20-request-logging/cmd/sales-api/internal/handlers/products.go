@@ -33,7 +33,7 @@ func (s *Products) Create(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "creating new product")
 	}
 
-	return web.Encode(r.Context(), w, &p, http.StatusCreated)
+	return web.Respond(r.Context(), w, &p, http.StatusCreated)
 }
 
 // List gets all products from the service layer.
@@ -43,7 +43,7 @@ func (s *Products) List(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "getting product list")
 	}
 
-	return web.Encode(r.Context(), w, list, http.StatusOK)
+	return web.Respond(r.Context(), w, list, http.StatusOK)
 }
 
 // Get finds a single product identified by an ID in the request URL.
@@ -58,7 +58,7 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrapf(err, "getting product %q", id)
 	}
 
-	return web.Encode(r.Context(), w, p, http.StatusOK)
+	return web.Respond(r.Context(), w, p, http.StatusOK)
 }
 
 // Update decodes the body of a request to update an existing product a new
@@ -75,7 +75,7 @@ func (s *Products) Update(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "creating new product")
 	}
 
-	return web.Encode(r.Context(), w, nil, http.StatusNoContent)
+	return web.Respond(r.Context(), w, nil, http.StatusNoContent)
 }
 
 // Delete removes a single product identified by an ID in the request URL.
@@ -86,7 +86,7 @@ func (s *Products) Delete(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrapf(err, "getting product %q", id)
 	}
 
-	return web.Encode(r.Context(), w, nil, http.StatusNoContent)
+	return web.Respond(r.Context(), w, nil, http.StatusNoContent)
 }
 
 // AddSale creates a new Sale for a particular product. It looks for a JSON
@@ -103,7 +103,7 @@ func (s *Products) AddSale(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "adding new sale")
 	}
 
-	return web.Encode(r.Context(), w, sale, http.StatusCreated)
+	return web.Respond(r.Context(), w, sale, http.StatusCreated)
 }
 
 // ListSales gets all sales for a particular product.
@@ -115,5 +115,5 @@ func (s *Products) ListSales(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "getting sales list")
 	}
 
-	return web.Encode(r.Context(), w, list, http.StatusOK)
+	return web.Respond(r.Context(), w, list, http.StatusOK)
 }

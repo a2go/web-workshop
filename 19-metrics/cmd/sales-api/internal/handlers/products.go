@@ -33,7 +33,7 @@ func (s *Products) Create(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "creating new product")
 	}
 
-	return web.Encode(w, &p, http.StatusCreated)
+	return web.Respond(w, &p, http.StatusCreated)
 }
 
 // List gets all products from the service layer.
@@ -43,7 +43,7 @@ func (s *Products) List(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "getting product list")
 	}
 
-	return web.Encode(w, list, http.StatusOK)
+	return web.Respond(w, list, http.StatusOK)
 }
 
 // Get finds a single product identified by an ID in the request URL.
@@ -58,7 +58,7 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrapf(err, "getting product %q", id)
 	}
 
-	return web.Encode(w, p, http.StatusOK)
+	return web.Respond(w, p, http.StatusOK)
 }
 
 // Update decodes the body of a request to update an existing product a new
@@ -105,7 +105,7 @@ func (s *Products) AddSale(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "adding new sale")
 	}
 
-	return web.Encode(w, sale, http.StatusCreated)
+	return web.Respond(w, sale, http.StatusCreated)
 }
 
 // ListSales gets all sales for a particular product.
@@ -117,5 +117,5 @@ func (s *Products) ListSales(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "getting sales list")
 	}
 
-	return web.Encode(w, list, http.StatusOK)
+	return web.Respond(w, list, http.StatusOK)
 }

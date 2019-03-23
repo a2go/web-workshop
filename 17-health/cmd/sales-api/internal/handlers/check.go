@@ -27,9 +27,9 @@ func (s *Checks) Health(w http.ResponseWriter, r *http.Request) error {
 		// status. Do not respond by just returning an error because further up in
 		// the call stack will interpret that as an unhandled error.
 		response.Status = "not ready"
-		return web.Encode(w, response, http.StatusInternalServerError)
+		return web.Respond(w, response, http.StatusInternalServerError)
 	}
 
 	response.Status = "ok"
-	return web.Encode(w, response, http.StatusOK)
+	return web.Respond(w, response, http.StatusOK)
 }

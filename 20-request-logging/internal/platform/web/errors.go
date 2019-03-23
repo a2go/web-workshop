@@ -90,7 +90,7 @@ func ErrorHandler(log *log.Logger) Middleware {
 					Fields: serr.fields,
 				}
 
-				if err := Encode(r.Context(), w, res, serr.status); err != nil {
+				if err := Respond(r.Context(), w, res, serr.status); err != nil {
 					return err
 				}
 			}

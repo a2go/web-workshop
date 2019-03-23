@@ -34,7 +34,7 @@ func (s *Products) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := web.Encode(w, &p, http.StatusCreated); err != nil {
+	if err := web.Respond(w, &p, http.StatusCreated); err != nil {
 		s.log.Println("encoding response", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -50,7 +50,7 @@ func (s *Products) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := web.Encode(w, list, http.StatusOK); err != nil {
+	if err := web.Respond(w, list, http.StatusOK); err != nil {
 		s.log.Println("encoding response", "error", err)
 		return
 	}
@@ -67,7 +67,7 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := web.Encode(w, p, http.StatusOK); err != nil {
+	if err := web.Respond(w, p, http.StatusOK); err != nil {
 		s.log.Println("encoding response", "error", err)
 		return
 	}

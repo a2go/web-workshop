@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-// Encode converts a Go value to JSON and sends it to the client.
-func Encode(ctx context.Context, w http.ResponseWriter, data interface{}, status int) error {
+// Respond converts a Go value to JSON and sends it to the client.
+func Respond(ctx context.Context, w http.ResponseWriter, data interface{}, status int) error {
 
 	// Set the status code for the request logger middleware.
 	v := ctx.Value(KeyValues).(*Values)

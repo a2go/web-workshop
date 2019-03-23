@@ -49,7 +49,7 @@ func (a *App) Handle(method, url string, h Handler) {
 			res := errorResponse{
 				Error: serr.ExternalError(),
 			}
-			Encode(w, res, serr.status)
+			Respond(w, res, serr.status)
 		}
 	}
 

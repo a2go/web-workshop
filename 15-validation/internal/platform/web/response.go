@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-// Encode converts a Go value to JSON and sends it to the client.
-func Encode(w http.ResponseWriter, data interface{}, status int) error {
+// Respond converts a Go value to JSON and sends it to the client.
+func Respond(w http.ResponseWriter, data interface{}, status int) error {
 
 	// Convert the response value to JSON.
 	res, err := json.Marshal(data)

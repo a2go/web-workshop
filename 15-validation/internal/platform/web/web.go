@@ -51,7 +51,7 @@ func (a *App) Handle(method, url string, h Handler) {
 				Fields: serr.fields,
 			}
 
-			Encode(w, res, serr.status)
+			Respond(w, res, serr.status)
 		}
 	}
 
