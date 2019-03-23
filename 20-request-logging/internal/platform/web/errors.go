@@ -1,6 +1,7 @@
 package web
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -62,4 +63,42 @@ func toStatusError(err error) *statusError {
 		return se
 	}
 	return &statusError{err, http.StatusInternalServerError, nil}
+}
+
+// ErrorHandler creates a middlware that handles errors come out of the call
+// chain. It detects normal applications errors which are used to respond to
+// the client in a uniform way. Unexpected errors (status >= 500) are logged.
+func ErrorHandler(log *log.Logger) Middleware {
+	mw := func(before Handler) Handler {
+		h := func(w http.ResponseWriter, r *http.Request) error {
+
+			// Run the handler chain and catch any propagated error.
+			err := before(w, r)
+
+			if err != nil {
+				serr := toStatusError(err)
+
+				// If the error is an internal issue then log it.
+				// Do not log errors that come from client requests.
+				if serr.status >= http.StatusInternalServerError {
+					log.Printf("%+v", err)
+				}
+
+				// Tell the client about the error.
+				res := errorResponse{
+					Error:  serr.ExternalError(),
+					Fields: serr.fields,
+				}
+
+				if err := Encode(r.Context(), w, res, serr.status); err != nil {
+					return err
+				}
+			}
+
+			// Return nil to indicate the error has been handled.
+			return nil
+		}
+		return h
+	}
+	return mw
 }

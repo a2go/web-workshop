@@ -1,12 +1,22 @@
 package web
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 )
 
 // Encode converts a Go value to JSON and sends it to the client.
-func Encode(w http.ResponseWriter, data interface{}, status int) error {
+func Encode(ctx context.Context, w http.ResponseWriter, data interface{}, status int) error {
+
+	// Set the status code for the request logger middleware.
+	v := ctx.Value(KeyValues).(*Values)
+	v.StatusCode = status
+
+	if status == http.StatusNoContent {
+		w.WriteHeader(status)
+		return nil
+	}
 
 	// Convert the response value to JSON.
 	res, err := json.Marshal(data)

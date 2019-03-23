@@ -35,7 +35,7 @@ func New(log *log.Logger, mw ...Middleware) *App {
 func (a *App) Handle(method, url string, h Handler) {
 
 	// wrap the provided handler in the application's middleware.
-	h = wrapMiddleware(h, a.mw)
+	h = wrapMiddleware(a.mw, h)
 
 	fn := func(w http.ResponseWriter, r *http.Request) {
 

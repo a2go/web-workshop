@@ -44,7 +44,8 @@ func main() {
 
 func run() error {
 
-	log := log.New(os.Stderr, "SALES : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
+	infoLog := log.New(os.Stdout, "SALES : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
+	errorLog := log.New(os.Stderr, "SALES : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 
 	// Process command line flags.
 	var flags struct {
@@ -91,9 +92,9 @@ func run() error {
 
 	// Not concerned with shutting this down when the application is shutdown.
 	go func() {
-		log.Println("debug service listening on", cfg.HTTP.Debug)
+		infoLog.Println("debug service listening on", cfg.HTTP.Debug)
 		err := http.ListenAndServe(cfg.HTTP.Debug, http.DefaultServeMux)
-		log.Println("debug service closed", err)
+		errorLog.Println("debug service closed", err)
 	}()
 
 	// =========================================================================
@@ -101,14 +102,14 @@ func run() error {
 
 	server := http.Server{
 		Addr:         cfg.HTTP.Address,
-		Handler:      handlers.API(db, log),
+		Handler:      handlers.API(db, infoLog, errorLog),
 		ReadTimeout:  cfg.HTTP.ReadTimeout,
 		WriteTimeout: cfg.HTTP.WriteTimeout,
 	}
 
 	serverErrors := make(chan error, 1)
 	go func() {
-		log.Println("server listening on", server.Addr)
+		infoLog.Println("server listening on", server.Addr)
 		serverErrors <- server.ListenAndServe()
 	}()
 
@@ -120,21 +121,21 @@ func run() error {
 		return errors.Wrap(err, "listening and serving")
 
 	case <-osSignals:
-		log.Println("caught signal, shutting down")
+		infoLog.Println("caught signal, shutting down")
 
 		// Give outstanding requests a deadline for completion.
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.HTTP.ShutdownTimeout)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
-			log.Println("gracefully shutting down server", "error", err)
+			errorLog.Println("gracefully shutting down server", "error", err)
 			if err := server.Close(); err != nil {
-				log.Println("closing server", "error", err)
+				errorLog.Println("closing server", "error", err)
 			}
 		}
 	}
 
-	log.Println("done")
+	infoLog.Println("done")
 
 	return nil
 }
