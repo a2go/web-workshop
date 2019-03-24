@@ -95,7 +95,7 @@ func (s *Products) Delete(w http.ResponseWriter, r *http.Request) error {
 // object in the request body. The full model is returned to the caller.
 func (s *Products) AddSale(w http.ResponseWriter, r *http.Request) error {
 	var sale products.Sale
-	if err := web.Decode(r, &s); err != nil {
+	if err := web.Decode(r, &sale); err != nil {
 		return errors.Wrap(err, "decoding new sale")
 	}
 
