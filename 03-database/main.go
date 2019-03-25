@@ -23,28 +23,11 @@ func main() {
 	flag.Parse()
 
 	// Initialize dependencies.
-	var db *sqlx.DB
-	{
-		q := url.Values{}
-		q.Set("sslmode", "disable")
-		q.Set("timezone", "utc")
-
-		u := url.URL{
-			Scheme:   "postgres",
-			User:     url.UserPassword("postgres", "postgres"),
-			Host:     "localhost",
-			Path:     "postgres",
-			RawQuery: q.Encode(),
-		}
-
-		var err error
-		db, err = sqlx.Open("postgres", u.String())
-		if err != nil {
-			log.Fatalf("error: connecting to db: %s", err)
-		}
-
-		defer db.Close()
+	db, err := openDB()
+	if err != nil {
+		log.Fatalf("error: connecting to db: %s", err)
 	}
+	defer db.Close()
 
 	switch flag.Arg(0) {
 	case "migrate":
@@ -103,6 +86,22 @@ func main() {
 	}
 
 	log.Println("done")
+}
+
+func openDB() (*sqlx.DB, error) {
+	q := url.Values{}
+	q.Set("sslmode", "disable")
+	q.Set("timezone", "utc")
+
+	u := url.URL{
+		Scheme:   "postgres",
+		User:     url.UserPassword("postgres", "postgres"),
+		Host:     "localhost",
+		Path:     "postgres",
+		RawQuery: q.Encode(),
+	}
+
+	return sqlx.Open("postgres", u.String())
 }
 
 // TODO: Mention JSON conventions / consistency and `json` tags in later (API) session.
