@@ -6,4 +6,4 @@ Move these behaviors to a dedicated package.
 
 # Tasks:
 
-- Define `Encode` and `Decode` functions to centralize request/response behavior.
+- Define `Respond` and `Decode` functions to centralize request/response behavior.
