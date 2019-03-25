@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"encoding/json"
+	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,7 +15,7 @@ import (
 func main() {
 	server := http.Server{
 		Addr:         ":8000",
-		Handler:      http.HandlerFunc(ListProducts),
+		Handler:      http.HandlerFunc(Echo),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
 	}
@@ -51,26 +52,16 @@ func main() {
 	log.Println("done")
 }
 
-// Product is an item we sell.
-type Product struct {
-	Name     string
-	Cost     int
-	Quantity int
-}
+// Echo is a basic HTTP Handler.
+func Echo(w http.ResponseWriter, r *http.Request) {
 
-// ListProducts is an HTTP Handler for returning a list of Products.
-func ListProducts(w http.ResponseWriter, r *http.Request) {
+	// Print a random number at the beginning and end of each request.
+	n := rand.Intn(1000)
+	log.Println("start", n)
+	defer log.Println("end", n)
+
 	// Simulate a long-running request.
 	time.Sleep(3 * time.Second)
 
-	products := []Product{
-		{Name: "Comic Books", Cost: 50, Quantity: 42},
-		{Name: "McDonalds Toys", Cost: 75, Quantity: 120},
-	}
-
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	if err := json.NewEncoder(w).Encode(products); err != nil {
-		log.Printf("error: encoding response: %s", err)
-	}
+	fmt.Fprintf(w, "You asked to %s %s\n", r.Method, r.URL.Path)
 }

@@ -1,34 +1,23 @@
 package main
 
 import (
-	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
 
 func main() {
-	if err := http.ListenAndServe(":8000", http.HandlerFunc(ListProducts)); err != nil {
+
+	// Convert the Echo function to a type that implements http.Handler
+	h := http.HandlerFunc(Echo)
+
+	// Start a server listening on port 8000 and responding using Echo.
+	if err := http.ListenAndServe("localhost:8000", h); err != nil {
 		log.Fatalf("error: listening and serving: %s", err)
 	}
 }
 
-// Product is an item we sell.
-type Product struct {
-	Name     string
-	Cost     int
-	Quantity int
-}
-
-// ListProducts is an HTTP Handler for returning a list of Products.
-func ListProducts(w http.ResponseWriter, r *http.Request) {
-	products := []Product{
-		{Name: "Comic Books", Cost: 50, Quantity: 42},
-		{Name: "McDonalds Toys", Cost: 75, Quantity: 120},
-	}
-
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	if err := json.NewEncoder(w).Encode(products); err != nil {
-		log.Printf("error: encoding response: %s", err)
-	}
+// Echo is a basic HTTP Handler.
+func Echo(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "You asked to %s %s\n", r.Method, r.URL.Path)
 }
