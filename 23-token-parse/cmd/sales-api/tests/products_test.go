@@ -111,6 +111,8 @@ func (p *ProductTests) ProductCRUD(t *testing.T) {
 			"name":         "product0",
 			"cost":         float64(55),
 			"quantity":     float64(6),
+			"sold":         float64(0),
+			"revenue":      float64(0),
 		}
 
 		if diff := cmp.Diff(want, created); diff != "" {
@@ -177,6 +179,8 @@ func (p *ProductTests) ProductCRUD(t *testing.T) {
 			"name":         "new name",
 			"cost":         float64(20),
 			"quantity":     float64(10),
+			"sold":         float64(0),
+			"revenue":      float64(0),
 		}
 
 		// Updated product should match the one we created.
