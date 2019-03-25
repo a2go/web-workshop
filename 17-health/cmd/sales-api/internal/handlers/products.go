@@ -52,10 +52,14 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) error {
 
 	p, err := products.Get(r.Context(), s.db, id)
 	if err != nil {
-		if err == products.ErrNotFound {
+		switch err {
+		case products.ErrNotFound:
 			return web.ErrorWithStatus(err, http.StatusNotFound)
+		case products.ErrInvalidID:
+			return web.ErrorWithStatus(err, http.StatusBadRequest)
+		default:
+			return errors.Wrapf(err, "getting product %q", id)
 		}
-		return errors.Wrapf(err, "getting product %q", id)
 	}
 
 	return web.Respond(w, p, http.StatusOK)
@@ -72,7 +76,14 @@ func (s *Products) Update(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	if err := products.Update(r.Context(), s.db, id, update, time.Now()); err != nil {
-		return errors.Wrap(err, "creating new product")
+		switch err {
+		case products.ErrNotFound:
+			return web.ErrorWithStatus(err, http.StatusNotFound)
+		case products.ErrInvalidID:
+			return web.ErrorWithStatus(err, http.StatusBadRequest)
+		default:
+			return errors.Wrapf(err, "updating product %q", id)
+		}
 	}
 
 	w.WriteHeader(http.StatusNoContent)
@@ -84,7 +95,12 @@ func (s *Products) Delete(w http.ResponseWriter, r *http.Request) error {
 	id := chi.URLParam(r, "id")
 
 	if err := products.Delete(r.Context(), s.db, id); err != nil {
-		return errors.Wrapf(err, "getting product %q", id)
+		switch err {
+		case products.ErrInvalidID:
+			return web.ErrorWithStatus(err, http.StatusBadRequest)
+		default:
+			return errors.Wrapf(err, "deleting product %q", id)
+		}
 	}
 
 	w.WriteHeader(http.StatusNoContent)

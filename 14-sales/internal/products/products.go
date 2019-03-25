@@ -13,6 +13,9 @@ import (
 var (
 	// ErrNotFound is used when a specific Product is requested but does not exist.
 	ErrNotFound = errors.New("product not found")
+
+	// ErrInvalidID is used when a specific Product is requested but does not exist.
+	ErrInvalidID = errors.New("ID is not in its proper form")
 )
 
 // Product is an item we sell.
@@ -63,6 +66,10 @@ func Create(ctx context.Context, db *sqlx.DB, p *Product) error {
 
 // Get finds the product identified by a given ID.
 func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
+	if _, err := uuid.Parse(id); err != nil {
+		return nil, ErrInvalidID
+	}
+
 	var p Product
 
 	const q = `SELECT

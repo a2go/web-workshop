@@ -50,10 +50,14 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) error {
 
 	p, err := products.Get(s.db, id)
 	if err != nil {
-		if err == products.ErrNotFound {
+		switch err {
+		case products.ErrNotFound:
 			return web.ErrorWithStatus(err, http.StatusNotFound)
+		case products.ErrInvalidID:
+			return web.ErrorWithStatus(err, http.StatusBadRequest)
+		default:
+			return errors.Wrapf(err, "getting product %q", id)
 		}
-		return errors.Wrapf(err, "getting product %q", id)
 	}
 
 	return web.Respond(w, p, http.StatusOK)
