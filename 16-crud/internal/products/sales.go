@@ -40,7 +40,8 @@ func AddSale(ctx context.Context, db *sqlx.DB, s *Sale) error {
 func ListSales(ctx context.Context, db *sqlx.DB, productID string) ([]Sale, error) {
 	var sales []Sale
 
-	if err := db.SelectContext(ctx, &sales, "SELECT * FROM sales"); err != nil {
+	const q = `SELECT * FROM sales WHERE product_id = $1`
+	if err := db.SelectContext(ctx, &sales, q, productID); err != nil {
 		return nil, errors.Wrap(err, "selecting sales")
 	}
 
