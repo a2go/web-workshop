@@ -39,13 +39,13 @@ func TestSales(t *testing.T) {
 
 	{ // Add and list
 
-		s := products.Sale{
-			ProductID: puzzles.ID,
-			Quantity:  3,
-			Paid:      70,
+		ns := products.NewSale{
+			Quantity: 3,
+			Paid:     70,
 		}
 
-		if err := products.AddSale(context.Background(), db, &s); err != nil {
+		s, err := products.AddSale(context.Background(), db, ns, puzzles.ID, now)
+		if err != nil {
 			t.Fatalf("adding sale: %s", err)
 		}
 
@@ -59,7 +59,7 @@ func TestSales(t *testing.T) {
 		}
 
 		if exp, got := s.ID, sales[0].ID; exp != got {
-			t.Fatalf("expected sale list size %v, got %v", exp, got)
+			t.Fatalf("expected first sale ID %v, got %v", exp, got)
 		}
 
 		// Toys should have 0 sales.

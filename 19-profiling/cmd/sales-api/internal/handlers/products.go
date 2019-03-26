@@ -108,14 +108,15 @@ func (s *Products) Delete(w http.ResponseWriter, r *http.Request) error {
 // AddSale creates a new Sale for a particular product. It looks for a JSON
 // object in the request body. The full model is returned to the caller.
 func (s *Products) AddSale(w http.ResponseWriter, r *http.Request) error {
-	var sale products.Sale
-	if err := web.Decode(r, &sale); err != nil {
+	var ns products.NewSale
+	if err := web.Decode(r, &ns); err != nil {
 		return errors.Wrap(err, "decoding new sale")
 	}
 
-	sale.ProductID = chi.URLParam(r, "id")
+	productID := chi.URLParam(r, "id")
 
-	if err := products.AddSale(r.Context(), s.db, &sale); err != nil {
+	sale, err := products.AddSale(r.Context(), s.db, ns, productID, time.Now())
+	if err != nil {
 		return errors.Wrap(err, "adding new sale")
 	}
 

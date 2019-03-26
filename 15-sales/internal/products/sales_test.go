@@ -3,6 +3,7 @@ package products_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 	"github.com/ardanlabs/garagesale/internal/products"
@@ -12,33 +13,39 @@ func TestSales(t *testing.T) {
 	db, teardown := databasetest.Setup(t)
 	defer teardown()
 
+	now := time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)
+
 	// Create two products to work with.
-	puzzles := products.Product{
+	newPuzzles := products.NewProduct{
 		Name:     "Puzzles",
 		Cost:     25,
 		Quantity: 6,
 	}
-	if err := products.Create(context.Background(), db, &puzzles); err != nil {
+
+	puzzles, err := products.Create(context.Background(), db, newPuzzles, now)
+	if err != nil {
 		t.Fatalf("creating product: %s", err)
 	}
-	toys := products.Product{
+
+	newToys := products.NewProduct{
 		Name:     "Toys",
 		Cost:     40,
 		Quantity: 3,
 	}
-	if err := products.Create(context.Background(), db, &toys); err != nil {
+	toys, err := products.Create(context.Background(), db, newToys, now)
+	if err != nil {
 		t.Fatalf("creating product: %s", err)
 	}
 
 	{ // Add and list
 
-		s := products.Sale{
-			ProductID: puzzles.ID,
-			Quantity:  3,
-			Paid:      70,
+		ns := products.NewSale{
+			Quantity: 3,
+			Paid:     70,
 		}
 
-		if err := products.AddSale(context.Background(), db, &s); err != nil {
+		s, err := products.AddSale(context.Background(), db, ns, puzzles.ID, now)
+		if err != nil {
 			t.Fatalf("adding sale: %s", err)
 		}
 
@@ -52,7 +59,7 @@ func TestSales(t *testing.T) {
 		}
 
 		if exp, got := s.ID, sales[0].ID; exp != got {
-			t.Fatalf("expected sale list size %v, got %v", exp, got)
+			t.Fatalf("expected first sale ID %v, got %v", exp, got)
 		}
 
 		// Toys should have 0 sales.
