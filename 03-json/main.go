@@ -13,7 +13,7 @@ import (
 
 func main() {
 	server := http.Server{
-		Addr:         ":8000",
+		Addr:         "localhost:8000",
 		Handler:      http.HandlerFunc(ListProducts),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,

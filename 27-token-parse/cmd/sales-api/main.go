@@ -31,7 +31,7 @@ const envKey = "sales"
 type config struct {
 	DB   database.Config
 	HTTP struct {
-		Address         string        `default:":8000"`
+		Address         string        `default:"localhost:8000"`
 		Debug           string        `default:"localhost:6060"`
 		ReadTimeout     time.Duration `default:"5s"`
 		WriteTimeout    time.Duration `default:"5s"`

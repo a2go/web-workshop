@@ -27,7 +27,7 @@ func main() {
 
 	productsHandler := handlers.Products{DB: db}
 	server := http.Server{
-		Addr:         ":8000",
+		Addr:         "localhost:8000",
 		Handler:      http.HandlerFunc(productsHandler.List),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,

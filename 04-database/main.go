@@ -50,7 +50,7 @@ func main() {
 	service := Service{db: db}
 
 	server := http.Server{
-		Addr:         ":8000",
+		Addr:         "localhost:8000",
 		Handler:      http.HandlerFunc(service.ListProducts),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
