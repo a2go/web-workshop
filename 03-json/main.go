@@ -60,12 +60,12 @@ type Product struct {
 
 // ListProducts is an HTTP Handler for returning a list of Products.
 func ListProducts(w http.ResponseWriter, r *http.Request) {
-	products := []Product{
+	list := []Product{
 		{Name: "Comic Books", Cost: 50, Quantity: 42},
 		{Name: "McDonalds Toys", Cost: 75, Quantity: 120},
 	}
 
-	data, err := json.Marshal(products)
+	data, err := json.Marshal(list)
 	if err != nil {
 		log.Println("error marshalling result", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -75,6 +75,6 @@ func ListProducts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(data); err != nil {
-		log.Printf("error: encoding response: %s", err)
+		log.Println("error writing result", err)
 	}
 }

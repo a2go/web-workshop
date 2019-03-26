@@ -104,14 +104,12 @@ func openDB() (*sqlx.DB, error) {
 	return sqlx.Open("postgres", u.String())
 }
 
-// TODO: Mention JSON conventions / consistency and `json` tags in later (API) session.
-
 // Product is an item we sell.
 type Product struct {
-	ID       string `db:"product_id"`
-	Name     string `db:"name"`
-	Cost     int    `db:"cost"`
-	Quantity int    `db:"quantity"`
+	ID       string `db:"product_id" json:"id"`
+	Name     string `db:"name" json:"name"`
+	Cost     int    `db:"cost" json:"cost"`
+	Quantity int    `db:"quantity" json:"quantity"`
 }
 
 // Service holds business logic related to Products.
@@ -122,18 +120,26 @@ type Service struct {
 // ListProducts gets all Products from the database then encodes them in a
 // response to the client.
 func (s *Service) ListProducts(w http.ResponseWriter, r *http.Request) {
-	var products []Product
+	list := []Product{}
 
-	if err := s.db.Select(&products, "SELECT * FROM products"); err != nil {
+	const q = `SELECT * FROM products`
+
+	if err := s.db.Select(&list, q); err != nil {
 		log.Printf("error: selecting products: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	if err := json.NewEncoder(w).Encode(products); err != nil {
-		log.Printf("error: encoding response: %s", err)
+	data, err := json.Marshal(list)
+	if err != nil {
+		log.Println("error marshalling result", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write(data); err != nil {
+		log.Println("error writing result", err)
 	}
 }

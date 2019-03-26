@@ -28,9 +28,11 @@ type Product struct {
 
 // List gets all Products from the database.
 func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {
-	var products []Product
+	products := []Product{}
 
-	if err := db.SelectContext(ctx, &products, "SELECT * FROM products"); err != nil {
+	const q = `SELECT * FROM products`
+
+	if err := db.SelectContext(ctx, &products, q); err != nil {
 		return nil, errors.Wrap(err, "selecting products")
 	}
 
@@ -42,12 +44,11 @@ func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {
 func Create(ctx context.Context, db *sqlx.DB, p *Product) error {
 	p.ID = uuid.New().String()
 
-	_, err := db.ExecContext(ctx, `
-		INSERT INTO products
+	const q = `INSERT INTO products
 		(product_id, name, cost, quantity)
-		VALUES ($1, $2, $3, $4)`,
-		p.ID, p.Name, p.Cost, p.Quantity,
-	)
+		VALUES ($1, $2, $3, $4)`
+
+	_, err := db.ExecContext(ctx, q, p.ID, p.Name, p.Cost, p.Quantity)
 	if err != nil {
 		return errors.Wrap(err, "inserting product")
 	}
@@ -63,12 +64,9 @@ func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
 
 	var p Product
 
-	err := db.GetContext(ctx, &p, `
-		SELECT * FROM products
-		WHERE product_id = $1`,
-		id,
-	)
-	if err != nil {
+	const q = `SELECT * FROM products WHERE product_id = $1`
+
+	if err := db.GetContext(ctx, &p, q, id); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound
 		}

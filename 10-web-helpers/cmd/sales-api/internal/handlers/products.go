@@ -18,6 +18,21 @@ type Products struct {
 	log *log.Logger
 }
 
+// List gets all products from the service layer.
+func (s *Products) List(w http.ResponseWriter, r *http.Request) {
+	list, err := products.List(s.db)
+	if err != nil {
+		s.log.Println("listing products", "error", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if err := web.Respond(w, list, http.StatusOK); err != nil {
+		s.log.Println("encoding response", "error", err)
+		return
+	}
+}
+
 // Create decodes the body of a request to create a new product. The full
 // product with generated fields is sent back in the response.
 func (s *Products) Create(w http.ResponseWriter, r *http.Request) {
@@ -41,21 +56,6 @@ func (s *Products) Create(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// List gets all products from the service layer.
-func (s *Products) List(w http.ResponseWriter, r *http.Request) {
-	list, err := products.List(s.db)
-	if err != nil {
-		s.log.Println("listing products", "error", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	if err := web.Respond(w, list, http.StatusOK); err != nil {
-		s.log.Println("encoding response", "error", err)
-		return
-	}
-}
-
 // Get finds a single product identified by an ID in the request URL.
 func (s *Products) Get(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
@@ -69,6 +69,7 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) {
 
 	if err := web.Respond(w, p, http.StatusOK); err != nil {
 		s.log.Println("encoding response", "error", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }

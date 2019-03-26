@@ -19,17 +19,19 @@ var (
 
 // Product is an item we sell.
 type Product struct {
-	ID       string `db:"product_id"`
-	Name     string `db:"name"`
-	Cost     int    `db:"cost"`
-	Quantity int    `db:"quantity"`
+	ID       string `db:"product_id" json:"id"`
+	Name     string `db:"name" json:"name"`
+	Cost     int    `db:"cost" json:"cost"`
+	Quantity int    `db:"quantity" json:"quantity"`
 }
 
 // List gets all Products from the database.
 func List(db *sqlx.DB) ([]Product, error) {
-	var products []Product
+	products := []Product{}
 
-	if err := db.Select(&products, "SELECT * FROM products"); err != nil {
+	const q = `SELECT * FROM products`
+
+	if err := db.Select(&products, q); err != nil {
 		return nil, errors.Wrap(err, "selecting products")
 	}
 
@@ -41,12 +43,11 @@ func List(db *sqlx.DB) ([]Product, error) {
 func Create(db *sqlx.DB, p *Product) error {
 	p.ID = uuid.New().String()
 
-	_, err := db.Exec(`
-		INSERT INTO products
+	const q = `INSERT INTO products
 		(product_id, name, cost, quantity)
-		VALUES ($1, $2, $3, $4)`,
-		p.ID, p.Name, p.Cost, p.Quantity,
-	)
+		VALUES ($1, $2, $3, $4)`
+
+	_, err := db.Exec(q, p.ID, p.Name, p.Cost, p.Quantity)
 	if err != nil {
 		return errors.Wrap(err, "inserting product")
 	}
@@ -62,12 +63,9 @@ func Get(db *sqlx.DB, id string) (*Product, error) {
 
 	var p Product
 
-	err := db.Get(&p, `
-		SELECT * FROM products
-		WHERE product_id = $1`,
-		id,
-	)
-	if err != nil {
+	const q = `SELECT * FROM products WHERE product_id = $1`
+
+	if err := db.Get(&p, q, id); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound
 		}

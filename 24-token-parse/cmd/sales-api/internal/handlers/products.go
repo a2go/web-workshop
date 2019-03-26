@@ -65,8 +65,8 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) error {
 	return web.Respond(r.Context(), w, p, http.StatusOK)
 }
 
-// Update decodes the body of a request to update an existing product a new
-// product. The ID of the product is part of the request URL.
+// Update decodes the body of a request to update an existing product. The ID
+// of the product is part of the request URL.
 func (s *Products) Update(w http.ResponseWriter, r *http.Request) error {
 	id := chi.URLParam(r, "id")
 

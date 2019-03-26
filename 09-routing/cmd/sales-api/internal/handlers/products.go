@@ -18,6 +18,30 @@ type Products struct {
 	log *log.Logger
 }
 
+// List gets all products from the service layer and encodes them for the
+// client response.
+func (s *Products) List(w http.ResponseWriter, r *http.Request) {
+	list, err := products.List(s.db)
+	if err != nil {
+		s.log.Println("listing products", "error", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	data, err := json.Marshal(list)
+	if err != nil {
+		s.log.Println("error marshalling result", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write(data); err != nil {
+		s.log.Println("error writing result", err)
+	}
+}
+
 // Create decodes the body of a request to create a new product. The full
 // product with generated fields is sent back in the response.
 func (s *Products) Create(w http.ResponseWriter, r *http.Request) {
@@ -34,31 +58,17 @@ func (s *Products) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	if err := json.NewEncoder(w).Encode(p); err != nil {
-		s.log.Println("encoding response", "error", err)
-		return
-	}
-}
-
-// List gets all products from the service layer and encodes them for the
-// client response.
-func (s *Products) List(w http.ResponseWriter, r *http.Request) {
-	list, err := products.List(s.db)
+	data, err := json.Marshal(p)
 	if err != nil {
-		s.log.Println("listing products", "error", err)
+		s.log.Println("error marshalling result", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	// TODO: Don't return an array (return an object with an array).
-	//       Make a named response type.
-	if err := json.NewEncoder(w).Encode(list); err != nil {
-		s.log.Println("encoding response", "error", err)
-		return
+	w.WriteHeader(http.StatusCreated)
+	if _, err := w.Write(data); err != nil {
+		s.log.Println("error writing result", err)
 	}
 }
 
@@ -73,10 +83,16 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	if err := json.NewEncoder(w).Encode(p); err != nil {
-		s.log.Println("encoding response", "error", err)
+	data, err := json.Marshal(p)
+	if err != nil {
+		s.log.Println("error marshalling result", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write(data); err != nil {
+		s.log.Println("error writing result", err)
 	}
 }

@@ -65,8 +65,8 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) error {
 	return web.Respond(w, p, http.StatusOK)
 }
 
-// Update decodes the body of a request to update an existing product a new
-// product. The ID of the product is part of the request URL.
+// Update decodes the body of a request to update an existing product. The ID
+// of the product is part of the request URL.
 func (s *Products) Update(w http.ResponseWriter, r *http.Request) error {
 	id := chi.URLParam(r, "id")
 
@@ -86,8 +86,7 @@ func (s *Products) Update(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	w.WriteHeader(http.StatusNoContent)
-	return nil
+	return web.Respond(w, nil, http.StatusNoContent)
 }
 
 // Delete removes a single product identified by an ID in the request URL.
@@ -103,8 +102,7 @@ func (s *Products) Delete(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	w.WriteHeader(http.StatusNoContent)
-	return nil
+	return web.Respond(w, nil, http.StatusNoContent)
 }
 
 // AddSale creates a new Sale for a particular product. It looks for a JSON

@@ -30,14 +30,14 @@ type Product struct {
 
 // List gets all Products from the database.
 func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {
-	var products []Product
+	products := []Product{}
 	const q = `SELECT
-	p.*,
-	COALESCE(SUM(s.quantity) ,0) AS sold,
-	COALESCE(SUM(s.paid), 0) AS revenue
-FROM products AS p
-LEFT JOIN sales AS s ON p.product_id = s.product_id
-GROUP BY p.product_id`
+			p.*,
+			COALESCE(SUM(s.quantity), 0) AS sold,
+			COALESCE(SUM(s.paid), 0) AS revenue
+		FROM products AS p
+		LEFT JOIN sales AS s ON p.product_id = s.product_id
+		GROUP BY p.product_id`
 
 	if err := db.SelectContext(ctx, &products, q); err != nil {
 		return nil, errors.Wrap(err, "selecting products")
@@ -51,12 +51,11 @@ GROUP BY p.product_id`
 func Create(ctx context.Context, db *sqlx.DB, p *Product) error {
 	p.ID = uuid.New().String()
 
-	_, err := db.ExecContext(ctx, `
-		INSERT INTO products
+	const q = `INSERT INTO products
 		(product_id, name, cost, quantity)
-		VALUES ($1, $2, $3, $4)`,
-		p.ID, p.Name, p.Cost, p.Quantity,
-	)
+		VALUES ($1, $2, $3, $4)`
+
+	_, err := db.ExecContext(ctx, q, p.ID, p.Name, p.Cost, p.Quantity)
 	if err != nil {
 		return errors.Wrap(err, "inserting product")
 	}
@@ -73,13 +72,13 @@ func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
 	var p Product
 
 	const q = `SELECT
-	p.*,
-	COALESCE(SUM(s.quantity) ,0) AS sold,
-	COALESCE(SUM(s.paid), 0) AS revenue
-FROM products AS p
-LEFT JOIN sales AS s ON p.product_id = s.product_id
-WHERE p.product_id = $1
-GROUP BY p.product_id`
+			p.*,
+			COALESCE(SUM(s.quantity), 0) AS sold,
+			COALESCE(SUM(s.paid), 0) AS revenue
+		FROM products AS p
+		LEFT JOIN sales AS s ON p.product_id = s.product_id
+		WHERE p.product_id = $1
+		GROUP BY p.product_id`
 
 	if err := db.GetContext(ctx, &p, q, id); err != nil {
 		if err == sql.ErrNoRows {

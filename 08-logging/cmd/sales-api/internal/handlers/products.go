@@ -22,17 +22,21 @@ type Products struct {
 func (s *Products) List(w http.ResponseWriter, r *http.Request) {
 	list, err := products.List(s.DB)
 	if err != nil {
-		s.Log.Println("listing products", "error", err)
+		s.Log.Printf("error: listing products: %s", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	data, err := json.Marshal(list)
+	if err != nil {
+		s.Log.Println("error marshalling result", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-
-	// TODO: Don't return an array (return an object with an array).
-	//       Make a named response type.
-	if err := json.NewEncoder(w).Encode(list); err != nil {
-		s.Log.Println("encoding response", "error", err)
-		return
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write(data); err != nil {
+		s.Log.Println("error writing result", err)
 	}
 }

@@ -19,6 +19,16 @@ type Products struct {
 	log *log.Logger
 }
 
+// List gets all products from the service layer.
+func (s *Products) List(w http.ResponseWriter, r *http.Request) error {
+	list, err := products.List(s.db)
+	if err != nil {
+		return errors.Wrap(err, "getting product list")
+	}
+
+	return web.Respond(w, list, http.StatusOK)
+}
+
 // Create decodes the body of a request to create a new product. The full
 // product with generated fields is sent back in the response.
 func (s *Products) Create(w http.ResponseWriter, r *http.Request) error {
@@ -32,16 +42,6 @@ func (s *Products) Create(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return web.Respond(w, &p, http.StatusCreated)
-}
-
-// List gets all products from the service layer.
-func (s *Products) List(w http.ResponseWriter, r *http.Request) error {
-	list, err := products.List(s.db)
-	if err != nil {
-		return errors.Wrap(err, "getting product list")
-	}
-
-	return web.Respond(w, list, http.StatusOK)
 }
 
 // Get finds a single product identified by an ID in the request URL.

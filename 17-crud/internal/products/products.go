@@ -81,12 +81,15 @@ func Create(ctx context.Context, db *sqlx.DB, n NewProduct, now time.Time) (*Pro
 		DateUpdated: now.UTC(),
 	}
 
-	_, err := db.ExecContext(ctx, `
+	const q = `
 		INSERT INTO products
 		(product_id, name, cost, quantity, date_created, date_updated)
-		VALUES ($1, $2, $3, $4, $5, $6)`,
-		p.ID, p.Name, p.Cost, p.Quantity, p.DateCreated, p.DateUpdated,
-	)
+		VALUES ($1, $2, $3, $4, $5, $6)`
+
+	_, err := db.ExecContext(ctx, q,
+		p.ID, p.Name,
+		p.Cost, p.Quantity,
+		p.DateCreated, p.DateUpdated)
 	if err != nil {
 		return nil, errors.Wrap(err, "inserting product")
 	}
@@ -103,13 +106,13 @@ func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
 	var p Product
 
 	const q = `SELECT
-	p.*,
-	COALESCE(SUM(s.quantity) ,0) AS sold,
-	COALESCE(SUM(s.paid), 0) AS revenue
-FROM products AS p
-LEFT JOIN sales AS s ON p.product_id = s.product_id
-WHERE p.product_id = $1
-GROUP BY p.product_id`
+			p.*,
+			COALESCE(SUM(s.quantity), 0) AS sold,
+			COALESCE(SUM(s.paid), 0) AS revenue
+		FROM products AS p
+		LEFT JOIN sales AS s ON p.product_id = s.product_id
+		WHERE p.product_id = $1
+		GROUP BY p.product_id`
 
 	if err := db.GetContext(ctx, &p, q, id); err != nil {
 		if err == sql.ErrNoRows {
@@ -122,35 +125,35 @@ GROUP BY p.product_id`
 	return &p, nil
 }
 
-// Update modifies fields about a Product. It will error if the specified ID
-// does not reference an existing Product.
+// Update modifies data about a Product. It will error if the specified ID is
+// invalid or does not reference an existing Product.
 func Update(ctx context.Context, db *sqlx.DB, id string, update UpdateProduct, now time.Time) error {
-	old, err := Get(ctx, db, id)
+	p, err := Get(ctx, db, id)
 	if err != nil {
 		return err
 	}
 
 	if update.Name != nil {
-		old.Name = *update.Name
+		p.Name = *update.Name
 	}
 	if update.Cost != nil {
-		old.Cost = *update.Cost
+		p.Cost = *update.Cost
 	}
 	if update.Quantity != nil {
-		old.Quantity = *update.Quantity
+		p.Quantity = *update.Quantity
 	}
-	old.DateUpdated = now
+	p.DateUpdated = now
 
-	_, err = db.ExecContext(ctx, `
-		UPDATE products SET
-			"name" = $2,
-			"cost" = $3,
-			"quantity" = $4,
-			"date_updated" = $5
-		WHERE product_id = $1`,
-		id, old.Name, old.Cost, old.Quantity, old.DateUpdated,
+	const q = `UPDATE products SET
+		"name" = $2,
+		"cost" = $3,
+		"quantity" = $4,
+		"date_updated" = $5
+		WHERE product_id = $1`
+	_, err = db.ExecContext(ctx, q, id,
+		p.Name, p.Cost,
+		p.Quantity, p.DateUpdated,
 	)
-
 	if err != nil {
 		return errors.Wrap(err, "updating product")
 	}
@@ -164,34 +167,11 @@ func Delete(ctx context.Context, db *sqlx.DB, id string) error {
 		return ErrInvalidID
 	}
 
-	tx, err := db.BeginTxx(ctx, nil)
-	if err != nil {
-		return errors.Wrap(err, "starting transaction")
+	const q = `DELETE FROM products WHERE product_id = $1 CASCADE`
+
+	if _, err := db.ExecContext(ctx, q, id); err != nil {
+		return errors.Wrapf(err, "deleting product %s", id)
 	}
 
-	_, err = tx.ExecContext(ctx, `
-		DELETE FROM sales
-		WHERE product_id = $1`,
-		id,
-	)
-	if err != nil {
-		if err := tx.Rollback(); err != nil {
-			return errors.Wrap(err, "rolling back tx")
-		}
-		return errors.Wrap(err, "deleting sales")
-	}
-
-	_, err = tx.ExecContext(ctx, `
-		DELETE FROM products
-		WHERE product_id = $1`,
-		id,
-	)
-	if err != nil {
-		if err := tx.Rollback(); err != nil {
-			return errors.Wrap(err, "rolling back tx")
-		}
-		return errors.Wrap(err, "deleting product")
-	}
-
-	return tx.Commit()
+	return nil
 }
