@@ -3,6 +3,7 @@ package products
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -20,12 +21,21 @@ var (
 
 // Product is an item we sell.
 type Product struct {
-	ID       string `db:"product_id" json:"id"`
-	Name     string `db:"name" json:"name" validate:"required"`
-	Cost     int    `db:"cost" json:"cost" validate:"gte=0"`
-	Quantity int    `db:"quantity" json:"quantity" validate:"gte=1"`
-	Sold     int    `db:"sold" json:"sold"`
-	Revenue  int    `db:"revenue" json:"revenue"`
+	ID          string    `db:"product_id" json:"id"`
+	Name        string    `db:"name" json:"name"`
+	Cost        int       `db:"cost" json:"cost"`
+	Quantity    int       `db:"quantity" json:"quantity"`
+	Sold        int       `db:"sold" json:"sold"`
+	Revenue     int       `db:"revenue" json:"revenue"`
+	DateCreated time.Time `db:"date_created" json:"date_created"`
+	DateUpdated time.Time `db:"date_updated" json:"date_updated"`
+}
+
+// NewProduct is what we require from clients when adding a Product.
+type NewProduct struct {
+	Name     string `json:"name" validate:"required"`
+	Cost     int    `json:"cost" validate:"gte=0"`
+	Quantity int    `json:"quantity" validate:"gte=1"`
 }
 
 // List gets all Products from the database.
@@ -46,21 +56,32 @@ func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {
 	return products, nil
 }
 
-// Create uses the provided *Product to insert a new product record. The ID
-// field provided is populated.
-func Create(ctx context.Context, db *sqlx.DB, p *Product) error {
-	p.ID = uuid.New().String()
-
-	const q = `INSERT INTO products
-		(product_id, name, cost, quantity)
-		VALUES ($1, $2, $3, $4)`
-
-	_, err := db.ExecContext(ctx, q, p.ID, p.Name, p.Cost, p.Quantity)
-	if err != nil {
-		return errors.Wrap(err, "inserting product")
+// Create adds a Product to the database. It returns the created Product with
+// fields like ID and DateCreated populated..
+func Create(ctx context.Context, db *sqlx.DB, np NewProduct, now time.Time) (*Product, error) {
+	p := Product{
+		ID:          uuid.New().String(),
+		Name:        np.Name,
+		Cost:        np.Cost,
+		Quantity:    np.Quantity,
+		DateCreated: now.UTC(),
+		DateUpdated: now.UTC(),
 	}
 
-	return nil
+	const q = `
+		INSERT INTO products
+		(product_id, name, cost, quantity, date_created, date_updated)
+		VALUES ($1, $2, $3, $4, $5, $6)`
+
+	_, err := db.ExecContext(ctx, q,
+		p.ID, p.Name,
+		p.Cost, p.Quantity,
+		p.DateCreated, p.DateUpdated)
+	if err != nil {
+		return nil, errors.Wrap(err, "inserting product")
+	}
+
+	return &p, nil
 }
 
 // Get finds the product identified by a given ID.

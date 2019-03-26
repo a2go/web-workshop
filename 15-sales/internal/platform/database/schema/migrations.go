@@ -15,10 +15,12 @@ var migrations = []darwin.Migration{
 		Description: "Add products",
 		Script: `
 CREATE TABLE products (
-	product_id UUID,
-	name       VARCHAR(255),
-	cost       INT,
-	quantity   INT,
+	product_id   UUID,
+	name         TEXT,
+	cost         INT,
+	quantity     INT,
+	date_created TIMESTAMP,
+	date_updated TIMESTAMP,
 
 	PRIMARY KEY (product_id)
 );`,
@@ -28,10 +30,11 @@ CREATE TABLE products (
 		Description: "Add sales",
 		Script: `
 CREATE TABLE sales (
-	sale_id    UUID,
-	product_id UUID,
-	quantity   INT,
-	paid       INT,
+	sale_id      UUID,
+	product_id   UUID,
+	quantity     INT,
+	paid         INT,
+	date_created TIMESTAMP,
 
 	PRIMARY KEY (sale_id),
 	FOREIGN KEY (product_id) REFERENCES products(product_id)

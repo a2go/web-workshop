@@ -20,21 +20,6 @@ type Products struct {
 	log *log.Logger
 }
 
-// Create decodes the body of a request to create a new product. The full
-// product with generated fields is sent back in the response.
-func (s *Products) Create(w http.ResponseWriter, r *http.Request) error {
-	var p products.Product
-	if err := web.Decode(r, &p); err != nil {
-		return errors.Wrap(err, "decoding new product")
-	}
-
-	if err := products.Create(r.Context(), s.db, &p); err != nil {
-		return errors.Wrap(err, "creating new product")
-	}
-
-	return web.Respond(w, &p, http.StatusCreated)
-}
-
 // List gets all products from the service layer.
 func (s *Products) List(w http.ResponseWriter, r *http.Request) error {
 	list, err := products.List(r.Context(), s.db)
@@ -43,6 +28,22 @@ func (s *Products) List(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return web.Respond(w, list, http.StatusOK)
+}
+
+// Create decodes the body of a request to create a new product. The full
+// product with generated fields is sent back in the response.
+func (s *Products) Create(w http.ResponseWriter, r *http.Request) error {
+	var np products.NewProduct
+	if err := web.Decode(r, &np); err != nil {
+		return errors.Wrap(err, "decoding new product")
+	}
+
+	p, err := products.Create(r.Context(), s.db, np, time.Now())
+	if err != nil {
+		return errors.Wrap(err, "creating new product")
+	}
+
+	return web.Respond(w, &p, http.StatusCreated)
 }
 
 // Get finds a single product identified by an ID in the request URL.

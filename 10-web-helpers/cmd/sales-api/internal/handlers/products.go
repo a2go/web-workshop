@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
@@ -36,14 +37,15 @@ func (s *Products) List(w http.ResponseWriter, r *http.Request) {
 // Create decodes the body of a request to create a new product. The full
 // product with generated fields is sent back in the response.
 func (s *Products) Create(w http.ResponseWriter, r *http.Request) {
-	var p products.Product
-	if err := web.Decode(r, &p); err != nil {
+	var np products.NewProduct
+	if err := web.Decode(r, &np); err != nil {
 		s.log.Println("decoding product", "error", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if err := products.Create(s.db, &p); err != nil {
+	p, err := products.Create(s.db, np, time.Now())
+	if err != nil {
 		s.log.Println("creating product", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return

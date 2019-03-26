@@ -31,8 +31,7 @@ type Product struct {
 	DateUpdated time.Time `db:"date_updated" json:"date_updated"`
 }
 
-// NewProduct defines the information we need when adding a Product to our
-// offerings.
+// NewProduct is what we require from clients when adding a Product.
 type NewProduct struct {
 	Name     string `json:"name" validate:"required"`
 	Cost     int    `json:"cost" validate:"gte=0"`
@@ -69,14 +68,14 @@ GROUP BY p.product_id`
 	return products, nil
 }
 
-// Create uses the provided *Product to insert a new product record. Generated
-// fields like ID, DateCreated, and DateUpdated are populated.
-func Create(ctx context.Context, db *sqlx.DB, n NewProduct, now time.Time) (*Product, error) {
+// Create adds a Product to the database. It returns the created Product with
+// fields like ID and DateCreated populated..
+func Create(ctx context.Context, db *sqlx.DB, np NewProduct, now time.Time) (*Product, error) {
 	p := Product{
 		ID:          uuid.New().String(),
-		Name:        n.Name,
-		Cost:        n.Cost,
-		Quantity:    n.Quantity,
+		Name:        np.Name,
+		Cost:        np.Cost,
+		Quantity:    np.Quantity,
 		DateCreated: now.UTC(),
 		DateUpdated: now.UTC(),
 	}
