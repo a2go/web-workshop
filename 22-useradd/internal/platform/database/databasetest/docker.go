@@ -17,7 +17,7 @@ type container struct {
 func startContainer(t *testing.T) *container {
 	t.Helper()
 
-	cmd := exec.Command("docker", "run", "-P", "-d", "postgres")
+	cmd := exec.Command("docker", "run", "-P", "-d", "postgres:11.1-alpine")
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	if err := cmd.Run(); err != nil {
