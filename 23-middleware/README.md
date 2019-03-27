@@ -5,3 +5,6 @@
 - Call the middleware function in a loop to wrap around a final handler.
 - Extract error handling from `web.go` to a middleware function in `errors.go`.
 - Pass the error middleware into `web.New`.
+
+
+- Files affected `errors.go`, `web.go`, `routes.go`
