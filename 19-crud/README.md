@@ -1,6 +1,5 @@
 # 19. CRUD
 
 - Add Update and Delete handlers for Product.
-- Add Created and Updated time fields on Product.
-- Use defined types for `NewProduct` and `UpdateProduct`.
+- Add a type `UpdateProduct`.
   - Should `UpdateProduct` require all fields to be set?

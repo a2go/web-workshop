@@ -1,6 +1,5 @@
 # 15. API Tests
 
-- Add `tests/salesapi` package
-- Add test function that runs http tests from outside of the running salesapi process
-- Add JSON tags to control API response marshalling.
-
+- Add `cmd/sales-api/tests` package.
+- Add tests that create a database in Docker and migrate it.
+- Construc a `web.App` and run the `ServeHTTP` method with different requests.

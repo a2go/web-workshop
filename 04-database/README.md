@@ -13,14 +13,14 @@
 - Using `SELECT *` has problems.
 
 ```
-# 4. Start postgres:
+## Start postgres:
 docker-compose up -d
 
-# 4. Create the schema and insert some seed data.
+## Create the schema and insert some seed data.
 go build
 ./garagesale migrate
 ./garagesale seed
 
-# 4. Run the app then make requests.
+## Run the app then make requests.
 ./garagesale
 ```

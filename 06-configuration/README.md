@@ -1,7 +1,10 @@
 # 6. Configuration
 
-- Create `config` struct
-- Remove hardcoded HTTP & DB info
+- Create `config` struct in `cmd/sales-api` and `cmd/sales-admin`.
+- Remove hardcoded HTTP & DB info.
+- Use `github.com/kelseyhightower/envconfig` to parse the environment.
+- Define `flag.Usage` to be a function that calls `envconfig.Usage` to print expected environment variables.
+- Add a flag `-config-only` that prints the config being used.
 
 
 ## Discussion
