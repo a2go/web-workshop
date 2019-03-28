@@ -7,5 +7,4 @@
 ```sql
 DELETE FROM products
 WHERE product_id = $1
-CASCADE -- TODO THIS DOES NOT WORK
 ```

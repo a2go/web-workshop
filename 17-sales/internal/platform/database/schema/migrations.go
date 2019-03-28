@@ -37,7 +37,7 @@ CREATE TABLE sales (
 	date_created TIMESTAMP,
 
 	PRIMARY KEY (sale_id),
-	FOREIGN KEY (product_id) REFERENCES products(product_id)
+	FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 );`,
 	},
 }
