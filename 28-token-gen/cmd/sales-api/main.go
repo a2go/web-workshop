@@ -38,9 +38,9 @@ type config struct {
 		ShutdownTimeout time.Duration `default:"5s"`
 	}
 	Auth struct {
-		KeyID          string `default:"1" envconfig:"KEY_ID"`
-		PrivateKeyFile string `default:"private.pem" envconfig:"PRIVATE_KEY_FILE"`
-		Algorithm      string `default:"RS256" envconfig:"ALGORITHM"`
+		KeyID          string `default:"1" split_words:"true"`
+		PrivateKeyFile string `default:"private.pem" split_words:"true"`
+		Algorithm      string `default:"RS256"`
 	}
 }
 
