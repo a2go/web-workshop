@@ -14,7 +14,7 @@ func API(db *sqlx.DB, log *log.Logger) http.Handler {
 
 	app := web.New(log)
 
-	p := Products{db: db, log: log}
+	p := NewProducts(db, log)
 
 	app.Handle(http.MethodGet, "/v1/products", p.List)
 	app.Handle(http.MethodGet, "/v1/products/{id}", p.Get)
