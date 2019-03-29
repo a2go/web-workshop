@@ -19,6 +19,14 @@ type Users struct {
 	authenticator *auth.Authenticator
 }
 
+// NewUsers sets the required fields for a *Users.
+func NewUsers(db *sqlx.DB, authenticator *auth.Authenticator) *Users {
+	return &Users{
+		db:            db,
+		authenticator: authenticator,
+	}
+}
+
 // Token generates a authentication token for a user. The client must include
 // an email and password for the request using HTTP Basic Auth. The user will
 // be identified by email and authenticated by their password.

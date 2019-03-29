@@ -29,7 +29,7 @@ func API(db *sqlx.DB, errorLog, infoLog *log.Logger, authenticator *auth.Authent
 
 	{
 		// Register user handlers.
-		u := Users{db: db, authenticator: authenticator}
+		u := NewUsers(db, authenticator)
 
 		// The token route can't be authenticated because they need this route to
 		// get the token in the first place.
