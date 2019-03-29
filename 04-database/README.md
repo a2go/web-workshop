@@ -24,3 +24,7 @@ go build
 ## Run the app then make requests.
 ./garagesale
 ```
+
+## Links:
+
+- [Surprises, Antipatterns and Limitations (of `database/sql`)](http://go-database-sql.org/surprises.html)
