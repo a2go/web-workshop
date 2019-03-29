@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/pkg/errors"
+
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/web"
-	"github.com/pkg/errors"
 )
 
 // Auth is used to authenticate and authorize HTTP requests.

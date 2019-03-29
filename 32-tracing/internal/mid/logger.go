@@ -7,8 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ardanlabs/garagesale/internal/platform/web"
 	"go.opencensus.io/trace"
+
+	"github.com/ardanlabs/garagesale/internal/platform/web"
 )
 
 // RequestLogger writes some information about the request to the logs in
