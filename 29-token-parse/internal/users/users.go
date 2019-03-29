@@ -91,7 +91,7 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 			return auth.Claims{}, ErrAuthenticationFailure
 		}
 
-		return auth.Claims{}, errors.Wrap(err, "selecting single product")
+		return auth.Claims{}, errors.Wrap(err, "selecting single user")
 	}
 
 	// Compare the provided password with the saved hash. Use the bcrypt

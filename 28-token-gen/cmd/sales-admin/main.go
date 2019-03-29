@@ -147,6 +147,7 @@ func keygen(path string) error {
 	if err != nil {
 		return errors.Wrap(err, "creating private file")
 	}
+	defer file.Close()
 
 	block := pem.Block{
 		Type:  "RSA PRIVATE KEY",
