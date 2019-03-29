@@ -9,3 +9,20 @@
 http://localhost:8000/v1/products
 http://localhost:8000/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e
 ```
+
+## File Changes:
+
+```
+Modified cmd/sales-api/internal/handlers/products.go
+Added    cmd/sales-api/internal/handlers/routes.go
+Modified cmd/sales-api/main.go
+Added    internal/platform/web/web.go
+Modified internal/products/products.go
+```
+
+## Dependency Changes:
+
+```
++ 	github.com/go-chi/chi v4.0.2+incompatible
++ 	github.com/google/uuid v1.1.1
+```

@@ -4,5 +4,10 @@
 - Add middleware to track number of requests, number of errors, and current goroutine count.
 
 
-## Files:
-`internal/mid/metrics.go`, `routes.go`, `cmd/sales-api/main.go`
+## File Changes:
+
+```
+Modified cmd/sales-api/internal/handlers/routes.go
+Modified cmd/sales-api/main.go
+Added    internal/mid/metrics.go
+```

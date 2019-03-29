@@ -11,3 +11,17 @@
 
 Configuration can come from many places. Some programs use environment
 variables, command-line flags, config files, or configuration services.
+
+## File Changes:
+
+```
+Modified cmd/sales-admin/main.go
+Modified cmd/sales-api/main.go
+Modified internal/platform/database/database.go
+```
+
+## Dependency Changes:
+
+```
++ 	github.com/kelseyhightower/envconfig v1.3.0
+```

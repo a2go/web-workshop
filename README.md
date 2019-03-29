@@ -15,3 +15,8 @@ differences between the `01-startup` directory and the `02-shutdown` directory.
 ```sh
 git dirdiff 01-startup 02-shutdown`
 ```
+
+## Contributing
+
+After making changes run the `scrips/file_lists.sh` script to update the File
+Changes and Dependency lists in each section's README.

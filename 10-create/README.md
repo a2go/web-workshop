@@ -3,3 +3,11 @@
 - In the `products` package define a type `NewProduct` with fields for name, cost, and quantity.
 - Add a `Create` DB function that takes a `NewProduct` and returns a `*Product`.
 - Add a `Create` POST handler decodes the request body into a `NewProduct` and calls `products.Create`.
+
+## File Changes:
+
+```
+Modified cmd/sales-api/internal/handlers/products.go
+Modified cmd/sales-api/internal/handlers/routes.go
+Modified internal/products/products.go
+```

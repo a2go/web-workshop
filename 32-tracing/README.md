@@ -17,3 +17,28 @@ Generate some load then view the traces at http://localhost:9411/
 
 Not every span has to match to a specific function. You can identify narrower
 spans by explicitly using `StartSpan` and `span.End`. See `mid/auth.go`.
+
+
+## File Changes:
+
+```
+Modified cmd/sales-api/internal/handlers/check.go
+Modified cmd/sales-api/internal/handlers/products.go
+Modified cmd/sales-api/internal/handlers/users.go
+Modified cmd/sales-api/main.go
+Modified docker-compose.yaml
+Modified internal/mid/auth.go
+Modified internal/mid/logger.go
+Modified internal/mid/metrics.go
+Modified internal/platform/web/errors.go
+Modified internal/platform/web/web.go
+Modified internal/products/products.go
+Modified internal/products/sales.go
+Modified internal/users/users.go
+```
+
+## Dependency Changes:
+
+```
++ 	github.com/openzipkin/zipkin-go v0.1.6
+```

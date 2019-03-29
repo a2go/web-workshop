@@ -7,4 +7,11 @@
 - Pass the error middleware into `web.New`.
 
 
-- Files affected `errors.go`, `web.go`, `routes.go`
+## File Changes:
+
+```
+Modified cmd/sales-api/internal/handlers/routes.go
+Modified internal/platform/web/errors.go
+Added    internal/platform/web/middleware.go
+Modified internal/platform/web/web.go
+```

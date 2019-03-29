@@ -7,12 +7,21 @@
 - Add a handler that identifies a user from Basic Auth and responds with a Token.
 
 
-## Files:
+## File Changes:
 
- cmd/sales-admin/main.go
- cmd/sales-api/internal/handlers/routes.go
- cmd/sales-api/internal/handlers/users.go
- cmd/sales-api/main.go
- internal/platform/auth/auth.go
- internal/platform/auth/claims.go
- internal/users/users.go
+```
+Modified cmd/sales-admin/main.go
+Modified cmd/sales-api/internal/handlers/routes.go
+Added    cmd/sales-api/internal/handlers/users.go
+Modified cmd/sales-api/main.go
+Added    internal/platform/auth/auth.go
+Modified internal/platform/auth/claims.go
+Modified internal/users/users.go
+Added    private.pem
+```
+
+## Dependency Changes:
+
+```
++ 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+```

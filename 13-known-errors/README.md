@@ -11,3 +11,11 @@ if err != nil {
 Document expected errors in the `products` package and return them when they
 occur. The handlers should look for these errors and use `web.ErrorWithStatus`
 to send them up the call chain with an HTTP status.
+
+
+## File Changes:
+
+```
+Modified cmd/sales-api/internal/handlers/products.go
+Modified internal/products/products.go
+```

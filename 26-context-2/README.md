@@ -11,3 +11,15 @@ be annoying.
   derived from `r.Context()`.
 - Anything using `r.Context()` should instead use the passed `ctx`.
 - Make everything compile.
+
+
+## File Changes:
+
+```
+Modified cmd/sales-api/internal/handlers/check.go
+Modified cmd/sales-api/internal/handlers/products.go
+Modified internal/mid/logger.go
+Modified internal/mid/metrics.go
+Modified internal/platform/web/errors.go
+Modified internal/platform/web/web.go
+```

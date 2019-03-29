@@ -28,3 +28,23 @@ go build
 ## Links:
 
 - [Surprises, Antipatterns and Limitations (of `database/sql`)](http://go-database-sql.org/surprises.html)
+
+
+## File Changes:
+
+```
+Added    docker-compose.yaml
+Modified main.go
+Added    schema/migrate.go
+Added    schema/migrations.go
+Added    schema/seed.go
+Added    schema/seeds.go
+```
+
+## Dependency Changes:
+
+```
++ 	github.com/GuiaBolso/darwin v0.0.0-20170210191649-86919dfcf808
++ 	github.com/jmoiron/sqlx v1.2.0
++ 	github.com/lib/pq v1.0.0
+```
