@@ -63,7 +63,8 @@ for dir in $dirs; do
   # Close the code fence.
   echo -e -n "\`\`\`" >> "${readme}"
 
-  # Generate another section by 
+  # Generate another section about new dependencies by diffing the go.mod files
+  # of each folder. Only include this section if there are differences.
   newDeps=$(diff "${last}/go.mod" "${dir}/go.mod" |\
     sed -e "
       # Filter to only dependency lines and only direct deps.
