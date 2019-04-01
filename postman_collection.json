@@ -1,8 +1,7 @@
 {
 	"info": {
 		"name": "Garage Sale Service",
-		"_postman_id": "44cad7b9-b9c9-9ccb-d454-c8eaace6f633",
-		"description": "",
+		"_postman_id": "ba470c37-e9bc-c4fb-1007-408c68907376",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -50,19 +49,16 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:8000/v1/users/token",
-					"protocol": "http",
+					"raw": "{{SERVER}}/v1/users/token",
 					"host": [
-						"localhost"
+						"{{SERVER}}"
 					],
-					"port": "8000",
 					"path": [
 						"v1",
 						"users",
 						"token"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -83,18 +79,15 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:8000/v1/products",
-					"protocol": "http",
+					"raw": "{{SERVER}}/v1/products",
 					"host": [
-						"localhost"
+						"{{SERVER}}"
 					],
-					"port": "8000",
 					"path": [
 						"v1",
 						"products"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -115,19 +108,16 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:8000/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
-					"protocol": "http",
+					"raw": "{{SERVER}}/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
 					"host": [
-						"localhost"
+						"{{SERVER}}"
 					],
-					"port": "8000",
 					"path": [
 						"v1",
 						"products",
 						"a2b0639f-2cc6-44b8-b97b-15d69dbb511e"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -156,18 +146,15 @@
 					"raw": "{\n\t\"name\": \"Puzzles\",\n\t\"cost\": 75,\n\t\"quantity\": 12\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/v1/products",
-					"protocol": "http",
+					"raw": "{{SERVER}}/v1/products",
 					"host": [
-						"localhost"
+						"{{SERVER}}"
 					],
-					"port": "8000",
 					"path": [
 						"v1",
 						"products"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -196,19 +183,16 @@
 					"raw": "{\n\t\"name\": \"comics\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
-					"protocol": "http",
+					"raw": "{{SERVER}}/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
 					"host": [
-						"localhost"
+						"{{SERVER}}"
 					],
-					"port": "8000",
 					"path": [
 						"v1",
 						"products",
 						"a2b0639f-2cc6-44b8-b97b-15d69dbb511e"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -229,19 +213,16 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:8000/v1/products/72f8b983-3eb4-48db-9ed0-e45cc6bd716b",
-					"protocol": "http",
+					"raw": "{{SERVER}}/v1/products/72f8b983-3eb4-48db-9ed0-e45cc6bd716b",
 					"host": [
-						"localhost"
+						"{{SERVER}}"
 					],
-					"port": "8000",
 					"path": [
 						"v1",
 						"products",
 						"72f8b983-3eb4-48db-9ed0-e45cc6bd716b"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -262,20 +243,17 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:8000/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e/sales",
-					"protocol": "http",
+					"raw": "{{SERVER}}/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e/sales",
 					"host": [
-						"localhost"
+						"{{SERVER}}"
 					],
-					"port": "8000",
 					"path": [
 						"v1",
 						"products",
 						"a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
 						"sales"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -304,20 +282,17 @@
 					"raw": "{\n\t\"quantity\": 2,\n\t\"paid\": 40\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8000/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e/sales",
-					"protocol": "http",
+					"raw": "{{SERVER}}/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e/sales",
 					"host": [
-						"localhost"
+						"{{SERVER}}"
 					],
-					"port": "8000",
 					"path": [
 						"v1",
 						"products",
 						"a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
 						"sales"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		},
@@ -328,18 +303,15 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "http://localhost:8000/v1/health",
-					"protocol": "http",
+					"raw": "{{SERVER}}/v1/health",
 					"host": [
-						"localhost"
+						"{{SERVER}}"
 					],
-					"port": "8000",
 					"path": [
 						"v1",
 						"health"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		}

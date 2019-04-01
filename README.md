@@ -2,6 +2,16 @@
 
 The training material for the service repo broken out into steps.
 
+## Postman API Client
+
+For the class we will be building up a REST API. You may use any HTTP client
+you prefer to make requests. We recommend
+[Postman](https://www.getpostman.com/). For convenience you may import the
+included `postman_environment.json` and `postman_collection.json` files to get
+a client up and running quickly.
+
+## Diffing Folders
+
 Reviewing the differences between the successive steps helps to reinforce the
 ideas each change is about. This is made easier by running the following
 command to define a git alias called `dirdiff`:
