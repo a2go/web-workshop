@@ -12,9 +12,9 @@ import (
 )
 
 // API constructs an http.Handler with all application routes defined.
-func API(db *sqlx.DB, errorLog, infoLog *log.Logger, authenticator *auth.Authenticator) http.Handler {
+func API(db *sqlx.DB, log *log.Logger, authenticator *auth.Authenticator) http.Handler {
 
-	app := web.New(errorLog, mid.RequestLogger(infoLog), web.ErrorHandler(errorLog), mid.Metrics)
+	app := web.New(log, mid.RequestLogger(log), web.ErrorHandler(log), mid.Metrics)
 
 	// Create the middleware that can authenticate and authorize requests.
 	authmw := mid.Auth{
@@ -38,7 +38,7 @@ func API(db *sqlx.DB, errorLog, infoLog *log.Logger, authenticator *auth.Authent
 
 	{
 		// Register Product handlers. Ensure all routes are authenticated.
-		p := Products{db: db, log: infoLog}
+		p := Products{db: db, log: log}
 
 		app.Handle(http.MethodGet, "/v1/products", p.List, authmw.Authenticate)
 		app.Handle(http.MethodGet, "/v1/products/{id}", p.Get, authmw.Authenticate)

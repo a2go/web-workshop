@@ -30,7 +30,7 @@ func TestProducts(t *testing.T) {
 
 	log := log.New(os.Stderr, "TEST : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 
-	tests := ProductTests{app: handlers.API(db, log, log)}
+	tests := ProductTests{app: handlers.API(db, log)}
 
 	t.Run("ListEmptySuccess", tests.ListEmptySuccess)
 	t.Run("CreateRequiresFields", tests.CreateRequiresFields)
