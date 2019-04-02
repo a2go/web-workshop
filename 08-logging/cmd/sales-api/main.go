@@ -80,7 +80,7 @@ func run() error {
 	}
 	defer db.Close()
 
-	productsHandler := handlers.NewProducts(db, log)
+	productsHandler := handlers.Products{DB: db, Log: log}
 
 	server := http.Server{
 		Addr:         cfg.HTTP.Address,

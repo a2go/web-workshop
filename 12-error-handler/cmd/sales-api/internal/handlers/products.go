@@ -20,14 +20,6 @@ type Products struct {
 	log *log.Logger
 }
 
-// NewProducts sets the required fields of a *Products.
-func NewProducts(db *sqlx.DB, logger *log.Logger) *Products {
-	return &Products{
-		db:  db,
-		log: logger,
-	}
-}
-
 // List gets all products from the service layer.
 func (s *Products) List(w http.ResponseWriter, r *http.Request) error {
 	list, err := products.List(s.db)

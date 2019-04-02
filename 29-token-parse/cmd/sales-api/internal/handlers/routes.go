@@ -29,7 +29,7 @@ func API(db *sqlx.DB, errorLog, infoLog *log.Logger, authenticator *auth.Authent
 
 	{
 		// Register user handlers.
-		u := NewUsers(db, authenticator)
+		u := Users{db: db, authenticator: authenticator}
 
 		// The token route can't be authenticated because they need this route to
 		// get the token in the first place.
@@ -38,7 +38,7 @@ func API(db *sqlx.DB, errorLog, infoLog *log.Logger, authenticator *auth.Authent
 
 	{
 		// Register Product handlers. Ensure all routes are authenticated.
-		p := NewProducts(db, infoLog)
+		p := Products{db: db, log: infoLog}
 
 		app.Handle(http.MethodGet, "/v1/products", p.List, authmw.Authenticate)
 		app.Handle(http.MethodGet, "/v1/products/{id}", p.Get, authmw.Authenticate)

@@ -22,12 +22,12 @@ func API(db *sqlx.DB, errorLog, infoLog *log.Logger, authenticator *auth.Authent
 	}
 
 	{
-		u := NewUsers(db, authenticator)
+		u := Users{db: db, authenticator: authenticator}
 		app.Handle(http.MethodGet, "/v1/users/token", u.Token)
 	}
 
 	{
-		p := NewProducts(db, infoLog)
+		p := Products{db: db, log: infoLog}
 
 		app.Handle(http.MethodGet, "/v1/products", p.List)
 		app.Handle(http.MethodGet, "/v1/products/{id}", p.Get)

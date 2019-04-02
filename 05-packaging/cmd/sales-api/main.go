@@ -25,7 +25,8 @@ func main() {
 	}
 	defer db.Close()
 
-	productsHandler := handlers.NewProducts(db)
+	productsHandler := handlers.Products{DB: db}
+
 	server := http.Server{
 		Addr:         "localhost:8000",
 		Handler:      http.HandlerFunc(productsHandler.List),
