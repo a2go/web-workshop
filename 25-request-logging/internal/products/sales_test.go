@@ -15,6 +15,8 @@ func TestSales(t *testing.T) {
 
 	now := time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)
 
+	ctx := context.Background()
+
 	// Create two products to work with.
 	newPuzzles := products.NewProduct{
 		Name:     "Puzzles",
@@ -22,7 +24,7 @@ func TestSales(t *testing.T) {
 		Quantity: 6,
 	}
 
-	puzzles, err := products.Create(context.Background(), db, newPuzzles, now)
+	puzzles, err := products.Create(ctx, db, newPuzzles, now)
 	if err != nil {
 		t.Fatalf("creating product: %s", err)
 	}
@@ -32,7 +34,7 @@ func TestSales(t *testing.T) {
 		Cost:     40,
 		Quantity: 3,
 	}
-	toys, err := products.Create(context.Background(), db, newToys, now)
+	toys, err := products.Create(ctx, db, newToys, now)
 	if err != nil {
 		t.Fatalf("creating product: %s", err)
 	}
@@ -44,13 +46,13 @@ func TestSales(t *testing.T) {
 			Paid:     70,
 		}
 
-		s, err := products.AddSale(context.Background(), db, ns, puzzles.ID, now)
+		s, err := products.AddSale(ctx, db, ns, puzzles.ID, now)
 		if err != nil {
 			t.Fatalf("adding sale: %s", err)
 		}
 
 		// Puzzles should show the 1 sale.
-		sales, err := products.ListSales(context.Background(), db, puzzles.ID)
+		sales, err := products.ListSales(ctx, db, puzzles.ID)
 		if err != nil {
 			t.Fatalf("listing sales: %s", err)
 		}
@@ -63,7 +65,7 @@ func TestSales(t *testing.T) {
 		}
 
 		// Toys should have 0 sales.
-		sales, err = products.ListSales(context.Background(), db, toys.ID)
+		sales, err = products.ListSales(ctx, db, toys.ID)
 		if err != nil {
 			t.Fatalf("listing sales: %s", err)
 		}

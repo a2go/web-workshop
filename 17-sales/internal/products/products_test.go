@@ -23,8 +23,8 @@ func TestProducts(t *testing.T) {
 	}
 	now := time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)
 	ctx := context.Background()
-	p0, err := products.Create(ctx, db, newP, now)
 
+	p0, err := products.Create(ctx, db, newP, now)
 	if err != nil {
 		t.Fatalf("creating product p0: %s", err)
 	}
