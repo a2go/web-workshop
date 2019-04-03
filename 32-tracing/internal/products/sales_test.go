@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 	"github.com/ardanlabs/garagesale/internal/products"
 )
@@ -21,8 +22,13 @@ func TestSales(t *testing.T) {
 		Cost:     25,
 		Quantity: 6,
 	}
+	claims := auth.NewClaims(
+		"718ffbea-f4a1-4667-8ae3-b349da52675e", // This is just some random UUID.
+		[]string{auth.RoleAdmin, auth.RoleUser},
+		now, time.Hour,
+	)
 
-	puzzles, err := products.Create(context.Background(), db, newPuzzles, now)
+	puzzles, err := products.Create(context.Background(), db, claims, newPuzzles, now)
 	if err != nil {
 		t.Fatalf("creating product: %s", err)
 	}
@@ -32,7 +38,7 @@ func TestSales(t *testing.T) {
 		Cost:     40,
 		Quantity: 3,
 	}
-	toys, err := products.Create(context.Background(), db, newToys, now)
+	toys, err := products.Create(context.Background(), db, claims, newToys, now)
 	if err != nil {
 		t.Fatalf("creating product: %s", err)
 	}

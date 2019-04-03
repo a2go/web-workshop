@@ -10,9 +10,3 @@
 ```
 Added    cmd/sales-api/tests/products_test.go
 ```
-
-## Dependency Changes:
-
-```
-+ 	github.com/google/go-cmp v0.2.0
-```

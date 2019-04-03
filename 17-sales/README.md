@@ -16,6 +16,7 @@ Modified cmd/sales-api/tests/products_test.go
 Modified internal/platform/database/schema/migrations.go
 Modified internal/platform/database/schema/seeds.go
 Modified internal/products/products.go
+Modified internal/products/products_test.go
 Added    internal/products/sales.go
 Added    internal/products/sales_test.go
 ```

@@ -16,6 +16,7 @@ import (
 
 	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
+	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
 )
 
 // TestProducts runs a series of tests to exercise Product behavior from the
@@ -28,11 +29,15 @@ func TestProducts(t *testing.T) {
 	db, teardown := databasetest.Setup(t)
 	defer teardown()
 
+	if err := schema.Seed(db.DB); err != nil {
+		t.Fatal(err)
+	}
+
 	log := log.New(os.Stderr, "TEST : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 
 	tests := ProductTests{app: handlers.API(db, log)}
 
-	t.Run("ListEmptySuccess", tests.ListEmptySuccess)
+	t.Run("List", tests.List)
 	t.Run("CreateRequiresFields", tests.CreateRequiresFields)
 	t.Run("ProductCRUD", tests.ProductCRUD)
 }
@@ -44,7 +49,7 @@ type ProductTests struct {
 	app http.Handler
 }
 
-func (p *ProductTests) ListEmptySuccess(t *testing.T) {
+func (p *ProductTests) List(t *testing.T) {
 	req := httptest.NewRequest("GET", "/v1/products", nil)
 	resp := httptest.NewRecorder()
 
@@ -57,6 +62,33 @@ func (p *ProductTests) ListEmptySuccess(t *testing.T) {
 	var list []map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&list); err != nil {
 		t.Fatalf("decoding: %s", err)
+	}
+
+	want := []map[string]interface{}{
+		{
+			"id":           "a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
+			"name":         "Comic Books",
+			"cost":         float64(50),
+			"quantity":     float64(42),
+			"revenue":      float64(350),
+			"sold":         float64(7),
+			"date_created": "2019-01-01T00:00:01.000001Z",
+			"date_updated": "2019-01-01T00:00:01.000001Z",
+		},
+		{
+			"id":           "72f8b983-3eb4-48db-9ed0-e45cc6bd716b",
+			"name":         "McDonalds Toys",
+			"cost":         float64(75),
+			"quantity":     float64(120),
+			"revenue":      float64(225),
+			"sold":         float64(3),
+			"date_created": "2019-01-01T00:00:02.000001Z",
+			"date_updated": "2019-01-01T00:00:02.000001Z",
+		},
+	}
+
+	if diff := cmp.Diff(want, list); diff != "" {
+		t.Fatalf("Response did not match expected. Diff:\n%s", diff)
 	}
 }
 

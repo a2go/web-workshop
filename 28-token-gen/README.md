@@ -14,8 +14,11 @@ Modified cmd/sales-admin/main.go
 Modified cmd/sales-api/internal/handlers/routes.go
 Added    cmd/sales-api/internal/handlers/users.go
 Modified cmd/sales-api/main.go
+Modified cmd/sales-api/tests/products_test.go
+Added    cmd/sales-api/tests/users_test.go
 Added    internal/platform/auth/auth.go
 Modified internal/platform/auth/claims.go
+Modified internal/platform/tests/tests.go
 Modified internal/users/users.go
 Added    private.pem
 ```

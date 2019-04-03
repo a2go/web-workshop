@@ -23,12 +23,14 @@ func TestProducts(t *testing.T) {
 		Quantity: 55,
 	}
 	now := time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)
-	p0, err := products.Create(context.Background(), db, newP, now)
+	ctx := context.Background()
+
+	p0, err := products.Create(ctx, db, newP, now)
 	if err != nil {
 		t.Fatalf("creating product p0: %s", err)
 	}
 
-	p1, err := products.Get(context.Background(), db, p0.ID)
+	p1, err := products.Get(ctx, db, p0.ID)
 	if err != nil {
 		t.Fatalf("getting product p0: %s", err)
 	}
@@ -43,11 +45,11 @@ func TestProducts(t *testing.T) {
 	}
 	updatedTime := time.Date(2019, time.January, 1, 1, 1, 1, 0, time.UTC)
 
-	if err := products.Update(context.Background(), db, p0.ID, update, updatedTime); err != nil {
+	if err := products.Update(ctx, db, p0.ID, update, updatedTime); err != nil {
 		t.Fatalf("creating product p0: %s", err)
 	}
 
-	saved, err := products.Get(context.Background(), db, p0.ID)
+	saved, err := products.Get(ctx, db, p0.ID)
 	if err != nil {
 		t.Fatalf("getting product p0: %s", err)
 	}
@@ -63,11 +65,11 @@ func TestProducts(t *testing.T) {
 		t.Fatalf("updated record did not match:\n%s", diff)
 	}
 
-	if err := products.Delete(context.Background(), db, p0.ID); err != nil {
+	if err := products.Delete(ctx, db, p0.ID); err != nil {
 		t.Fatalf("deleting product: %v", err)
 	}
 
-	_, err = products.Get(context.Background(), db, p0.ID)
+	_, err = products.Get(ctx, db, p0.ID)
 	if err == nil {
 		t.Fatalf("should not be able to retrieve deleted product")
 	}

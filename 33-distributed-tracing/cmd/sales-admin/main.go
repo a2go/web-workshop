@@ -109,6 +109,7 @@ func run() error {
 
 		ctx := context.Background()
 
+		// TODO Talk about the engineering decision around validation at web vs service layer.
 		nu := users.NewUser{
 			Email:           email,
 			Password:        password,
