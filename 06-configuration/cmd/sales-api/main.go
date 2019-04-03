@@ -12,10 +12,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/kelseyhightower/envconfig"
-
 	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
 	"github.com/ardanlabs/garagesale/internal/platform/database"
+	"github.com/kelseyhightower/envconfig"
 )
 
 // This is for parsing the environment.

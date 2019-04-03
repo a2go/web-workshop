@@ -4,9 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"github.com/jmoiron/sqlx"
 )
 
 // API constructs an http.Handler with all application routes defined.

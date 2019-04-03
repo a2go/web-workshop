@@ -7,10 +7,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/kelseyhightower/envconfig"
-
 	"github.com/ardanlabs/garagesale/internal/platform/database"
 	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
+	"github.com/kelseyhightower/envconfig"
 )
 
 // This is for parsing the environment.

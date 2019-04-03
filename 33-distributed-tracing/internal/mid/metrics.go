@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"runtime"
 
-	"go.opencensus.io/trace"
-
 	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"go.opencensus.io/trace"
 )
 
 // m contains the global program counters for the application.

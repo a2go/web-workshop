@@ -12,11 +12,10 @@ import (
 
 	// NOTE: Models should not be imported, we want to test the exact JSON. We
 	// make the comparison process easier using the go-cmp library.
-	"github.com/google/go-cmp/cmp"
-
 	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
+	"github.com/google/go-cmp/cmp"
 )
 
 // TestProducts runs a series of tests to exercise Product behavior from the

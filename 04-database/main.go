@@ -12,10 +12,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ardanlabs/garagesale/schema"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-
-	"github.com/ardanlabs/garagesale/schema"
 )
 
 func main() {

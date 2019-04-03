@@ -6,14 +6,13 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/ardanlabs/garagesale/internal/platform/auth"
+	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"github.com/ardanlabs/garagesale/internal/products"
 	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"go.opencensus.io/trace"
-
-	"github.com/ardanlabs/garagesale/internal/platform/auth"
-	"github.com/ardanlabs/garagesale/internal/platform/web"
-	"github.com/ardanlabs/garagesale/internal/products"
 )
 
 // Products defines all of the handlers related to products. It holds the

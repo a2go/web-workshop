@@ -16,6 +16,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
+	"github.com/ardanlabs/garagesale/internal/platform/auth"
+	"github.com/ardanlabs/garagesale/internal/platform/database"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/kelseyhightower/envconfig"
 	openzipkin "github.com/openzipkin/zipkin-go"
@@ -23,10 +26,6 @@ import (
 	"github.com/pkg/errors"
 	"go.opencensus.io/exporter/zipkin"
 	"go.opencensus.io/trace"
-
-	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
-	"github.com/ardanlabs/garagesale/internal/platform/auth"
-	"github.com/ardanlabs/garagesale/internal/platform/database"
 )
 
 // This is for parsing the environment.

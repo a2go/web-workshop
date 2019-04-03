@@ -5,13 +5,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/go-cmp/cmp"
-
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
 	"github.com/ardanlabs/garagesale/internal/platform/tests"
 	"github.com/ardanlabs/garagesale/internal/products"
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestProducts(t *testing.T) {

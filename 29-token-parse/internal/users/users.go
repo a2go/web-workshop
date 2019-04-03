@@ -5,13 +5,12 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
-
-	"github.com/ardanlabs/garagesale/internal/platform/auth"
 )
 
 var (

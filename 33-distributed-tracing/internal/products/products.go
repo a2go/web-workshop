@@ -5,12 +5,11 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"go.opencensus.io/trace"
-
-	"github.com/ardanlabs/garagesale/internal/platform/auth"
 )
 
 // Predefined errors identify expected failure conditions.

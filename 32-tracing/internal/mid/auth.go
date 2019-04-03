@@ -6,10 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"go.opencensus.io/trace"
-
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"go.opencensus.io/trace"
 )
 
 // Auth is used to authenticate and authorize HTTP requests.

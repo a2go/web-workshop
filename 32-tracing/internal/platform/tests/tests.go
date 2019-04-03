@@ -9,12 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
 	"github.com/ardanlabs/garagesale/internal/users"
+	"github.com/jmoiron/sqlx"
 )
 
 // These are the IDs in the seed data for admin@example.com and

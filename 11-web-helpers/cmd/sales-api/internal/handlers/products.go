@@ -5,11 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-chi/chi"
-	"github.com/jmoiron/sqlx"
-
 	"github.com/ardanlabs/garagesale/internal/platform/web"
 	"github.com/ardanlabs/garagesale/internal/products"
+	"github.com/go-chi/chi"
+	"github.com/jmoiron/sqlx"
 )
 
 // Products defines all of the handlers related to products. It holds the

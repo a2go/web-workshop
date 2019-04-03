@@ -4,10 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/ardanlabs/garagesale/internal/platform/database"
 	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
+	"github.com/jmoiron/sqlx"
 )
 
 // Setup creates a test database inside a Docker container. It creates the

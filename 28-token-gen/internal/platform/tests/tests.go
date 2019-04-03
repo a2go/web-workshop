@@ -7,11 +7,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
+	"github.com/jmoiron/sqlx"
 )
 
 // Test owns state for running and shutting down tests.

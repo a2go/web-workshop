@@ -5,12 +5,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/jmoiron/sqlx"
-	"github.com/pkg/errors"
-
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/web"
 	"github.com/ardanlabs/garagesale/internal/users"
+	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
 )
 
 // Users holds handlers for dealing with users.

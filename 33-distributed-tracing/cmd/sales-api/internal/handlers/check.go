@@ -4,10 +4,9 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ardanlabs/garagesale/internal/platform/web"
 	"github.com/jmoiron/sqlx"
 	"go.opencensus.io/trace"
-
-	"github.com/ardanlabs/garagesale/internal/platform/web"
 )
 
 // Checks holds handlers for service orchestration checks.

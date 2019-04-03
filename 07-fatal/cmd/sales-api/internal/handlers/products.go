@@ -5,9 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/ardanlabs/garagesale/internal/products"
+	"github.com/jmoiron/sqlx"
 )
 
 // Products defines all of the handlers related to products. It holds the

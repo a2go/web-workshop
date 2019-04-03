@@ -13,13 +13,12 @@ import (
 	"os"
 	"time"
 
-	"github.com/kelseyhightower/envconfig"
-	"github.com/pkg/errors"
-
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/database"
 	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
 	"github.com/ardanlabs/garagesale/internal/users"
+	"github.com/kelseyhightower/envconfig"
+	"github.com/pkg/errors"
 )
 
 // This is for parsing the environment.

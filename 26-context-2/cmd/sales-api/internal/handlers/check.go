@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/jmoiron/sqlx"
-
 	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"github.com/jmoiron/sqlx"
 )
 
 // Checks holds handlers for service orchestration checks.
