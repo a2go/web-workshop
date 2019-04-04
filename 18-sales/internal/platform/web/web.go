@@ -37,12 +37,19 @@ func (a *App) Handle(method, url string, h Handler) {
 		err := h(w, r)
 
 		if err != nil {
+			serr := toStatusError(err)
+
+			// If the error is an internal issue then log it.
+			// Do not log errors that come from client requests.
+			if serr.status >= http.StatusInternalServerError {
+				log.Printf("%+v", err)
+			}
 
 			// Tell the client about the error.
 			res := errorResponse{
-				Error: err.Error(),
+				Error: serr.ExternalError(),
 			}
-			Respond(w, res, http.StatusInternalServerError)
+			Respond(w, res, serr.status)
 		}
 	}
 
