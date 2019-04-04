@@ -43,7 +43,7 @@ func (a *App) Handle(method, url string, h Handler) {
 
 		// Run the handler chain and catch any propagated error.
 		if err := h(w, r); err != nil {
-			log.Printf("Unhandled error: %+v", err)
+			a.log.Printf("Unhandled error: %+v", err)
 		}
 	}
 

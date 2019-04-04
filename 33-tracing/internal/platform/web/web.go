@@ -71,7 +71,7 @@ func (a *App) Handle(method, url string, h Handler, mw ...Middleware) {
 
 		// Run the handler chain and catch any propagated error.
 		if err := h(ctx, w, r); err != nil {
-			log.Printf("Unhandled error: %+v", err)
+			a.log.Printf("Unhandled error: %+v", err)
 		}
 	}
 

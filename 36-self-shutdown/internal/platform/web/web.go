@@ -4,9 +4,14 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
+	"syscall"
 	"time"
 
 	"github.com/go-chi/chi"
+	"go.opencensus.io/plugin/ochttp"
+	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
+	"go.opencensus.io/trace"
 )
 
 // ctxKey represents the type of value for the context key.
@@ -17,6 +22,7 @@ const KeyValues ctxKey = 1
 
 // Values carries information about each request.
 type Values struct {
+	TraceID    string
 	StatusCode int
 	Start      time.Time
 }
@@ -27,18 +33,20 @@ type Handler func(context.Context, http.ResponseWriter, *http.Request) error
 // App is the entrypoint into our application and what controls the context of
 // each request. Feel free to add any configuration data/logic on this type.
 type App struct {
-	log *log.Logger
-	mux *chi.Mux
-	mw  []Middleware
+	log      *log.Logger
+	mux      *chi.Mux
+	mw       []Middleware
+	shutdown chan os.Signal
 }
 
 // New constructs an App to handle a set of routes. Any Middleware provided
 // will be ran for every request.
-func New(log *log.Logger, mw ...Middleware) *App {
+func New(shutdown chan os.Signal, log *log.Logger, mw ...Middleware) *App {
 	return &App{
-		log: log,
-		mux: chi.NewRouter(),
-		mw:  mw,
+		log:      log,
+		mux:      chi.NewRouter(),
+		mw:       mw,
+		shutdown: shutdown,
 	}
 }
 
@@ -57,24 +65,49 @@ func (a *App) Handle(method, url string, h Handler, mw ...Middleware) {
 	// Create a function that conforms to the std lib defintioin of a handler.
 	// This is the first thing that will be executed when this route is called.
 	fn := func(w http.ResponseWriter, r *http.Request) {
+		ctx, span := trace.StartSpan(r.Context(), "internal.platform.web")
+		defer span.End()
 
 		// Create a Values struct to record state for the request. Store the
 		// address in the request's context so it is sent down the call chain.
 		v := Values{
-			Start: time.Now(),
+			TraceID: span.SpanContext().TraceID.String(),
+			Start:   time.Now(),
 		}
-		ctx := context.WithValue(r.Context(), KeyValues, &v)
+		ctx = context.WithValue(ctx, KeyValues, &v)
 
 		// Run the handler chain and catch any propagated error.
 		if err := h(ctx, w, r); err != nil {
-			a.log.Printf("Unhandled error: %+v", err)
+			a.log.Printf("%s : unhandled error: %+v", v.TraceID, err)
+			if IsShutdown(err) {
+				a.SignalShutdown()
+			}
 		}
 	}
 
-	a.mux.MethodFunc(method, url, fn)
+	// Create an OpenCensus HTTP Handler which wraps our chain. This will start
+	// the initial span and annotate it with information about the request/response.
+	//
+	// This is configured to use the W3C TraceContext standard to set the remote
+	// parent if an client request includes the appropriate headers.
+	// https://w3c.github.io/trace-context/
+	och := &ochttp.Handler{
+		Handler:     http.HandlerFunc(fn),
+		Propagation: &tracecontext.HTTPFormat{},
+	}
+
+	// Register the
+	a.mux.Method(method, url, och)
 }
 
 // ServeHTTP implements the http.Handler interface.
 func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.mux.ServeHTTP(w, r)
+}
+
+// SignalShutdown is used to gracefully shutdown the app when an integrity
+// issue is identified.
+func (a *App) SignalShutdown() {
+	a.log.Println("error returned from handler indicated integrity issue, shutting down service")
+	a.shutdown <- syscall.SIGSTOP
 }
