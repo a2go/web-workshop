@@ -18,8 +18,6 @@ func RequestLogger(log *log.Logger) web.Middleware {
 	mw := func(before web.Handler) web.Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 
-			// If the context is missing this value, request the service
-			// to be shutdown gracefully.
 			v, ok := ctx.Value(web.KeyValues).(*web.Values)
 			if !ok {
 				return errors.New("web value missing from context")
