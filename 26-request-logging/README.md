@@ -12,8 +12,8 @@ Modified cmd/sales-api/internal/handlers/check.go
 Modified cmd/sales-api/internal/handlers/products.go
 Modified cmd/sales-api/internal/handlers/routes.go
 Modified cmd/sales-api/main.go
+Modified internal/mid/errors.go
 Added    internal/mid/logger.go
-Modified internal/platform/web/errors.go
 Modified internal/platform/web/response.go
 Modified internal/platform/web/web.go
 ```

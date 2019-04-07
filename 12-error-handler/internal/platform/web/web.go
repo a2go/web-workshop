@@ -39,7 +39,7 @@ func (a *App) Handle(method, url string, h Handler) {
 		if err != nil {
 
 			// Tell the client about the error.
-			res := errorResponse{
+			res := ErrorResponse{
 				Error: err.Error(),
 			}
 			Respond(w, res, http.StatusInternalServerError)

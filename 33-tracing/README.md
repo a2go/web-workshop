@@ -28,9 +28,9 @@ Modified cmd/sales-api/internal/handlers/users.go
 Modified cmd/sales-api/main.go
 Modified docker-compose.yaml
 Modified internal/mid/auth.go
+Modified internal/mid/errors.go
 Modified internal/mid/logger.go
 Modified internal/mid/metrics.go
-Modified internal/platform/web/errors.go
 Modified internal/platform/web/web.go
 Modified internal/products/products.go
 Modified internal/products/sales.go

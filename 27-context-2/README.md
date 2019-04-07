@@ -18,8 +18,8 @@ be annoying.
 ```
 Modified cmd/sales-api/internal/handlers/check.go
 Modified cmd/sales-api/internal/handlers/products.go
+Modified internal/mid/errors.go
 Modified internal/mid/logger.go
 Modified internal/mid/metrics.go
-Modified internal/platform/web/errors.go
 Modified internal/platform/web/web.go
 ```

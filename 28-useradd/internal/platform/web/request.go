@@ -52,18 +52,18 @@ func Decode(r *http.Request, val interface{}) error {
 		// Accept-Language header if you intend to support multiple languages.
 		lang, _ := translator.GetTranslator("en")
 
-		var fields []fieldError
+		var fields []FieldError
 		for field, msg := range verr.Translate(lang) {
 			fields = append(
 				fields,
-				fieldError{Field: field, Error: msg},
+				FieldError{Field: field, Error: msg},
 			)
 		}
 
-		return &statusError{
+		return &StatusError{
 			err:    errors.New("field validation error"),
-			status: http.StatusBadRequest,
-			fields: fields,
+			Status: http.StatusBadRequest,
+			Fields: fields,
 		}
 	}
 
