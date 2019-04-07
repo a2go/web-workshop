@@ -10,7 +10,7 @@ import (
 )
 
 // RequestLogger writes some information about the request to the logs in
-// the format: TraceID : (200) GET /foo -> IP ADDR (latency)
+// the format: (200) GET /foo -> IP ADDR (latency)
 func RequestLogger(log *log.Logger) web.Middleware {
 
 	// Wrap this handler around the next one provided.
