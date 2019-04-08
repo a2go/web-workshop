@@ -10,21 +10,15 @@ import (
 	"go.opencensus.io/trace"
 )
 
-// ErrorHandler creates a middlware that handles errors come out of the call
+// ErrorHandler holds a Middlware that handles errors coming out of the call
 // chain. It detects normal applications errors which are used to respond to
 // the client in a uniform way. Unexpected errors (status >= 500) are logged.
-func ErrorHandler(log *log.Logger) web.Middleware {
-	e := errorMW{log: log}
-	return e.mw
+type ErrorHandler struct {
+	Log *log.Logger
 }
 
-// errorMW holds the required state for the ErrorHandler middleware.
-type errorMW struct {
-	log *log.Logger
-}
-
-// mw is the actual Middleware function to be ran when building the chain.
-func (e *errorMW) mw(before web.Handler) web.Handler {
+// Handle is the actual Middleware function to be ran when building the chain.
+func (mw *ErrorHandler) Handle(before web.Handler) web.Handler {
 	h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		ctx, span := trace.StartSpan(ctx, "internal.mid.ErrorHandler")
 		defer span.End()
@@ -41,7 +35,7 @@ func (e *errorMW) mw(before web.Handler) web.Handler {
 			// If the error is an internal issue then log it.
 			// Do not log errors that come from client requests.
 			if serr.Status >= http.StatusInternalServerError {
-				log.Printf("%s : %+v", v.TraceID, err)
+				mw.Log.Printf("%s : %+v", v.TraceID, err)
 			}
 
 			// Tell the client about the error.

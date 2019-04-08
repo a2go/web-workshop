@@ -14,7 +14,12 @@ import (
 // API constructs an http.Handler with all application routes defined.
 func API(shutdown chan os.Signal, db *sqlx.DB, log *log.Logger, authenticator *auth.Authenticator) http.Handler {
 
-	app := web.New(shutdown, log, mid.RequestLogger(log), mid.ErrorHandler(log), mid.Metrics, mid.PanicHandler)
+	// Create the middleware that log requests and handle errors.
+	loggerMW := mid.RequestLogger{Log: log}
+	errorMW := mid.ErrorHandler{Log: log}
+
+	// Construct the web.App which holds all routes as well as a chain of common Middleware.
+	app := web.New(shutdown, log, loggerMW.Handle, errorMW.Handle, mid.Metrics, mid.PanicHandler)
 
 	// Create the middleware that can authenticate and authorize requests.
 	authmw := mid.Auth{
