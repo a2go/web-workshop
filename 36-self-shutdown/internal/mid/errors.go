@@ -3,22 +3,16 @@ package mid
 import (
 	"context"
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/ardanlabs/garagesale/internal/platform/web"
 	"go.opencensus.io/trace"
 )
 
-// ErrorHandler holds a Middlware that handles errors coming out of the call
-// chain. It detects normal applications errors which are used to respond to
-// the client in a uniform way. Unexpected errors (status >= 500) are logged.
-type ErrorHandler struct {
-	Log *log.Logger
-}
-
-// Handle is the actual Middleware function to be ran when building the chain.
-func (mw *ErrorHandler) Handle(before web.Handler) web.Handler {
+// Errors handles errors coming out of the call chain. It detects normal
+// application errors which are used to respond to the client in a uniform way.
+// Unexpected errors (status >= 500) are logged.
+func (mw *Middleware) Errors(before web.Handler) web.Handler {
 	h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		ctx, span := trace.StartSpan(ctx, "internal.mid.ErrorHandler")
 		defer span.End()

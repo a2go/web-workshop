@@ -2,7 +2,6 @@ package mid
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"time"
 
@@ -10,14 +9,9 @@ import (
 	"go.opencensus.io/trace"
 )
 
-// RequestLogger writes some information about the request to the logs in
-// the format: TraceID : (200) GET /foo -> IP ADDR (latency)
-type RequestLogger struct {
-	Log *log.Logger
-}
-
-// Handle is the actual Middleware function to be ran when building the chain.
-func (mw *RequestLogger) Handle(before web.Handler) web.Handler {
+// Logger writes some information about the request to the logs in the
+// format: TraceID : (200) GET /foo -> IP ADDR (latency)
+func (mw *Middleware) Logger(before web.Handler) web.Handler {
 	h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		ctx, span := trace.StartSpan(ctx, "internal.mid.RequestLogger")
 		defer span.End()

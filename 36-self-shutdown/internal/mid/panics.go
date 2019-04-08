@@ -9,9 +9,9 @@ import (
 	"go.opencensus.io/trace"
 )
 
-// PanicHandler recovers from panics and converts the panic to an error so it
-// is reported in Metrics and handled in ErrorHandler.
-func PanicHandler(next web.Handler) web.Handler {
+// Panics recovers from panics and converts the panic to an error so it is
+// reported in Metrics and handled in Errors.
+func (mw *Middleware) Panics(next web.Handler) web.Handler {
 	h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) (err error) {
 		ctx, span := trace.StartSpan(ctx, "internal.mid.PanicHandler")
 		defer span.End()
