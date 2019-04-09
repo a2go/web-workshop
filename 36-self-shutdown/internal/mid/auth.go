@@ -11,15 +11,8 @@ import (
 	"go.opencensus.io/trace"
 )
 
-// Auth is used to authenticate and authorize HTTP requests.
-type Auth struct {
-	Authenticator *auth.Authenticator
-}
-
 // Authenticate validates a JWT from the `Authorization` header.
-func (a *Auth) Authenticate(after web.Handler) web.Handler {
-
-	// Wrap this handler around the next one provided.
+func (mw *Middleware) Authenticate(after web.Handler) web.Handler {
 	h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		ctx, span := trace.StartSpan(ctx, "internal.mid.Authenticate")
 		defer span.End()
@@ -37,7 +30,7 @@ func (a *Auth) Authenticate(after web.Handler) web.Handler {
 
 		// Start a span to measure just the time spent in ParseClaims.
 		_, span = trace.StartSpan(ctx, "auth.ParseClaims")
-		claims, err := a.Authenticator.ParseClaims(tknStr)
+		claims, err := mw.Authenticator.ParseClaims(tknStr)
 		span.End()
 		if err != nil {
 			return web.ErrorWithStatus(err, http.StatusUnauthorized)
@@ -69,8 +62,8 @@ var ErrForbidden = web.ErrorWithStatus(errors.New("you are not authorized for th
 
 // HasRole validates that an authenticated user has at least one role from a
 // specified list. This method constructs the actual function that is used.
-func (a *Auth) HasRole(roles ...string) func(next web.Handler) web.Handler {
-	mw := func(next web.Handler) web.Handler {
+func (mw *Middleware) HasRole(roles ...string) web.Middleware {
+	fn := func(next web.Handler) web.Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 			ctx, span := trace.StartSpan(ctx, "internal.mid.HasRole")
 			defer span.End()
@@ -90,5 +83,5 @@ func (a *Auth) HasRole(roles ...string) func(next web.Handler) web.Handler {
 		return h
 	}
 
-	return mw
+	return fn
 }
