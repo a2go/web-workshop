@@ -10,15 +10,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Auth is used to authenticate and authorize HTTP requests.
-type Auth struct {
-	Authenticator *auth.Authenticator
-}
-
 // Authenticate validates a JWT from the `Authorization` header.
-func (a *Auth) Authenticate(after web.Handler) web.Handler {
-
-	// Wrap this handler around the next one provided.
+func (mw *Middleware) Authenticate(after web.Handler) web.Handler {
 	h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		authHdr := r.Header.Get("Authorization")
 		if authHdr == "" {
@@ -31,7 +24,7 @@ func (a *Auth) Authenticate(after web.Handler) web.Handler {
 			return web.ErrorWithStatus(err, http.StatusUnauthorized)
 		}
 
-		claims, err := a.Authenticator.ParseClaims(tknStr)
+		claims, err := mw.Authenticator.ParseClaims(tknStr)
 		if err != nil {
 			return web.ErrorWithStatus(err, http.StatusUnauthorized)
 		}

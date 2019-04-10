@@ -1,27 +1,15 @@
 package mid
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/ardanlabs/garagesale/internal/platform/web"
 )
 
-// ErrorHandler creates a middlware that handles errors come out of the call
-// chain. It detects normal applications errors which are used to respond to
-// the client in a uniform way. Unexpected errors (status >= 500) are logged.
-func ErrorHandler(log *log.Logger) web.Middleware {
-	e := errorMW{log: log}
-	return e.mw
-}
-
-// errorMW holds the required state for the ErrorHandler middleware.
-type errorMW struct {
-	log *log.Logger
-}
-
-// mw is the actual Middleware function to be ran when building the chain.
-func (e *errorMW) mw(before web.Handler) web.Handler {
+// Errors handles errors coming out of the call chain. It detects normal
+// application errors which are used to respond to the client in a uniform way.
+// Unexpected errors (status >= 500) are logged.
+func (mw *Middleware) Errors(before web.Handler) web.Handler {
 	h := func(w http.ResponseWriter, r *http.Request) error {
 
 		// Run the handler chain and catch any propagated error.
@@ -31,7 +19,7 @@ func (e *errorMW) mw(before web.Handler) web.Handler {
 			// If the error is an internal issue then log it.
 			// Do not log errors that come from client requests.
 			if serr.Status >= http.StatusInternalServerError {
-				log.Printf("%+v", err)
+				mw.Log.Printf("%+v", err)
 			}
 
 			// Tell the client about the error.

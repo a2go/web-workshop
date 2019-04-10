@@ -58,7 +58,10 @@ func parseAuthHeader(bearerStr string) (string, error) {
 
 // ErrForbidden is returned when an authenticated user does not have a
 // sufficient role for an action.
-var ErrForbidden = web.ErrorWithStatus(errors.New("you are not authorized for that action"), http.StatusUnauthorized)
+var ErrForbidden = web.ErrorWithStatus(
+	errors.New("you are not authorized for that action"),
+	http.StatusUnauthorized,
+)
 
 // HasRole validates that an authenticated user has at least one role from a
 // specified list. This method constructs the actual function that is used.

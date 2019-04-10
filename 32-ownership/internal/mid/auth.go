@@ -10,15 +10,8 @@ import (
 	"github.com/ardanlabs/garagesale/internal/platform/web"
 )
 
-// Auth is used to authenticate and authorize HTTP requests.
-type Auth struct {
-	Authenticator *auth.Authenticator
-}
-
 // Authenticate validates a JWT from the `Authorization` header.
-func (a *Auth) Authenticate(after web.Handler) web.Handler {
-
-	// Wrap this handler around the next one provided.
+func (mw *Middleware) Authenticate(after web.Handler) web.Handler {
 	h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		authHdr := r.Header.Get("Authorization")
 		if authHdr == "" {
@@ -31,7 +24,7 @@ func (a *Auth) Authenticate(after web.Handler) web.Handler {
 			return web.ErrorWithStatus(err, http.StatusUnauthorized)
 		}
 
-		claims, err := a.Authenticator.ParseClaims(tknStr)
+		claims, err := mw.Authenticator.ParseClaims(tknStr)
 		if err != nil {
 			return web.ErrorWithStatus(err, http.StatusUnauthorized)
 		}
@@ -65,8 +58,8 @@ var ErrForbidden = web.ErrorWithStatus(
 
 // HasRole validates that an authenticated user has at least one role from a
 // specified list. This method constructs the actual function that is used.
-func (a *Auth) HasRole(roles ...string) func(next web.Handler) web.Handler {
-	mw := func(next web.Handler) web.Handler {
+func (mw *Middleware) HasRole(roles ...string) web.Middleware {
+	fn := func(next web.Handler) web.Handler {
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 
 			claims, ok := ctx.Value(auth.Key).(auth.Claims)
@@ -84,5 +77,5 @@ func (a *Auth) HasRole(roles ...string) func(next web.Handler) web.Handler {
 		return h
 	}
 
-	return mw
+	return fn
 }

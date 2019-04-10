@@ -22,7 +22,7 @@ var m = struct {
 }
 
 // Metrics updates program counters.
-func Metrics(before web.Handler) web.Handler {
+func (mw *Middleware) Metrics(before web.Handler) web.Handler {
 
 	h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 		ctx, span := trace.StartSpan(ctx, "internal.mid.Metrics")
