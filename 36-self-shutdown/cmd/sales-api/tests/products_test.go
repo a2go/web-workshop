@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
@@ -25,8 +26,9 @@ func TestProducts(t *testing.T) {
 	test := tests.New(t)
 	defer test.Teardown()
 
+	shutdown := make(chan os.Signal, 1)
 	tests := ProductTests{
-		app:        handlers.API(test.DB, test.Log, test.Authenticator),
+		app:        handlers.API(shutdown, test.DB, test.Log, test.Authenticator),
 		adminToken: test.Token(t, "admin@example.com", "gophers"),
 	}
 

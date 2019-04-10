@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
@@ -15,7 +16,8 @@ func TestUsers(t *testing.T) {
 	test := tests.New(t)
 	defer test.Teardown()
 
-	ut := UserTests{app: handlers.API(test.DB, test.Log, test.Authenticator)}
+	shutdown := make(chan os.Signal, 1)
+	ut := UserTests{app: handlers.API(shutdown, test.DB, test.Log, test.Authenticator)}
 
 	t.Run("TokenRequireAuth", ut.TokenRequireAuth)
 	t.Run("TokenDenyUnknown", ut.TokenDenyUnknown)
