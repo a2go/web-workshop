@@ -37,7 +37,7 @@ func (a *App) Handle(method, url string, h Handler) {
 	// wrap the application's middleware around this endpoint's handler.
 	h = wrapMiddleware(a.mw, h)
 
-	// Create a function that conforms to the std lib defintioin of a handler.
+	// Create a function that conforms to the std lib definition of a handler.
 	// This is the first thing that will be executed when this route is called.
 	fn := func(w http.ResponseWriter, r *http.Request) {
 
