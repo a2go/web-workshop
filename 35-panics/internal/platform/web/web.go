@@ -34,16 +34,30 @@ type App struct {
 	log *log.Logger
 	mux *chi.Mux
 	mw  []Middleware
+	och *ochttp.Handler
 }
 
 // New constructs an App to handle a set of routes. Any Middleware provided
 // will be ran for every request.
 func New(log *log.Logger, mw ...Middleware) *App {
-	return &App{
+	app := App{
 		log: log,
 		mux: chi.NewRouter(),
 		mw:  mw,
 	}
+
+	// Create an OpenCensus HTTP Handler which wraps the router. This will start
+	// the initial span and annotate it with information about the request/response.
+	//
+	// This is configured to use the W3C TraceContext standard to set the remote
+	// parent if an client request includes the appropriate headers.
+	// https://w3c.github.io/trace-context/
+	app.och = &ochttp.Handler{
+		Handler:     app.mux,
+		Propagation: &tracecontext.HTTPFormat{},
+	}
+
+	return &app
 }
 
 // Handle associates a handler function with an HTTP Method and URL pattern.
@@ -74,26 +88,14 @@ func (a *App) Handle(method, url string, h Handler, mw ...Middleware) {
 
 		// Run the handler chain and catch any propagated error.
 		if err := h(ctx, w, r); err != nil {
-			a.log.Printf("Unhandled error: %+v", err)
+			a.log.Printf("%s : Unhandled error: %+v", v.TraceID, err)
 		}
 	}
 
-	// Create an OpenCensus HTTP Handler which wraps our chain. This will start
-	// the initial span and annotate it with information about the request/response.
-	//
-	// This is configured to use the W3C TraceContext standard to set the remote
-	// parent if an client request includes the appropriate headers.
-	// https://w3c.github.io/trace-context/
-	och := &ochttp.Handler{
-		Handler:     http.HandlerFunc(fn),
-		Propagation: &tracecontext.HTTPFormat{},
-	}
-
-	// Register the
-	a.mux.Method(method, url, och)
+	a.mux.MethodFunc(method, url, fn)
 }
 
 // ServeHTTP implements the http.Handler interface.
 func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	a.mux.ServeHTTP(w, r)
+	a.och.ServeHTTP(w, r)
 }

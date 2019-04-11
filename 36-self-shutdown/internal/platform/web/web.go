@@ -36,18 +36,32 @@ type App struct {
 	log      *log.Logger
 	mux      *chi.Mux
 	mw       []Middleware
+	och      *ochttp.Handler
 	shutdown chan os.Signal
 }
 
 // New constructs an App to handle a set of routes. Any Middleware provided
 // will be ran for every request.
 func New(shutdown chan os.Signal, log *log.Logger, mw ...Middleware) *App {
-	return &App{
+	app := App{
 		log:      log,
 		mux:      chi.NewRouter(),
 		mw:       mw,
 		shutdown: shutdown,
 	}
+
+	// Create an OpenCensus HTTP Handler which wraps the router. This will start
+	// the initial span and annotate it with information about the request/response.
+	//
+	// This is configured to use the W3C TraceContext standard to set the remote
+	// parent if an client request includes the appropriate headers.
+	// https://w3c.github.io/trace-context/
+	app.och = &ochttp.Handler{
+		Handler:     app.mux,
+		Propagation: &tracecontext.HTTPFormat{},
+	}
+
+	return &app
 }
 
 // Handle associates a handler function with an HTTP Method and URL pattern.
@@ -85,24 +99,12 @@ func (a *App) Handle(method, url string, h Handler, mw ...Middleware) {
 		}
 	}
 
-	// Create an OpenCensus HTTP Handler which wraps our chain. This will start
-	// the initial span and annotate it with information about the request/response.
-	//
-	// This is configured to use the W3C TraceContext standard to set the remote
-	// parent if an client request includes the appropriate headers.
-	// https://w3c.github.io/trace-context/
-	och := &ochttp.Handler{
-		Handler:     http.HandlerFunc(fn),
-		Propagation: &tracecontext.HTTPFormat{},
-	}
-
-	// Register the
-	a.mux.Method(method, url, och)
+	a.mux.MethodFunc(method, url, fn)
 }
 
 // ServeHTTP implements the http.Handler interface.
 func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	a.mux.ServeHTTP(w, r)
+	a.och.ServeHTTP(w, r)
 }
 
 // SignalShutdown is used to gracefully shutdown the app when an integrity
