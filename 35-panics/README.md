@@ -15,6 +15,5 @@ global default logger.
 
 ```
 Modified cmd/sales-api/internal/handlers/check.go
-Modified cmd/sales-api/internal/handlers/routes.go
 Added    internal/mid/panics.go
 ```

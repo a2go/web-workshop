@@ -14,8 +14,11 @@ cases we can't let the service continue to run. The application must shut down.
 Modified cmd/sales-api/internal/handlers/check.go
 Modified cmd/sales-api/internal/handlers/routes.go
 Modified cmd/sales-api/main.go
+Modified cmd/sales-api/tests/products_test.go
+Modified cmd/sales-api/tests/users_test.go
 Modified internal/mid/errors.go
 Modified internal/mid/logger.go
 Modified internal/platform/web/errors.go
+Modified internal/platform/web/response.go
 Modified internal/platform/web/web.go
 ```

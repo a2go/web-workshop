@@ -13,6 +13,7 @@
 Modified cmd/sales-api/internal/handlers/routes.go
 Modified cmd/sales-api/tests/products_test.go
 Added    internal/mid/auth.go
+Modified internal/mid/mid.go
 Modified internal/platform/auth/auth.go
 Modified internal/platform/auth/claims.go
 Modified internal/platform/tests/tests.go

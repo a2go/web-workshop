@@ -12,6 +12,7 @@
 ```
 Modified cmd/sales-api/internal/handlers/routes.go
 Added    internal/mid/errors.go
+Added    internal/mid/mid.go
 Added    internal/platform/web/middleware.go
 Modified internal/platform/web/web.go
 ```
