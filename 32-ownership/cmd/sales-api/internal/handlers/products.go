@@ -60,9 +60,9 @@ func (s *Products) Get(ctx context.Context, w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		switch err {
 		case products.ErrNotFound:
-			return web.ErrorWithStatus(err, http.StatusNotFound)
+			return web.WrapErrorWithStatus(err, http.StatusNotFound)
 		case products.ErrInvalidID:
-			return web.ErrorWithStatus(err, http.StatusBadRequest)
+			return web.WrapErrorWithStatus(err, http.StatusBadRequest)
 		default:
 			return errors.Wrapf(err, "getting product %q", id)
 		}
@@ -89,11 +89,11 @@ func (s *Products) Update(ctx context.Context, w http.ResponseWriter, r *http.Re
 	if err := products.Update(ctx, s.db, claims, id, update, time.Now()); err != nil {
 		switch err {
 		case products.ErrNotFound:
-			return web.ErrorWithStatus(err, http.StatusNotFound)
+			return web.WrapErrorWithStatus(err, http.StatusNotFound)
 		case products.ErrInvalidID:
-			return web.ErrorWithStatus(err, http.StatusBadRequest)
+			return web.WrapErrorWithStatus(err, http.StatusBadRequest)
 		case products.ErrForbidden:
-			return web.ErrorWithStatus(err, http.StatusForbidden)
+			return web.WrapErrorWithStatus(err, http.StatusForbidden)
 		default:
 			return errors.Wrapf(err, "updating product %q", id)
 		}
@@ -109,7 +109,7 @@ func (s *Products) Delete(ctx context.Context, w http.ResponseWriter, r *http.Re
 	if err := products.Delete(ctx, s.db, id); err != nil {
 		switch err {
 		case products.ErrInvalidID:
-			return web.ErrorWithStatus(err, http.StatusBadRequest)
+			return web.WrapErrorWithStatus(err, http.StatusBadRequest)
 		default:
 			return errors.Wrapf(err, "deleting product %q", id)
 		}

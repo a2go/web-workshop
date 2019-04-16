@@ -16,17 +16,17 @@ func (mw *Middleware) Authenticate(after web.Handler) web.Handler {
 		authHdr := r.Header.Get("Authorization")
 		if authHdr == "" {
 			err := errors.New("missing Authorization header")
-			return web.ErrorWithStatus(err, http.StatusUnauthorized)
+			return web.WrapErrorWithStatus(err, http.StatusUnauthorized)
 		}
 
 		tknStr, err := parseAuthHeader(authHdr)
 		if err != nil {
-			return web.ErrorWithStatus(err, http.StatusUnauthorized)
+			return web.WrapErrorWithStatus(err, http.StatusUnauthorized)
 		}
 
 		claims, err := mw.Authenticator.ParseClaims(tknStr)
 		if err != nil {
-			return web.ErrorWithStatus(err, http.StatusUnauthorized)
+			return web.WrapErrorWithStatus(err, http.StatusUnauthorized)
 		}
 
 		// Add claims to the context so they can be retrieved later.

@@ -14,17 +14,20 @@ func (mw *Middleware) Errors(before web.Handler) web.Handler {
 
 		// Run the handler chain and catch any propagated error.
 		if err := before(w, r); err != nil {
-			serr := web.ToStatusError(err)
 
-			// If the error is an internal issue then log it.
-			// Do not log errors that come from client requests.
+			// Convert the error interface variable to the concrete type
+			// *web.StatusError to find the appropriate HTTP status.
+			serr := web.NewStatusError(err)
+
+			// If the error is an internal issue then log the error message.
+			// Do not log error messages that come from client requests.
 			if serr.Status >= http.StatusInternalServerError {
 				mw.Log.Printf("%+v", err)
 			}
 
-			// Tell the client about the error.
+			// Respond with the error type we send to clients.
 			res := web.ErrorResponse{
-				Error:  serr.ExternalError(),
+				Error:  serr.String(),
 				Fields: serr.Fields,
 			}
 

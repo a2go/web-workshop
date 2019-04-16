@@ -37,7 +37,7 @@ func init() {
 // If the provided value is a struct then it is checked for validation tags.
 func Decode(r *http.Request, val interface{}) error {
 	if err := json.NewDecoder(r.Body).Decode(val); err != nil {
-		return ErrorWithStatus(err, http.StatusBadRequest)
+		return WrapErrorWithStatus(err, http.StatusBadRequest)
 	}
 
 	if err := v.Struct(val); err != nil {

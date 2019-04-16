@@ -9,7 +9,7 @@ import (
 // body is decoded into the provided value.
 func Decode(r *http.Request, val interface{}) error {
 	if err := json.NewDecoder(r.Body).Decode(val); err != nil {
-		return ErrorWithStatus(err, http.StatusBadRequest)
+		return WrapErrorWithStatus(err, http.StatusBadRequest)
 	}
 
 	return nil

@@ -26,13 +26,13 @@ func (s *Users) Token(ctx context.Context, w http.ResponseWriter, r *http.Reques
 	email, pass, ok := r.BasicAuth()
 	if !ok {
 		err := errors.New("must provide email and password in Basic auth")
-		return web.ErrorWithStatus(err, http.StatusUnauthorized)
+		return web.WrapErrorWithStatus(err, http.StatusUnauthorized)
 	}
 
 	claims, err := users.Authenticate(ctx, s.db, time.Now(), email, pass)
 	if err != nil {
 		if err == users.ErrAuthenticationFailure {
-			return web.ErrorWithStatus(err, http.StatusUnauthorized)
+			return web.WrapErrorWithStatus(err, http.StatusUnauthorized)
 		}
 		return errors.Wrap(err, "authenticating user")
 	}
