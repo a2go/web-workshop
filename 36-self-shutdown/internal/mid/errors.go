@@ -2,7 +2,6 @@ package mid
 
 import (
 	"context"
-	"errors"
 	"net/http"
 
 	"github.com/ardanlabs/garagesale/internal/platform/web"
@@ -17,9 +16,11 @@ func (mw *Middleware) Errors(before web.Handler) web.Handler {
 		ctx, span := trace.StartSpan(ctx, "internal.mid.ErrorHandler")
 		defer span.End()
 
+		// If the context is missing this value, request the service
+		// to be shutdown gracefully.
 		v, ok := ctx.Value(web.KeyValues).(*web.Values)
 		if !ok {
-			return errors.New("web value missing from context")
+			return web.Shutdown("web value missing from context")
 		}
 
 		// Run the handler chain and catch any propagated error.
