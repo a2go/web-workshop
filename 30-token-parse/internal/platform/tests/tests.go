@@ -34,7 +34,7 @@ func New(t *testing.T) *Test {
 	// Initialize and seed database. Store the cleanup function call later.
 	test.DB, test.cleanup = databasetest.Setup(t)
 
-	if err := schema.Seed(test.DB.DB); err != nil {
+	if err := schema.Seed(test.DB); err != nil {
 		t.Fatal(err)
 	}
 

@@ -30,7 +30,7 @@ func main() {
 
 	switch flag.Arg(0) {
 	case "migrate":
-		if err := schema.Migrate(db.DB); err != nil {
+		if err := schema.Migrate(db); err != nil {
 			log.Println("error applying migrations", err)
 			os.Exit(1)
 		}
@@ -38,7 +38,7 @@ func main() {
 		return
 
 	case "seed":
-		if err := schema.Seed(db.DB); err != nil {
+		if err := schema.Seed(db); err != nil {
 			log.Println("error seeding database", err)
 			os.Exit(1)
 		}

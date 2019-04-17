@@ -54,7 +54,7 @@ func Setup(t *testing.T) (*sqlx.DB, func()) {
 		t.Fatalf("waiting for database to be ready: %v", pingError)
 	}
 
-	if err := schema.Migrate(db.DB); err != nil {
+	if err := schema.Migrate(db); err != nil {
 		stopContainer(t, c)
 		t.Fatalf("migrating: %s", err)
 	}

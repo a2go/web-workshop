@@ -40,7 +40,7 @@ func TestProductList(t *testing.T) {
 	db, teardown := databasetest.Setup(t)
 	defer teardown()
 
-	if err := schema.Seed(db.DB); err != nil {
+	if err := schema.Seed(db); err != nil {
 		t.Fatal(err)
 	}
 

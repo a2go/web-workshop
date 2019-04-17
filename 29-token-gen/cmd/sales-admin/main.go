@@ -76,13 +76,13 @@ func run() error {
 
 	switch flag.Arg(0) {
 	case "migrate":
-		if err := schema.Migrate(db.DB); err != nil {
+		if err := schema.Migrate(db); err != nil {
 			return errors.Wrap(err, "applying migrations")
 		}
 		log.Println("Migrations complete")
 
 	case "seed":
-		if err := schema.Seed(db.DB); err != nil {
+		if err := schema.Seed(db); err != nil {
 			return errors.Wrap(err, "seeding database")
 		}
 		log.Println("Seed data complete")
