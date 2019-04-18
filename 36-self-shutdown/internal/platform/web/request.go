@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"reflect"
+	"strings"
 
 	en "github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
@@ -11,8 +13,8 @@ import (
 	en_translations "gopkg.in/go-playground/validator.v9/translations/en"
 )
 
-// v holds the settings and caches for validating request struct values.
-var v = validator.New()
+// validate holds the settings and caches for validating request struct values.
+var validate = validator.New()
 
 // translator is a cache of locale and translation information.
 var translator *ut.UniversalTranslator
@@ -28,7 +30,16 @@ func init() {
 
 	// Register the english error messages for validation errors.
 	lang, _ := translator.GetTranslator("en")
-	en_translations.RegisterDefaultTranslations(v, lang)
+	en_translations.RegisterDefaultTranslations(validate, lang)
+
+	// Use JSON tag names for errors instead of Go struct names.
+	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+		if name == "-" {
+			return ""
+		}
+		return name
+	})
 }
 
 // Decode reads the body of an HTTP request looking for a JSON document. The
@@ -40,10 +51,10 @@ func Decode(r *http.Request, val interface{}) error {
 		return WrapErrorWithStatus(err, http.StatusBadRequest)
 	}
 
-	if err := v.Struct(val); err != nil {
+	if err := validate.Struct(val); err != nil {
 
 		// Use a type assertion to get the real error value.
-		verr, ok := err.(validator.ValidationErrors)
+		verrors, ok := err.(validator.ValidationErrors)
 		if !ok {
 			return err
 		}
@@ -53,11 +64,12 @@ func Decode(r *http.Request, val interface{}) error {
 		lang, _ := translator.GetTranslator("en")
 
 		var fields []FieldError
-		for field, msg := range verr.Translate(lang) {
-			fields = append(
-				fields,
-				FieldError{Field: field, Error: msg},
-			)
+		for _, verror := range verrors {
+			field := FieldError{
+				Field: verror.Field(),
+				Error: verror.Translate(lang),
+			}
+			fields = append(fields, field)
 		}
 
 		return &StatusError{
