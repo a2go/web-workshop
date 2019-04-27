@@ -27,7 +27,7 @@ func Respond(ctx context.Context, w http.ResponseWriter, data interface{}, statu
 	// Respond with the provided JSON.
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(status)
-	if _, err := w.Write([]byte(res)); err != nil {
+	if _, err := w.Write(res); err != nil {
 		return err
 	}
 
