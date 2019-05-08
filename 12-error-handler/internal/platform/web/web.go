@@ -17,8 +17,8 @@ type App struct {
 	mux *chi.Mux
 }
 
-// New constructs an App to handle a set of routes.
-func New(log *log.Logger) *App {
+// NewApp constructs an App to handle a set of routes.
+func NewApp(log *log.Logger) *App {
 	return &App{
 		log: log,
 		mux: chi.NewRouter(),

@@ -32,9 +32,9 @@ type App struct {
 	mw  []Middleware
 }
 
-// New constructs an App to handle a set of routes. Any Middleware provided
+// NewApp constructs an App to handle a set of routes. Any Middleware provided
 // will be ran for every request.
-func New(log *log.Logger, mw ...Middleware) *App {
+func NewApp(log *log.Logger, mw ...Middleware) *App {
 	return &App{
 		log: log,
 		mux: chi.NewRouter(),

@@ -40,9 +40,9 @@ type App struct {
 	shutdown chan os.Signal
 }
 
-// New constructs an App to handle a set of routes. Any Middleware provided
+// NewApp constructs an App to handle a set of routes. Any Middleware provided
 // will be ran for every request.
-func New(shutdown chan os.Signal, log *log.Logger, mw ...Middleware) *App {
+func NewApp(shutdown chan os.Signal, log *log.Logger, mw ...Middleware) *App {
 	app := App{
 		log:      log,
 		mux:      chi.NewRouter(),

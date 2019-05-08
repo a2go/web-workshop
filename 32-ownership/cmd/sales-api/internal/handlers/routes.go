@@ -14,7 +14,7 @@ import (
 func API(db *sqlx.DB, log *log.Logger, authenticator *auth.Authenticator) http.Handler {
 
 	// Construct the web.App which holds all routes as well as common Middleware.
-	app := web.New(log, mid.Logger(log), mid.Errors(log), mid.Metrics())
+	app := web.NewApp(log, mid.Logger(log), mid.Errors(log), mid.Metrics())
 
 	{
 		// Register health check handler. This route is not authenticated.
