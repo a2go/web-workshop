@@ -14,11 +14,8 @@ import (
 // API constructs an http.Handler with all application routes defined.
 func API(shutdown chan os.Signal, db *sqlx.DB, log *log.Logger, authenticator *auth.Authenticator) http.Handler {
 
-	// Create the variable that contains all Middleware functions.
-	mw := mid.Middleware{Log: log, Authenticator: authenticator}
-
 	// Construct the web.App which holds all routes as well as common Middleware.
-	app := web.New(shutdown, log, mw.Logger, mw.Errors, mw.Metrics, mw.Panics)
+	app := web.New(shutdown, log, mid.Logger(log), mid.Errors(log), mid.Metrics())
 
 	{
 		// Register health check handler. This route is not authenticated.
@@ -39,14 +36,14 @@ func API(shutdown chan os.Signal, db *sqlx.DB, log *log.Logger, authenticator *a
 		// Register Product handlers. Ensure all routes are authenticated.
 		p := Products{db: db, log: log}
 
-		app.Handle(http.MethodGet, "/v1/products", p.List, mw.Authenticate)
-		app.Handle(http.MethodGet, "/v1/products/{id}", p.Get, mw.Authenticate)
-		app.Handle(http.MethodPost, "/v1/products", p.Create, mw.Authenticate)
-		app.Handle(http.MethodPut, "/v1/products/{id}", p.Update, mw.Authenticate)
-		app.Handle(http.MethodDelete, "/v1/products/{id}", p.Delete, mw.Authenticate, mw.HasRole(auth.RoleAdmin))
+		app.Handle(http.MethodGet, "/v1/products", p.List, mid.Authenticate(authenticator))
+		app.Handle(http.MethodGet, "/v1/products/{id}", p.Get, mid.Authenticate(authenticator))
+		app.Handle(http.MethodPost, "/v1/products", p.Create, mid.Authenticate(authenticator))
+		app.Handle(http.MethodPut, "/v1/products/{id}", p.Update, mid.Authenticate(authenticator))
+		app.Handle(http.MethodDelete, "/v1/products/{id}", p.Delete, mid.Authenticate(authenticator), mid.HasRole(auth.RoleAdmin))
 
-		app.Handle(http.MethodPost, "/v1/products/{id}/sales", p.AddSale, mw.Authenticate, mw.HasRole(auth.RoleAdmin))
-		app.Handle(http.MethodGet, "/v1/products/{id}/sales", p.ListSales, mw.Authenticate)
+		app.Handle(http.MethodPost, "/v1/products/{id}/sales", p.AddSale, mid.Authenticate(authenticator), mid.HasRole(auth.RoleAdmin))
+		app.Handle(http.MethodGet, "/v1/products/{id}/sales", p.ListSales, mid.Authenticate(authenticator))
 	}
 
 	return app
