@@ -19,7 +19,7 @@ func Errors(log *log.Logger) web.Middleware {
 	f := func(before web.Handler) web.Handler {
 
 		h := func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-			ctx, span := trace.StartSpan(ctx, "internal.mid.ErrorHandler")
+			ctx, span := trace.StartSpan(ctx, "internal.mid.Errors")
 			defer span.End()
 
 			v, ok := ctx.Value(web.KeyValues).(*web.Values)
@@ -30,23 +30,38 @@ func Errors(log *log.Logger) web.Middleware {
 			// Run the handler chain and catch any propagated error.
 			if err := before(ctx, w, r); err != nil {
 
-				// Convert the error interface variable to the concrete type
-				// *web.StatusError to find the appropriate HTTP status.
-				serr := web.NewStatusError(err)
+				// If the error was of the type *web.Error, the handler has
+				// a specific status code and error to return. If not, the
+				// handler sent any arbitrary error value so use 500.
+				webErr, ok := errors.Cause(err).(*web.Error)
+				if !ok {
+					webErr = &web.Error{
+						Err:    err,
+						Status: http.StatusInternalServerError,
+						Fields: nil,
+					}
+				}
 
-				// If the error is an internal issue then log the error message.
-				// Do not log error messages that come from client requests.
-				if serr.Status >= http.StatusInternalServerError {
-					log.Printf("%s : %+v", v.TraceID, err)
+				// Log the error.
+				log.Printf("ERROR : %+v", err)
+
+				// Determine the error message service users will see. If the status
+				// code is under 500 then it is a "human readable" error that was
+				// intended for users to see. If the status code is 500 or higher (the
+				// default) then use a generic error message.
+				var errStr string
+				if webErr.Status < http.StatusInternalServerError {
+					errStr = webErr.Err.Error()
+				} else {
+					errStr = http.StatusText(webErr.Status)
 				}
 
 				// Respond with the error type we send to clients.
 				res := web.ErrorResponse{
-					Error:  serr.String(),
-					Fields: serr.Fields,
+					Error:  errStr,
+					Fields: webErr.Fields,
 				}
-
-				if err := web.Respond(ctx, w, res, serr.Status); err != nil {
+				if err := Respond(ctx, w, res, webErr.Status); err != nil {
 					return err
 				}
 			}

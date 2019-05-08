@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/pkg/errors"
 )
 
 // Handler is the signature used by all application handlers in this service.
@@ -38,23 +39,39 @@ func (a *App) Handle(method, url string, h Handler) {
 
 		if err != nil {
 
-			// Convert the error interface variable to the concrete type
-			// *web.StatusError to find the appropriate HTTP status.
-			serr := NewStatusError(err)
+			// If the error was of the type *Error, the handler has
+			// a specific status code and error to return. If not, the
+			// handler sent any arbitrary error value so use 500.
+			webErr, ok := errors.Cause(err).(*Error)
+			if !ok {
+				webErr = &Error{
+					Err:    err,
+					Status: http.StatusInternalServerError,
+					Fields: nil,
+				}
+			}
 
-			// If the error is an internal issue then log the error message.
-			// Do not log error messages that come from client requests.
-			if serr.Status >= http.StatusInternalServerError {
-				log.Printf("%+v", err)
+			// Log the error.
+			log.Printf("ERROR : %+v", err)
+
+			// Determine the error message service users will see. If the status
+			// code is under 500 then it is a "human readable" error that was
+			// intended for users to see. If the status code is 500 or higher (the
+			// default) then use a generic error message.
+			var errStr string
+			if webErr.Status < http.StatusInternalServerError {
+				errStr = webErr.Err.Error()
+			} else {
+				errStr = http.StatusText(webErr.Status)
 			}
 
 			// Respond with the error type we send to clients.
 			res := ErrorResponse{
-				Error:  serr.String(),
-				Fields: serr.Fields,
+				Error:  errStr,
+				Fields: webErr.Fields,
 			}
 
-			Respond(w, res, serr.Status)
+			Respond(w, res, webErr.Status)
 		}
 	}
 
