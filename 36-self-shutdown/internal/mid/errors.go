@@ -45,7 +45,7 @@ func Errors(log *log.Logger) web.Middleware {
 				}
 
 				// Log the error.
-				log.Printf("ERROR : %+v", err)
+				log.Printf("%s : ERROR : %+v", v.TraceID, err)
 
 				// Determine the error message service users will see. If the status
 				// code is under 500 then it is a "human readable" error that was
@@ -63,7 +63,7 @@ func Errors(log *log.Logger) web.Middleware {
 					Error:  errStr,
 					Fields: webErr.Fields,
 				}
-				if err := Respond(ctx, w, res, webErr.Status); err != nil {
+				if err := web.Respond(ctx, w, res, webErr.Status); err != nil {
 					return err
 				}
 			}

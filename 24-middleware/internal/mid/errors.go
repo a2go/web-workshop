@@ -52,7 +52,7 @@ func Errors(log *log.Logger) web.Middleware {
 					Error:  errStr,
 					Fields: webErr.Fields,
 				}
-				if err := Respond(w, res, webErr.Status); err != nil {
+				if err := web.Respond(w, res, webErr.Status); err != nil {
 					return err
 				}
 			}

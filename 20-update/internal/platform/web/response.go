@@ -28,3 +28,9 @@ func Respond(w http.ResponseWriter, data interface{}, status int) error {
 
 	return nil
 }
+
+// RespondError wraps a provided error with an HTTP status code. This
+// function should be used when handlers encounter expected errors.
+func RespondError(err error, status int) error {
+	return &Error{err, status, nil}
+}
