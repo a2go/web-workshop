@@ -12,14 +12,13 @@ import (
 // Checks holds handlers for service orchestration checks.
 type Checks struct {
 	db *sqlx.DB
+
+	// ADD OTHER STATE LIKE THE LOGGER IF NEEDED.
 }
 
 // Health returns a 200 OK status if the service is ready to
 // receive requests.
 func (s *Checks) Health(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-
-	return web.Shutdown("die")
-
 	ctx, span := trace.StartSpan(ctx, "handlers.Checks.Health")
 	defer span.End()
 
