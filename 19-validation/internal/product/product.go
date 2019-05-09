@@ -19,25 +19,6 @@ var (
 	ErrInvalidID = errors.New("ID is not in its proper form")
 )
 
-// Product is an item we sell.
-type Product struct {
-	ID          string    `db:"product_id" json:"id"`
-	Name        string    `db:"name" json:"name"`
-	Cost        int       `db:"cost" json:"cost"`
-	Quantity    int       `db:"quantity" json:"quantity"`
-	Sold        int       `db:"sold" json:"sold"`
-	Revenue     int       `db:"revenue" json:"revenue"`
-	DateCreated time.Time `db:"date_created" json:"date_created"`
-	DateUpdated time.Time `db:"date_updated" json:"date_updated"`
-}
-
-// NewProduct is what we require from clients when adding a Product.
-type NewProduct struct {
-	Name     string `json:"name" validate:"required"`
-	Cost     int    `json:"cost" validate:"gte=0"`
-	Quantity int    `json:"quantity" validate:"gte=1"`
-}
-
 // List gets all Products from the database.
 func List(ctx context.Context, db *sqlx.DB) ([]Product, error) {
 	products := []Product{}

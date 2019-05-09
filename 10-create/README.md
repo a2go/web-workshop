@@ -9,5 +9,6 @@
 ```
 Modified cmd/sales-api/internal/handlers/product.go
 Modified cmd/sales-api/internal/handlers/routes.go
+Modified internal/product/models.go
 Modified internal/product/product.go
 ```

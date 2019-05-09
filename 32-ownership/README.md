@@ -14,6 +14,7 @@ Modified cmd/sales-api/internal/handlers/product.go
 Modified cmd/sales-api/tests/product_test.go
 Modified internal/platform/database/schema/migrations.go
 Modified internal/platform/tests/tests.go
+Modified internal/product/models.go
 Modified internal/product/product.go
 Modified internal/product/product_test.go
 Modified internal/product/sales_test.go
