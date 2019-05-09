@@ -14,7 +14,7 @@ var (
 	// ErrNotFound is used when a specific Product is requested but does not exist.
 	ErrNotFound = errors.New("product not found")
 
-	// ErrInvalidID is used when a specific Product is requested but does not exist.
+	// ErrInvalidID is used when an invalid UUID is provided.
 	ErrInvalidID = errors.New("ID is not in its proper form")
 )
 
