@@ -15,5 +15,6 @@ Not every error is an internal server error.
 ```
 Modified internal/platform/web/errors.go
 Modified internal/platform/web/request.go
+Modified internal/platform/web/response.go
 Modified internal/platform/web/web.go
 ```
