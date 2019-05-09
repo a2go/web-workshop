@@ -13,11 +13,11 @@ http://localhost:8000/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e
 ## File Changes:
 
 ```
-Modified cmd/sales-api/internal/handlers/products.go
+Modified cmd/sales-api/internal/handlers/product.go
 Added    cmd/sales-api/internal/handlers/routes.go
 Modified cmd/sales-api/main.go
 Added    internal/platform/web/web.go
-Modified internal/products/products.go
+Modified internal/product/product.go
 ```
 
 ## Dependency Changes:

@@ -14,7 +14,7 @@ Modified cmd/sales-admin/main.go
 Added    internal/platform/auth/claims.go
 Modified internal/platform/database/schema/migrations.go
 Modified internal/platform/database/schema/seeds.go
-Added    internal/users/users.go
+Added    internal/user/user.go
 ```
 
 ## Dependency Changes:

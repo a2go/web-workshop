@@ -10,14 +10,14 @@
 ## File Changes:
 
 ```
-Modified cmd/sales-api/tests/products_test.go
+Modified cmd/sales-api/tests/product_test.go
 Modified internal/platform/web/errors.go
 Modified internal/platform/web/request.go
 Added    internal/platform/web/request_test.go
 Modified internal/platform/web/response.go
 Modified internal/platform/web/web.go
-Modified internal/products/products.go
-Modified internal/products/sales.go
+Modified internal/product/product.go
+Modified internal/product/sales.go
 ```
 
 ## Dependency Changes:

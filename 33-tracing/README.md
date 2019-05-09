@@ -23,8 +23,8 @@ spans by explicitly using `StartSpan` and `span.End`. See `mid/auth.go`.
 
 ```
 Modified cmd/sales-api/internal/handlers/check.go
-Modified cmd/sales-api/internal/handlers/products.go
-Modified cmd/sales-api/internal/handlers/users.go
+Modified cmd/sales-api/internal/handlers/product.go
+Modified cmd/sales-api/internal/handlers/user.go
 Modified cmd/sales-api/main.go
 Modified docker-compose.yaml
 Modified internal/mid/auth.go
@@ -32,9 +32,9 @@ Modified internal/mid/errors.go
 Modified internal/mid/logger.go
 Modified internal/mid/metrics.go
 Modified internal/platform/web/web.go
-Modified internal/products/products.go
-Modified internal/products/sales.go
-Modified internal/users/users.go
+Modified internal/product/product.go
+Modified internal/product/sales.go
+Modified internal/user/user.go
 ```
 
 ## Dependency Changes:

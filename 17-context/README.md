@@ -10,7 +10,7 @@ Long running operations should be given a deadline. The idiomatic way to handle 
 ## File Changes:
 
 ```
-Modified cmd/sales-api/internal/handlers/products.go
-Modified internal/products/products.go
-Modified internal/products/products_test.go
+Modified cmd/sales-api/internal/handlers/product.go
+Modified internal/product/product.go
+Modified internal/product/product_test.go
 ```

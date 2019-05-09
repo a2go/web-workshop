@@ -10,11 +10,11 @@
 ## File Changes:
 
 ```
-Modified cmd/sales-api/internal/handlers/products.go
-Modified cmd/sales-api/tests/products_test.go
+Modified cmd/sales-api/internal/handlers/product.go
+Modified cmd/sales-api/tests/product_test.go
 Modified internal/platform/database/schema/migrations.go
 Modified internal/platform/tests/tests.go
-Modified internal/products/products.go
-Modified internal/products/products_test.go
-Modified internal/products/sales_test.go
+Modified internal/product/product.go
+Modified internal/product/product_test.go
+Modified internal/product/sales_test.go
 ```

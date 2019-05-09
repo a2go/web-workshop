@@ -12,7 +12,7 @@ repetitive. Provide some support for that in the web package.
 ## File Changes:
 
 ```
-Modified cmd/sales-api/internal/handlers/products.go
+Modified cmd/sales-api/internal/handlers/product.go
 Added    internal/platform/web/errors.go
 Modified internal/platform/web/web.go
 ```

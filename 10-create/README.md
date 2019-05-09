@@ -7,7 +7,7 @@
 ## File Changes:
 
 ```
-Modified cmd/sales-api/internal/handlers/products.go
+Modified cmd/sales-api/internal/handlers/product.go
 Modified cmd/sales-api/internal/handlers/routes.go
-Modified internal/products/products.go
+Modified internal/product/product.go
 ```

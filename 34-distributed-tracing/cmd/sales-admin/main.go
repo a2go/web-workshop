@@ -16,7 +16,7 @@ import (
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/database"
 	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
-	"github.com/ardanlabs/garagesale/internal/users"
+	"github.com/ardanlabs/garagesale/internal/user"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
 )
@@ -109,14 +109,14 @@ func run() error {
 		ctx := context.Background()
 
 		// TODO Talk about the engineering decision around validation at web vs service layer.
-		nu := users.NewUser{
+		nu := user.NewUser{
 			Email:           email,
 			Password:        password,
 			PasswordConfirm: password,
 			Roles:           []string{auth.RoleAdmin, auth.RoleUser},
 		}
 
-		u, err := users.Create(ctx, db, nu, time.Now())
+		u, err := user.Create(ctx, db, nu, time.Now())
 		if err != nil {
 			return err
 		}

@@ -11,7 +11,7 @@ Move these behaviors to a dedicated package.
 ## File Changes:
 
 ```
-Modified cmd/sales-api/internal/handlers/products.go
+Modified cmd/sales-api/internal/handlers/product.go
 Added    internal/platform/web/request.go
 Added    internal/platform/web/response.go
 ```

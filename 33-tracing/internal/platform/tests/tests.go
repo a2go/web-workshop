@@ -12,7 +12,7 @@ import (
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
-	"github.com/ardanlabs/garagesale/internal/users"
+	"github.com/ardanlabs/garagesale/internal/user"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -74,7 +74,7 @@ func (test *Test) Teardown() {
 func (test *Test) Token(t *testing.T, email, pass string) string {
 	t.Helper()
 
-	claims, err := users.Authenticate(
+	claims, err := user.Authenticate(
 		context.Background(), test.DB, time.Now(),
 		email, pass,
 	)

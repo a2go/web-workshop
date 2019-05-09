@@ -16,6 +16,6 @@ to send them up the call chain with an HTTP status.
 ## File Changes:
 
 ```
-Modified cmd/sales-api/internal/handlers/products.go
-Modified internal/products/products.go
+Modified cmd/sales-api/internal/handlers/product.go
+Modified internal/product/product.go
 ```

@@ -8,5 +8,5 @@
 ## File Changes:
 
 ```
-Added    cmd/sales-api/tests/products_test.go
+Added    cmd/sales-api/tests/product_test.go
 ```

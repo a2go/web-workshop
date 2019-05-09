@@ -9,7 +9,7 @@
 
 ```
 Modified cmd/sales-api/internal/handlers/check.go
-Modified cmd/sales-api/internal/handlers/products.go
+Modified cmd/sales-api/internal/handlers/product.go
 Modified cmd/sales-api/internal/handlers/routes.go
 Modified cmd/sales-api/main.go
 Modified internal/mid/errors.go
