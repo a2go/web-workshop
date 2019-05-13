@@ -9,10 +9,12 @@ import (
 
 // Open knows how to open a database connection.
 func Open() (*sqlx.DB, error) {
-	q := url.Values{}
+	// Query parameters.
+	var q url.Values
 	q.Set("sslmode", "disable")
 	q.Set("timezone", "utc")
 
+	// Construct url.
 	u := url.URL{
 		Scheme:   "postgres",
 		User:     url.UserPassword("postgres", "postgres"),
