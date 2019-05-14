@@ -17,8 +17,8 @@ type Products struct {
 
 // List gets all products from the service layer and encodes them for the
 // client response.
-func (s *Products) List(w http.ResponseWriter, r *http.Request) {
-	list, err := product.List(s.DB)
+func (p *Products) List(w http.ResponseWriter, r *http.Request) {
+	list, err := product.List(p.DB)
 	if err != nil {
 		log.Printf("error: listing products: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)

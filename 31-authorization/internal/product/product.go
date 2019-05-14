@@ -65,8 +65,8 @@ func Create(ctx context.Context, db *sqlx.DB, np NewProduct, now time.Time) (*Pr
 	return &p, nil
 }
 
-// Get finds the product identified by a given ID.
-func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
+// Retrieve finds the product identified by a given ID.
+func Retrieve(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
 	if _, err := uuid.Parse(id); err != nil {
 		return nil, ErrInvalidID
 	}
@@ -96,7 +96,7 @@ func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
 // Update modifies data about a Product. It will error if the specified ID is
 // invalid or does not reference an existing Product.
 func Update(ctx context.Context, db *sqlx.DB, id string, update UpdateProduct, now time.Time) error {
-	p, err := Get(ctx, db, id)
+	p, err := Retrieve(ctx, db, id)
 	if err != nil {
 		return err
 	}

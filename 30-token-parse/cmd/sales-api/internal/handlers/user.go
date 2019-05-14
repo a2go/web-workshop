@@ -18,7 +18,7 @@ type Users struct {
 	authenticator *auth.Authenticator
 }
 
-// Token generates a authentication token for a user. The client must include
+// Token generates an authentication token for a user. The client must include
 // an email and password for the request using HTTP Basic Auth. The user will
 // be identified by email and authenticated by their password.
 func (s *Users) Token(ctx context.Context, w http.ResponseWriter, r *http.Request) error {

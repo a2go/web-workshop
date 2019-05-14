@@ -20,8 +20,8 @@ type Products struct {
 }
 
 // List gets all products from the service layer.
-func (s *Products) List(w http.ResponseWriter, r *http.Request) error {
-	list, err := product.List(r.Context(), s.db)
+func (p *Products) List(w http.ResponseWriter, r *http.Request) error {
+	list, err := product.List(r.Context(), p.db)
 	if err != nil {
 		return errors.Wrap(err, "getting product list")
 	}
@@ -31,25 +31,25 @@ func (s *Products) List(w http.ResponseWriter, r *http.Request) error {
 
 // Create decodes the body of a request to create a new product. The full
 // product with generated fields is sent back in the response.
-func (s *Products) Create(w http.ResponseWriter, r *http.Request) error {
+func (p *Products) Create(w http.ResponseWriter, r *http.Request) error {
 	var np product.NewProduct
 	if err := web.Decode(r, &np); err != nil {
 		return errors.Wrap(err, "decoding new product")
 	}
 
-	p, err := product.Create(r.Context(), s.db, np, time.Now())
+	prod, err := product.Create(r.Context(), p.db, np, time.Now())
 	if err != nil {
 		return errors.Wrap(err, "creating new product")
 	}
 
-	return web.Respond(w, &p, http.StatusCreated)
+	return web.Respond(w, &prod, http.StatusCreated)
 }
 
-// Get finds a single product identified by an ID in the request URL.
-func (s *Products) Get(w http.ResponseWriter, r *http.Request) error {
+// Retrieve finds a single product identified by an ID in the request URL.
+func (p *Products) Retrieve(w http.ResponseWriter, r *http.Request) error {
 	id := chi.URLParam(r, "id")
 
-	p, err := product.Get(r.Context(), s.db, id)
+	prod, err := product.Retrieve(r.Context(), p.db, id)
 	if err != nil {
 		switch err {
 		case product.ErrNotFound:
@@ -61,12 +61,12 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	return web.Respond(w, p, http.StatusOK)
+	return web.Respond(w, prod, http.StatusOK)
 }
 
 // Update decodes the body of a request to update an existing product. The ID
 // of the product is part of the request URL.
-func (s *Products) Update(w http.ResponseWriter, r *http.Request) error {
+func (p *Products) Update(w http.ResponseWriter, r *http.Request) error {
 	id := chi.URLParam(r, "id")
 
 	var update product.UpdateProduct
@@ -74,7 +74,7 @@ func (s *Products) Update(w http.ResponseWriter, r *http.Request) error {
 		return errors.Wrap(err, "decoding product update")
 	}
 
-	if err := product.Update(r.Context(), s.db, id, update, time.Now()); err != nil {
+	if err := product.Update(r.Context(), p.db, id, update, time.Now()); err != nil {
 		switch err {
 		case product.ErrNotFound:
 			return web.RespondError(err, http.StatusNotFound)
@@ -90,7 +90,7 @@ func (s *Products) Update(w http.ResponseWriter, r *http.Request) error {
 
 // AddSale creates a new Sale for a particular product. It looks for a JSON
 // object in the request body. The full model is returned to the caller.
-func (s *Products) AddSale(w http.ResponseWriter, r *http.Request) error {
+func (p *Products) AddSale(w http.ResponseWriter, r *http.Request) error {
 	var ns product.NewSale
 	if err := web.Decode(r, &ns); err != nil {
 		return errors.Wrap(err, "decoding new sale")
@@ -98,7 +98,7 @@ func (s *Products) AddSale(w http.ResponseWriter, r *http.Request) error {
 
 	productID := chi.URLParam(r, "id")
 
-	sale, err := product.AddSale(r.Context(), s.db, ns, productID, time.Now())
+	sale, err := product.AddSale(r.Context(), p.db, ns, productID, time.Now())
 	if err != nil {
 		return errors.Wrap(err, "adding new sale")
 	}
@@ -107,10 +107,10 @@ func (s *Products) AddSale(w http.ResponseWriter, r *http.Request) error {
 }
 
 // ListSales gets all sales for a particular product.
-func (s *Products) ListSales(w http.ResponseWriter, r *http.Request) error {
+func (p *Products) ListSales(w http.ResponseWriter, r *http.Request) error {
 	id := chi.URLParam(r, "id")
 
-	list, err := product.ListSales(r.Context(), s.db, id)
+	list, err := product.ListSales(r.Context(), p.db, id)
 	if err != nil {
 		return errors.Wrap(err, "getting sales list")
 	}

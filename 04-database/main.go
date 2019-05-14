@@ -46,11 +46,11 @@ func main() {
 		return
 	}
 
-	service := Service{db: db}
+	service := Products{db: db}
 
 	server := http.Server{
 		Addr:         "localhost:8000",
-		Handler:      http.HandlerFunc(service.ListProducts),
+		Handler:      http.HandlerFunc(service.List),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
 	}
@@ -113,19 +113,19 @@ type Product struct {
 	DateUpdated time.Time `db:"date_updated" json:"date_updated"`
 }
 
-// Service holds business logic related to Products.
-type Service struct {
+// Products holds business logic related to Products.
+type Products struct {
 	db *sqlx.DB
 }
 
-// ListProducts gets all Products from the database then encodes them in a
+// List gets all Products from the database then encodes them in a
 // response to the client.
-func (s *Service) ListProducts(w http.ResponseWriter, r *http.Request) {
+func (p *Products) List(w http.ResponseWriter, r *http.Request) {
 	list := []Product{}
 
 	const q = `SELECT * FROM products`
 
-	if err := s.db.Select(&list, q); err != nil {
+	if err := p.db.Select(&list, q); err != nil {
 		log.Printf("error: selecting products: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return

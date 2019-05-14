@@ -26,7 +26,7 @@ func TestProducts(t *testing.T) {
 		t.Fatalf("creating product p0: %s", err)
 	}
 
-	p1, err := product.Get(db, p0.ID)
+	p1, err := product.Retrieve(db, p0.ID)
 	if err != nil {
 		t.Fatalf("getting product p0: %s", err)
 	}

@@ -19,17 +19,17 @@ type Products struct {
 
 // List gets all products from the service layer and encodes them for the
 // client response.
-func (s *Products) List(w http.ResponseWriter, r *http.Request) {
-	list, err := product.List(s.db)
+func (p *Products) List(w http.ResponseWriter, r *http.Request) {
+	list, err := product.List(p.db)
 	if err != nil {
-		s.log.Println("listing products", "error", err)
+		p.log.Println("listing products", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	data, err := json.Marshal(list)
 	if err != nil {
-		s.log.Println("error marshalling result", err)
+		p.log.Println("error marshalling result", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -37,24 +37,24 @@ func (s *Products) List(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(data); err != nil {
-		s.log.Println("error writing result", err)
+		p.log.Println("error writing result", err)
 	}
 }
 
-// Get finds a single product identified by an ID in the request URL.
-func (s *Products) Get(w http.ResponseWriter, r *http.Request) {
+// Retrieve finds a single product identified by an ID in the request URL.
+func (p *Products) Retrieve(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	p, err := product.Get(s.db, id)
+	prod, err := product.Retrieve(p.db, id)
 	if err != nil {
-		s.log.Println("getting product", "error", err)
+		p.log.Println("getting product", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	data, err := json.Marshal(p)
+	data, err := json.Marshal(prod)
 	if err != nil {
-		s.log.Println("error marshalling result", err)
+		p.log.Println("error marshalling result", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -62,6 +62,6 @@ func (s *Products) Get(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(data); err != nil {
-		s.log.Println("error writing result", err)
+		p.log.Println("error writing result", err)
 	}
 }

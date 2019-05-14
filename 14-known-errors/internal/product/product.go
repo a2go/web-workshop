@@ -59,8 +59,8 @@ func Create(db *sqlx.DB, np NewProduct, now time.Time) (*Product, error) {
 	return &p, nil
 }
 
-// Get finds the product identified by a given ID.
-func Get(db *sqlx.DB, id string) (*Product, error) {
+// Retrieve finds the product identified by a given ID.
+func Retrieve(db *sqlx.DB, id string) (*Product, error) {
 	if _, err := uuid.Parse(id); err != nil {
 		return nil, ErrInvalidID
 	}
@@ -69,7 +69,7 @@ func Get(db *sqlx.DB, id string) (*Product, error) {
 
 	const q = `SELECT * FROM products WHERE product_id = $1`
 
-	if err := db.Get(&p, q, id); err != nil {
+	if err := db.Retrieve(&p, q, id); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound
 		}

@@ -18,17 +18,17 @@ type Products struct {
 
 // List gets all products from the service layer and encodes them for the
 // client response.
-func (s *Products) List(w http.ResponseWriter, r *http.Request) {
-	list, err := product.List(s.DB)
+func (p *Products) List(w http.ResponseWriter, r *http.Request) {
+	list, err := product.List(p.DB)
 	if err != nil {
-		s.Log.Printf("error: listing products: %s", err)
+		p.Log.Printf("error: listing products: %s", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	data, err := json.Marshal(list)
 	if err != nil {
-		s.Log.Println("error marshalling result", err)
+		p.Log.Println("error marshalling result", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -36,6 +36,6 @@ func (s *Products) List(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(data); err != nil {
-		s.Log.Println("error writing result", err)
+		p.Log.Println("error writing result", err)
 	}
 }

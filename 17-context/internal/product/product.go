@@ -60,8 +60,8 @@ func Create(ctx context.Context, db *sqlx.DB, np NewProduct, now time.Time) (*Pr
 	return &p, nil
 }
 
-// Get finds the product identified by a given ID.
-func Get(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
+// Retrieve finds the product identified by a given ID.
+func Retrieve(ctx context.Context, db *sqlx.DB, id string) (*Product, error) {
 	if _, err := uuid.Parse(id); err != nil {
 		return nil, ErrInvalidID
 	}

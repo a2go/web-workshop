@@ -18,13 +18,13 @@ func List(db *sqlx.DB) ([]Product, error) {
 	return products, nil
 }
 
-// Get finds the product identified by a given ID.
-func Get(db *sqlx.DB, id string) (*Product, error) {
+// Retrieve finds the product identified by a given ID.
+func Retrieve(db *sqlx.DB, id string) (*Product, error) {
 	var p Product
 
 	const q = `SELECT * FROM products WHERE product_id = $1`
 
-	if err := db.Get(&p, q, id); err != nil {
+	if err := db.Retrieve(&p, q, id); err != nil {
 		return nil, errors.Wrap(err, "selecting single product")
 	}
 

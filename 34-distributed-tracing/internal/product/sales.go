@@ -12,7 +12,7 @@ import (
 
 // AddSale records a sales transaction for a single Product.
 func AddSale(ctx context.Context, db *sqlx.DB, ns NewSale, productID string, now time.Time) (*Sale, error) {
-	ctx, span := trace.StartSpan(ctx, "product.AddSale")
+	ctx, span := trace.StartSpan(ctx, "internal.product.AddSale")
 	defer span.End()
 
 	s := Sale{
@@ -40,7 +40,7 @@ func AddSale(ctx context.Context, db *sqlx.DB, ns NewSale, productID string, now
 
 // ListSales gives all Sales for a Product.
 func ListSales(ctx context.Context, db *sqlx.DB, productID string) ([]Sale, error) {
-	ctx, span := trace.StartSpan(ctx, "product.ListSales")
+	ctx, span := trace.StartSpan(ctx, "internal.product.ListSales")
 	defer span.End()
 
 	sales := []Sale{}

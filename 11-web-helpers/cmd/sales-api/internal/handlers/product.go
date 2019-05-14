@@ -19,57 +19,57 @@ type Products struct {
 }
 
 // List gets all products from the service layer.
-func (s *Products) List(w http.ResponseWriter, r *http.Request) {
-	list, err := product.List(s.db)
+func (p *Products) List(w http.ResponseWriter, r *http.Request) {
+	list, err := product.List(p.db)
 	if err != nil {
-		s.log.Println("listing products", "error", err)
+		p.log.Println("listing products", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if err := web.Respond(w, list, http.StatusOK); err != nil {
-		s.log.Println("encoding response", "error", err)
+		p.log.Println("encoding response", "error", err)
 		return
 	}
 }
 
 // Create decodes the body of a request to create a new product. The full
 // product with generated fields is sent back in the response.
-func (s *Products) Create(w http.ResponseWriter, r *http.Request) {
+func (p *Products) Create(w http.ResponseWriter, r *http.Request) {
 	var np product.NewProduct
 	if err := web.Decode(r, &np); err != nil {
-		s.log.Println("decoding product", "error", err)
+		p.log.Println("decoding product", "error", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	p, err := product.Create(s.db, np, time.Now())
+	prod, err := product.Create(p.db, np, time.Now())
 	if err != nil {
-		s.log.Println("creating product", "error", err)
+		p.log.Println("creating product", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	if err := web.Respond(w, &p, http.StatusCreated); err != nil {
-		s.log.Println("encoding response", "error", err)
+	if err := web.Respond(w, &prod, http.StatusCreated); err != nil {
+		p.log.Println("encoding response", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }
 
-// Get finds a single product identified by an ID in the request URL.
-func (s *Products) Get(w http.ResponseWriter, r *http.Request) {
+// Retrieve finds a single product identified by an ID in the request URL.
+func (p *Products) Retrieve(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	p, err := product.Get(s.db, id)
+	prod, err := product.Retrieve(p.db, id)
 	if err != nil {
-		s.log.Println("getting product", "error", err)
+		p.log.Println("getting product", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	if err := web.Respond(w, p, http.StatusOK); err != nil {
-		s.log.Println("encoding response", "error", err)
+	if err := web.Respond(w, prod, http.StatusOK); err != nil {
+		p.log.Println("encoding response", "error", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
