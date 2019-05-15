@@ -10,7 +10,7 @@ import (
 // Open knows how to open a database connection.
 func Open() (*sqlx.DB, error) {
 	// Query parameters.
-	var q url.Values
+	q := make(url.Values)
 	q.Set("sslmode", "disable")
 	q.Set("timezone", "utc")
 
