@@ -24,7 +24,7 @@ func Retrieve(db *sqlx.DB, id string) (*Product, error) {
 
 	const q = `SELECT * FROM products WHERE product_id = $1`
 
-	if err := db.Retrieve(&p, q, id); err != nil {
+	if err := db.Get(&p, q, id); err != nil {
 		return nil, errors.Wrap(err, "selecting single product")
 	}
 
