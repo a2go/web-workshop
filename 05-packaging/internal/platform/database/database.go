@@ -11,7 +11,7 @@ import (
 func Open() (*sqlx.DB, error) {
 	// Query parameters.
 	q := make(url.Values)
-	q.Set("sslmode", "disable")
+	q.Set("sslmode", "require")
 	q.Set("timezone", "utc")
 
 	// Construct url.
