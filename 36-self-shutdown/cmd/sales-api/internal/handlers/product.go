@@ -59,9 +59,9 @@ func (s *Products) Create(ctx context.Context, w http.ResponseWriter, r *http.Re
 	return web.Respond(ctx, w, &p, http.StatusCreated)
 }
 
-// Get finds a single product identified by an ID in the request URL.
-func (s *Products) Get(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	ctx, span := trace.StartSpan(ctx, "handlers.Products.Get")
+// Retrieve finds a single product identified by an ID in the request URL.
+func (s *Products) Retrieve(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	ctx, span := trace.StartSpan(ctx, "handlers.Products.Retrieve")
 	defer span.End()
 
 	id := chi.URLParam(r, "id")
