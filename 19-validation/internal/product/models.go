@@ -37,6 +37,6 @@ type Sale struct {
 
 // NewSale is what we require from clients for recording new transactions.
 type NewSale struct {
-	Quantity int `db:"quantity" json:"quantity" validate:"gte=0"`
-	Paid     int `db:"paid" json:"paid" validate:"gte=0"`
+	Quantity int `json:"quantity" validate:"gte=0"`
+	Paid     int `json:"paid" validate:"gte=0"`
 }
