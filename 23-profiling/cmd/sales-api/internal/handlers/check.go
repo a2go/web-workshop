@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/ardanlabs/garagesale/internal/platform/database"
 	"github.com/ardanlabs/garagesale/internal/platform/web"
 	"github.com/jmoiron/sqlx"
 )
@@ -23,7 +24,7 @@ func (s *Checks) Health(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	// Check if the database is ready.
-	if err := s.db.PingContext(r.Context()); err != nil {
+	if err := database.StatusCheck(r.Context(), s.db); err != nil {
 
 		// If the database is not ready we will tell the client and use a 500
 		// status. Do not respond by just returning an error because further up in

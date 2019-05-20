@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ardanlabs/garagesale/internal/platform/database"
 	"github.com/ardanlabs/garagesale/internal/platform/web"
 	"github.com/jmoiron/sqlx"
 	"go.opencensus.io/trace"
@@ -27,7 +28,7 @@ func (s *Checks) Health(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	}
 
 	// Check if the database is ready.
-	if err := s.db.PingContext(ctx); err != nil {
+	if err := database.StatusCheck(ctx, s.db); err != nil {
 
 		// If the database is not ready we will tell the client and use a 500
 		// status. Do not respond by just returning an error because further up in
