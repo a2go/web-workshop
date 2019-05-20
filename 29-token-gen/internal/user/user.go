@@ -38,8 +38,8 @@ func Create(ctx context.Context, db *sqlx.DB, n NewUser, now time.Time) (*User, 
 	}
 
 	const q = `INSERT INTO users
-(user_id, name, email, password_hash, roles, date_created, date_updated)
-VALUES ($1, $2, $3, $4, $5, $6, $7)`
+		(user_id, name, email, password_hash, roles, date_created, date_updated)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)`
 	_, err = db.ExecContext(
 		ctx, q,
 		u.ID, u.Name, u.Email,
@@ -64,6 +64,9 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 	var u User
 	err := row.Scan(&u.ID, pq.Array(&u.Roles), &u.PasswordHash)
 	if err != nil {
+
+		// Normally we would return ErrNotFound in this scenario but we do not want
+		// to leak to an unauthenticated user which emails are in the system.
 		if err == sql.ErrNoRows {
 			return auth.Claims{}, ErrAuthenticationFailure
 		}
