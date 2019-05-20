@@ -4,7 +4,7 @@
   - This model is part of the "Products" domain so it does not need a new package.
 - Add a migration for the new table and some seed data.
 - Add two fields Sold and Revenue to the `Product` type.
-- Modify the `List` and `Get` queries to populate the Sold and Revenue fields.
+- Modify the `List` and `Retrieve` queries to populate the Sold and Revenue fields.
 
 
 ## File Changes:
