@@ -13,9 +13,6 @@
 - Using `SELECT *` has problems.
 
 ```
-## Generate keys
-go run $(go env GOROOT)/src/crypto/tls/generate_cert.go --host localhost
-
 ## Start postgres:
 docker-compose up -d
 

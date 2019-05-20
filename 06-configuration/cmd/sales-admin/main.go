@@ -17,10 +17,11 @@ const envKey = "sales"
 
 type config struct {
 	DB struct {
-		User     string `default:"postgres"`
-		Password string `default:"postgres" json:"-"` // Prevent the marshalling of secrets.
-		Host     string `default:"localhost"`
-		Name     string `default:"postgres"`
+		User       string `default:"postgres"`
+		Password   string `default:"postgres" json:"-"` // Prevent the marshalling of secrets.
+		Host       string `default:"localhost"`
+		Name       string `default:"postgres"`
+		DisableTLS bool   `default:"false" split_words:"true"`
 	}
 }
 
@@ -58,10 +59,11 @@ func main() {
 
 	// Initialize dependencies.
 	db, err := database.Open(database.Config{
-		User:     cfg.DB.User,
-		Password: cfg.DB.Password,
-		Host:     cfg.DB.Host,
-		Name:     cfg.DB.Name,
+		User:       cfg.DB.User,
+		Password:   cfg.DB.Password,
+		Host:       cfg.DB.Host,
+		Name:       cfg.DB.Name,
+		DisableTLS: cfg.DB.DisableTLS,
 	})
 	if err != nil {
 		log.Fatalf("error: connecting to db: %s", err)

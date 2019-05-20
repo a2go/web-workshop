@@ -23,10 +23,11 @@ func Setup(t *testing.T) (*sqlx.DB, func()) {
 	c := startContainer(t)
 
 	db, err := database.Open(database.Config{
-		User:     "postgres",
-		Password: "postgres",
-		Host:     c.Host,
-		Name:     "postgres",
+		User:       "postgres",
+		Password:   "postgres",
+		Host:       c.Host,
+		Name:       "postgres",
+		DisableTLS: true,
 	})
 	if err != nil {
 		t.Fatalf("opening database connection: %v", err)
