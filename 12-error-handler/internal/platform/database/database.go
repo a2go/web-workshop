@@ -9,18 +9,25 @@ import (
 
 // Config is the required properties to use the database.
 type Config struct {
-	User     string
-	Password string
-	Host     string
-	Name     string
+	User       string
+	Password   string
+	Host       string
+	Name       string
+	DisableTLS bool
 }
 
 // Open knows how to open a database connection based on the configuration.
 func Open(cfg Config) (*sqlx.DB, error) {
 
+	// Define SSL mode.
+	sslMode := "require"
+	if cfg.DisableTLS {
+		sslMode = "disable"
+	}
+
 	// Query parameters.
 	q := make(url.Values)
-	q.Set("sslmode", "require")
+	q.Set("sslmode", sslMode)
 	q.Set("timezone", "utc")
 
 	// Construct url.
