@@ -17,9 +17,3 @@ Modified internal/platform/auth/claims.go
 Modified internal/platform/tests/tests.go
 Modified internal/platform/web/web.go
 ```
-
-## Dependency Changes:
-
-```
-+ 	go.opencensus.io v0.19.2
-```

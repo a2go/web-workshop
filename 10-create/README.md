@@ -12,3 +12,9 @@ Modified cmd/sales-api/internal/handlers/routes.go
 Modified internal/product/models.go
 Modified internal/product/product.go
 ```
+
+## Dependency Changes:
+
+```
++ 	github.com/google/uuid v1.1.1
+```

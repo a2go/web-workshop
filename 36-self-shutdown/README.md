@@ -11,7 +11,9 @@ cases we can't let the service continue to run. The application must shut down.
 ## File Changes:
 
 ```
+Modified cmd/sales-api/internal/handlers/product.go
 Modified cmd/sales-api/internal/handlers/routes.go
+Modified cmd/sales-api/internal/handlers/user.go
 Modified cmd/sales-api/main.go
 Modified cmd/sales-api/tests/product_test.go
 Modified cmd/sales-api/tests/user_test.go
@@ -20,4 +22,7 @@ Modified internal/mid/logger.go
 Modified internal/platform/web/errors.go
 Modified internal/platform/web/response.go
 Modified internal/platform/web/web.go
+Modified internal/product/product.go
+Modified internal/product/product_test.go
+Modified internal/product/sales.go
 ```

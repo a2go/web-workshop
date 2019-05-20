@@ -41,4 +41,5 @@ Modified internal/user/user.go
 
 ```
 + 	github.com/openzipkin/zipkin-go v0.1.6
++ 	go.opencensus.io v0.19.2
 ```
