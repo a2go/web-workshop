@@ -53,9 +53,9 @@ func (p *Products) Retrieve(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		switch err {
 		case product.ErrNotFound:
-			return web.RespondError(err, http.StatusNotFound)
+			return web.NewRequestError(err, http.StatusNotFound)
 		case product.ErrInvalidID:
-			return web.RespondError(err, http.StatusBadRequest)
+			return web.NewRequestError(err, http.StatusBadRequest)
 		default:
 			return errors.Wrapf(err, "getting product %q", id)
 		}
@@ -77,9 +77,9 @@ func (p *Products) Update(w http.ResponseWriter, r *http.Request) error {
 	if err := product.Update(r.Context(), p.db, id, update, time.Now()); err != nil {
 		switch err {
 		case product.ErrNotFound:
-			return web.RespondError(err, http.StatusNotFound)
+			return web.NewRequestError(err, http.StatusNotFound)
 		case product.ErrInvalidID:
-			return web.RespondError(err, http.StatusBadRequest)
+			return web.NewRequestError(err, http.StatusBadRequest)
 		default:
 			return errors.Wrapf(err, "updating product %q", id)
 		}

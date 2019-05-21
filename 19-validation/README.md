@@ -15,7 +15,6 @@ Modified internal/platform/web/errors.go
 Modified internal/platform/web/request.go
 Added    internal/platform/web/request_test.go
 Modified internal/platform/web/response.go
-Modified internal/platform/web/web.go
 Modified internal/product/models.go
 ```
 

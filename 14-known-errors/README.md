@@ -9,7 +9,7 @@ if err != nil {
 ```
 
 Document expected errors in the `products` package and return them when they
-occur. The handlers should look for these errors and use `web.RespondError`
+occur. The handlers should look for these errors and use `web.NewRequestError`
 to send them up the call chain with an HTTP status.
 
 

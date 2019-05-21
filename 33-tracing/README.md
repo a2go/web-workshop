@@ -31,6 +31,7 @@ Modified internal/mid/auth.go
 Modified internal/mid/errors.go
 Modified internal/mid/logger.go
 Modified internal/mid/metrics.go
+Modified internal/platform/database/database.go
 Modified internal/platform/web/web.go
 Modified internal/product/product.go
 Modified internal/product/sales.go

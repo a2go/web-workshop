@@ -3,13 +3,15 @@ package web
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/pkg/errors"
 )
 
 // Respond converts a Go value to JSON and sends it to the client.
-func Respond(w http.ResponseWriter, data interface{}, status int) error {
+func Respond(w http.ResponseWriter, data interface{}, statusCode int) error {
 
-	if status == http.StatusNoContent {
-		w.WriteHeader(status)
+	if statusCode == http.StatusNoContent {
+		w.WriteHeader(statusCode)
 		return nil
 	}
 
@@ -21,7 +23,7 @@ func Respond(w http.ResponseWriter, data interface{}, status int) error {
 
 	// Respond with the provided JSON.
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(status)
+	w.WriteHeader(statusCode)
 	if _, err := w.Write(res); err != nil {
 		return err
 	}
@@ -29,8 +31,28 @@ func Respond(w http.ResponseWriter, data interface{}, status int) error {
 	return nil
 }
 
-// RespondError wraps a provided error with an HTTP status code. This
-// function should be used when handlers encounter expected errors.
-func RespondError(err error, status int) error {
-	return &Error{err, status, nil}
+// RespondError sends an error reponse back to the client.
+func RespondError(w http.ResponseWriter, err error) error {
+
+	// If the error was of the type *Error, the handler has
+	// a specific status code and error to return.
+	if webErr, ok := errors.Cause(err).(*Error); ok {
+		er := ErrorResponse{
+			Error:  webErr.Err.Error(),
+			Fields: webErr.Fields,
+		}
+		if err := Respond(w, er, webErr.Status); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	// If not, the handler sent any arbitrary error value so use 500.
+	er := ErrorResponse{
+		Error: http.StatusText(http.StatusInternalServerError),
+	}
+	if err := Respond(w, er, http.StatusInternalServerError); err != nil {
+		return err
+	}
+	return nil
 }

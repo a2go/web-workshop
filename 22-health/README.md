@@ -8,4 +8,5 @@
 ```
 Added    cmd/sales-api/internal/handlers/check.go
 Modified cmd/sales-api/internal/handlers/routes.go
+Modified internal/platform/database/database.go
 ```
