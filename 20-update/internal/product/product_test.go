@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
-	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
 	"github.com/ardanlabs/garagesale/internal/platform/tests"
 	"github.com/ardanlabs/garagesale/internal/product"
+	"github.com/ardanlabs/garagesale/internal/schema"
 	"github.com/google/go-cmp/cmp"
 )
 

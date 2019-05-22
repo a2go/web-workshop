@@ -11,7 +11,7 @@ import (
 
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
-	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
+	"github.com/ardanlabs/garagesale/internal/schema"
 	"github.com/ardanlabs/garagesale/internal/user"
 	"github.com/jmoiron/sqlx"
 )

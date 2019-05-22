@@ -14,7 +14,7 @@ import (
 	// make the comparison process easier using the go-cmp library.
 	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
 	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
-	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
+	"github.com/ardanlabs/garagesale/internal/schema"
 	"github.com/google/go-cmp/cmp"
 )
 

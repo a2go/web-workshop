@@ -13,10 +13,10 @@
 Modified cmd/sales-api/internal/handlers/product.go
 Modified cmd/sales-api/internal/handlers/routes.go
 Modified cmd/sales-api/tests/product_test.go
-Modified internal/platform/database/schema/migrations.go
-Modified internal/platform/database/schema/seeds.go
 Modified internal/product/models.go
 Modified internal/product/product.go
 Added    internal/product/sales.go
 Added    internal/product/sales_test.go
+Modified internal/schema/migrations.go
+Modified internal/schema/seeds.go
 ```

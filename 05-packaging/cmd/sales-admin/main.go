@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/ardanlabs/garagesale/internal/platform/database"
-	"github.com/ardanlabs/garagesale/internal/platform/database/schema"
+	"github.com/ardanlabs/garagesale/internal/schema"
 )
 
 func main() {
