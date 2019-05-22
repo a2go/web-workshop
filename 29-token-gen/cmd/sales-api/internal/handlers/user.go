@@ -34,10 +34,12 @@ func (u *Users) Token(ctx context.Context, w http.ResponseWriter, r *http.Reques
 
 	claims, err := user.Authenticate(ctx, u.db, v.Start, email, pass)
 	if err != nil {
-		if err == user.ErrAuthenticationFailure {
+		switch err {
+		case user.ErrAuthenticationFailure:
 			return web.NewRequestError(err, http.StatusUnauthorized)
+		default:
+			return errors.Wrap(err, "authenticating")
 		}
-		return errors.Wrap(err, "authenticating user")
 	}
 
 	var tkn struct {
