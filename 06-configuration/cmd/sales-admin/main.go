@@ -76,7 +76,7 @@ func main() {
 			log.Println("error applying migrations", err)
 			os.Exit(1)
 		}
-		log.Println("Migrations complete")
+		fmt.Println("Migrations complete")
 		return
 
 	case "seed":
@@ -84,7 +84,7 @@ func main() {
 			log.Println("error seeding database", err)
 			os.Exit(1)
 		}
-		log.Println("Seed data complete")
+		fmt.Println("Seed data complete")
 		return
 	}
 }

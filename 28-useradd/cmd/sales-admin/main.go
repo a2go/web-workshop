@@ -69,68 +69,101 @@ func run() error {
 		return nil
 	}
 
-	// Initialize dependencies.
-	db, err := database.Open(database.Config{
+	// This is used for multiple commands below.
+	dbConfig := database.Config{
 		User:       cfg.DB.User,
 		Password:   cfg.DB.Password,
 		Host:       cfg.DB.Host,
 		Name:       cfg.DB.Name,
 		DisableTLS: cfg.DB.DisableTLS,
-	})
+	}
+
+	var err error
+	switch flag.Arg(0) {
+	case "migrate":
+		err = migrate(dbConfig)
+	case "seed":
+		err = seed(dbConfig)
+	case "useradd":
+		err = useradd(dbConfig, flag.Arg(1), flag.Arg(2))
+	default:
+		err = errors.New("Must specify a command")
+	}
 	if err != nil {
-		return errors.Wrap(err, "connecting to db")
+		return err
+	}
+
+	return nil
+}
+
+func migrate(cfg database.Config) error {
+	db, err := database.Open(cfg)
+	if err != nil {
+		return err
 	}
 	defer db.Close()
 
-	switch flag.Arg(0) {
-	case "migrate":
-		if err := schema.Migrate(db); err != nil {
-			return errors.Wrap(err, "applying migrations")
-		}
-		log.Println("Migrations complete")
+	if err := schema.Migrate(db); err != nil {
+		return err
+	}
 
-	case "seed":
-		if err := schema.Seed(db); err != nil {
-			return errors.Wrap(err, "seeding database")
-		}
-		log.Println("Seed data complete")
+	fmt.Println("Migrations complete")
+	return nil
+}
 
-	case "useradd":
-		email, password := flag.Arg(1), flag.Arg(2)
-		if email == "" || password == "" {
-			return errors.New("useradd command must be called with two more arguments for email and password")
-		}
+func seed(cfg database.Config) error {
+	db, err := database.Open(cfg)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
 
-		fmt.Printf("Admin user will be created with email %q and password %q\n", email, password)
-		fmt.Print("Continue? (1/0) ")
+	if err := schema.Seed(db); err != nil {
+		return err
+	}
 
-		var confirm bool
-		if _, err := fmt.Scanf("%t\n", &confirm); err != nil {
-			return errors.Wrap(err, "processing response")
-		}
+	fmt.Println("Seed data complete")
+	return nil
+}
 
-		if !confirm {
-			fmt.Println("Canceling")
-			return nil
-		}
+func useradd(cfg database.Config, email, password string) error {
+	db, err := database.Open(cfg)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
 
-		ctx := context.Background()
+	if email == "" || password == "" {
+		return errors.New("useradd command must be called with two additional arguments for email and password")
+	}
 
-		nu := user.NewUser{
-			Email:           email,
-			Password:        password,
-			PasswordConfirm: password,
-			Roles:           []string{auth.RoleAdmin, auth.RoleUser},
-		}
+	fmt.Printf("Admin user will be created with email %q and password %q\n", email, password)
+	fmt.Print("Continue? (1/0) ")
 
-		u, err := user.Create(ctx, db, nu, time.Now())
-		if err != nil {
-			return err
-		}
+	var confirm bool
+	if _, err := fmt.Scanf("%t\n", &confirm); err != nil {
+		return errors.Wrap(err, "processing response")
+	}
 
-		fmt.Printf("User created with id: %v\n", u.ID)
+	if !confirm {
+		fmt.Println("Canceling")
 		return nil
 	}
 
+	ctx := context.Background()
+
+	nu := user.NewUser{
+		Email:           email,
+		Password:        password,
+		PasswordConfirm: password,
+		Roles:           []string{auth.RoleAdmin, auth.RoleUser},
+	}
+
+	u, err := user.Create(ctx, db, nu, time.Now())
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("User created with id:", u.ID)
 	return nil
 }

@@ -83,13 +83,13 @@ func run() error {
 		if err := schema.Migrate(db); err != nil {
 			return errors.Wrap(err, "applying migrations")
 		}
-		log.Println("Migrations complete")
+		fmt.Println("Migrations complete")
 
 	case "seed":
 		if err := schema.Seed(db); err != nil {
 			return errors.Wrap(err, "seeding database")
 		}
-		log.Println("Seed data complete")
+		fmt.Println("Seed data complete")
 	}
 
 	return nil
