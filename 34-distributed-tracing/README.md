@@ -11,7 +11,6 @@ Look for a Trace ID on incoming requests and add a TraceID to outgoing requests.
 ## File Changes:
 
 ```
-Modified cmd/sales-admin/main.go
 Modified internal/mid/errors.go
 Modified internal/mid/logger.go
 Added    internal/platform/tracing/tracing.go

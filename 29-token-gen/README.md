@@ -20,7 +20,6 @@ Added    internal/platform/auth/auth.go
 Modified internal/platform/auth/claims.go
 Modified internal/platform/tests/tests.go
 Modified internal/user/user.go
-Added    private.pem
 ```
 
 ## Dependency Changes:
