@@ -10,5 +10,5 @@
 ```
 Modified cmd/sales-api/internal/handlers/routes.go
 Modified internal/mid/auth.go
-Modified internal/platform/auth/claims.go
+Modified internal/platform/auth/roles.go
 ```

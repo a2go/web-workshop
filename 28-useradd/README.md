@@ -11,7 +11,7 @@
 
 ```
 Modified cmd/sales-admin/main.go
-Added    internal/platform/auth/claims.go
+Added    internal/platform/auth/roles.go
 Modified internal/schema/migrations.go
 Modified internal/schema/seeds.go
 Added    internal/user/models.go
