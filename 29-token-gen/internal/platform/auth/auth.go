@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// KeyFunc is used to map a JWT key id (kid) to the corresponding public key.
+// KeyLookupFunc is used to map a JWT key id (kid) to the corresponding public key.
 // It is a requirement for creating an Authenticator.
 //
 // * Private keys should be rotated. During the transition period, tokens
@@ -17,28 +17,30 @@ import (
 //
 // * Key-id-to-public-key resolution is usually accomplished via a public JWKS
 // endpoint. See https://auth0.com/docs/jwks for more details.
-type KeyFunc func(keyID string) (*rsa.PublicKey, error)
+type KeyLookupFunc func(kid string) (*rsa.PublicKey, error)
 
-// NewSingleKeyFunc is a simple implementation of KeyFunc that only ever
+// NewSimpleKeyLookupFunc is a simple implementation of KeyFunc that only ever
 // supports one key. This is easy for development but in production should be
 // replaced with a caching layer that calls a JWKS endpoint.
-func NewSingleKeyFunc(id string, key *rsa.PublicKey) KeyFunc {
-	return func(kid string) (*rsa.PublicKey, error) {
-		if id != kid {
-			return nil, fmt.Errorf("Unrecognized kid %q", kid)
+func NewSimpleKeyLookupFunc(activeKID string, publicKey *rsa.PublicKey) KeyLookupFunc {
+	f := func(kid string) (*rsa.PublicKey, error) {
+		if activeKID != kid {
+			return nil, fmt.Errorf("unrecognized key id %q", kid)
 		}
-		return key, nil
+		return publicKey, nil
 	}
+
+	return f
 }
 
 // Authenticator is used to authenticate clients. It can generate a token for a
 // set of user claims and recreate the claims by parsing the token.
 type Authenticator struct {
-	privateKey *rsa.PrivateKey
-	keyID      string
-	algorithm  string
-	kf         KeyFunc
-	parser     *jwt.Parser
+	privateKey       *rsa.PrivateKey
+	activeKID        string
+	algorithm        string
+	pubKeyLookupFunc KeyLookupFunc
+	parser           *jwt.Parser
 }
 
 // NewAuthenticator creates an *Authenticator for use. It will error if:
@@ -46,18 +48,18 @@ type Authenticator struct {
 // - The public key func is nil.
 // - The key ID is blank.
 // - The specified algorithm is unsupported.
-func NewAuthenticator(key *rsa.PrivateKey, keyID, algorithm string, publicKeyFunc KeyFunc) (*Authenticator, error) {
-	if key == nil {
+func NewAuthenticator(privateKey *rsa.PrivateKey, activeKID, algorithm string, publicKeyLookupFunc KeyLookupFunc) (*Authenticator, error) {
+	if privateKey == nil {
 		return nil, errors.New("private key cannot be nil")
 	}
-	if publicKeyFunc == nil {
-		return nil, errors.New("public key function cannot be nil")
-	}
-	if keyID == "" {
-		return nil, errors.New("keyID cannot be blank")
+	if activeKID == "" {
+		return nil, errors.New("active kid cannot be blank")
 	}
 	if jwt.GetSigningMethod(algorithm) == nil {
 		return nil, errors.Errorf("unknown algorithm %v", algorithm)
+	}
+	if publicKeyLookupFunc == nil {
+		return nil, errors.New("public key function cannot be nil")
 	}
 
 	// Create the token parser to use. The algorithm used to sign the JWT must be
@@ -68,11 +70,11 @@ func NewAuthenticator(key *rsa.PrivateKey, keyID, algorithm string, publicKeyFun
 	}
 
 	a := Authenticator{
-		privateKey: key,
-		keyID:      keyID,
-		algorithm:  algorithm,
-		kf:         publicKeyFunc,
-		parser:     &parser,
+		privateKey:       privateKey,
+		activeKID:        activeKID,
+		algorithm:        algorithm,
+		pubKeyLookupFunc: publicKeyLookupFunc,
+		parser:           &parser,
 	}
 
 	return &a, nil
@@ -83,7 +85,7 @@ func (a *Authenticator) GenerateToken(claims Claims) (string, error) {
 	method := jwt.GetSigningMethod(a.algorithm)
 
 	tkn := jwt.NewWithClaims(method, claims)
-	tkn.Header["kid"] = a.keyID
+	tkn.Header["kid"] = a.activeKID
 
 	str, err := tkn.SignedString(a.privateKey)
 	if err != nil {

@@ -192,7 +192,7 @@ func createAuth(cfg config) (*auth.Authenticator, error) {
 		return nil, errors.Wrap(err, "parsing auth private key")
 	}
 
-	public := auth.NewSingleKeyFunc(cfg.Auth.KeyID, key.Public().(*rsa.PublicKey))
+	public := auth.NewSimpleKeyLookupFunc(cfg.Auth.KeyID, key.Public().(*rsa.PublicKey))
 
 	return auth.NewAuthenticator(key, cfg.Auth.KeyID, cfg.Auth.Algorithm, public)
 }

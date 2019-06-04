@@ -29,20 +29,17 @@ func Authenticate(authenticator *auth.Authenticator) web.Middleware {
 			ctx, span := trace.StartSpan(ctx, "internal.mid.Authenticate")
 			defer span.End()
 
-			authHdr := r.Header.Get("Authorization")
-			if authHdr == "" {
-				err := errors.New("missing Authorization header")
-				return web.NewRequestError(err, http.StatusUnauthorized)
-			}
-
-			tknStr, err := parseAuthHeader(authHdr)
-			if err != nil {
+			// Parse the authorization header. Expected header is of
+			// the format `Bearer <token>`.
+			parts := strings.Split(r.Header.Get("Authorization"), " ")
+			if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
+				err := errors.New("expected authorization header format: Bearer <token>")
 				return web.NewRequestError(err, http.StatusUnauthorized)
 			}
 
 			// Start a span to measure just the time spent in ParseClaims.
 			_, span = trace.StartSpan(ctx, "auth.ParseClaims")
-			claims, err := authenticator.ParseClaims(tknStr)
+			claims, err := authenticator.ParseClaims(parts[1])
 			span.End()
 			if err != nil {
 				return web.NewRequestError(err, http.StatusUnauthorized)
@@ -87,15 +84,4 @@ func HasRole(roles ...string) web.Middleware {
 	}
 
 	return f
-}
-
-// parseAuthHeader parses an authorization header. Expected header is of
-// the format `Bearer <token>`.
-func parseAuthHeader(bearerStr string) (string, error) {
-	split := strings.Split(bearerStr, " ")
-	if len(split) != 2 || strings.ToLower(split[0]) != "bearer" {
-		return "", errors.New("Expected Authorization header format: Bearer <token>")
-	}
-
-	return split[1], nil
 }

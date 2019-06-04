@@ -56,7 +56,7 @@ func New(t *testing.T) *Test {
 
 	// Build an authenticator using this static key.
 	kid := "4754d86b-7a6d-4df5-9c65-224741361492"
-	kf := auth.NewSingleKeyFunc(kid, key.Public().(*rsa.PublicKey))
+	kf := auth.NewSimpleKeyLookupFunc(kid, key.Public().(*rsa.PublicKey))
 	test.Authenticator, err = auth.NewAuthenticator(key, kid, "RS256", kf)
 	if err != nil {
 		t.Fatal(err)
