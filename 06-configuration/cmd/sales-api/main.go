@@ -108,7 +108,7 @@ func main() {
 	// Blocking main and waiting for shutdown.
 	select {
 	case err := <-serverErrors:
-		log.Fatalf("error: listening and serving: %s", err)
+		log.Fatalf("error: starting server: %s", err)
 
 	case <-shutdown:
 		log.Println("main : Start shutdown")
