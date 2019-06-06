@@ -10,12 +10,11 @@ require (
 	github.com/go-playground/locales v0.12.1
 	github.com/go-playground/universal-translator v0.16.0
 	github.com/golang/mock v1.2.0 // indirect
-	github.com/google/go-cmp v0.2.0
+	github.com/google/go-cmp v0.3.0
 	github.com/google/uuid v1.1.1
 	github.com/jmoiron/sqlx v1.2.0
-	github.com/kelseyhightower/envconfig v1.3.0
 	github.com/leodido/go-urn v1.1.0 // indirect
-	github.com/lib/pq v1.0.0
+	github.com/lib/pq v1.1.1
 	github.com/openzipkin/zipkin-go v0.1.6
 	github.com/pkg/errors v0.8.1
 	go.opencensus.io v0.19.2

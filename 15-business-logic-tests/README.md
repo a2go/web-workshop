@@ -11,9 +11,3 @@ Added    internal/platform/database/databasetest/docker.go
 Added    internal/platform/database/databasetest/setup.go
 Added    internal/product/product_test.go
 ```
-
-## Dependency Changes:
-
-```
-+ 	github.com/google/go-cmp v0.2.0
-```

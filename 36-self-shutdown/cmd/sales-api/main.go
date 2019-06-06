@@ -35,7 +35,13 @@ func main() {
 
 func run() error {
 
+	// =========================================================================
+	// Logging
+
 	log := log.New(os.Stdout, "SALES : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
+
+	// =========================================================================
+	// Configuration
 
 	var cfg struct {
 		Web struct {
@@ -76,13 +82,21 @@ func run() error {
 		return errors.Wrap(err, "parsing config")
 	}
 
+	// =========================================================================
+	// App Starting
+
+	log.Printf("main : Started")
+	defer log.Println("main : Completed")
+
 	out, err := conf.String(&cfg)
 	if err != nil {
 		return errors.Wrap(err, "generating config for output")
 	}
-	log.Printf("config:\n%v\n", out)
+	log.Printf("main : Config :\n%v\n", out)
 
-	// Initialize dependencies.
+	// =========================================================================
+	// Initialize authentication support
+
 	authenticator, err := createAuth(
 		cfg.Auth.PrivateKeyFile,
 		cfg.Auth.KeyID,
@@ -91,6 +105,9 @@ func run() error {
 	if err != nil {
 		return errors.Wrap(err, "constructing authenticator")
 	}
+
+	// =========================================================================
+	// Start Database
 
 	db, err := database.Open(database.Config{
 		User:       cfg.DB.User,
@@ -103,6 +120,9 @@ func run() error {
 		return errors.Wrap(err, "connecting to db")
 	}
 	defer db.Close()
+
+	// =========================================================================
+	// Start Tracing Support
 
 	closer, err := registerTracer(
 		cfg.Trace.Service,
@@ -117,10 +137,10 @@ func run() error {
 
 	// =========================================================================
 	// Start Debug Service
-
+	//
 	// /debug/pprof - Added to the default mux by importing the net/http/pprof package.
 	// /debug/vars - Added to the default mux by importing the expvar package.
-
+	//
 	// Not concerned with shutting this down when the application is shutdown.
 	go func() {
 		log.Println("debug service listening on", cfg.Web.Debug)
@@ -131,43 +151,58 @@ func run() error {
 	// =========================================================================
 	// Start API Service
 
-	osSignals := make(chan os.Signal, 1)
-	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
+	// Make a channel to listen for an interrupt or terminate signal from the OS.
+	// Use a buffered channel because the signal package requires it.
+	shutdown := make(chan os.Signal, 1)
+	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
-	server := http.Server{
+	api := http.Server{
 		Addr:         cfg.Web.Address,
-		Handler:      handlers.API(osSignals, db, log, authenticator),
+		Handler:      handlers.API(shutdown, db, log, authenticator),
 		ReadTimeout:  cfg.Web.ReadTimeout,
 		WriteTimeout: cfg.Web.WriteTimeout,
 	}
 
+	// Make a channel to listen for errors coming from the listener. Use a
+	// buffered channel so the goroutine can exit if we don't collect this error.
 	serverErrors := make(chan error, 1)
+
+	// Start the service listening for requests.
 	go func() {
-		log.Println("server listening on", server.Addr)
-		serverErrors <- server.ListenAndServe()
+		log.Printf("main : API listening on %s", api.Addr)
+		serverErrors <- api.ListenAndServe()
 	}()
 
+	// =========================================================================
+	// Shutdown
+
+	// Blocking main and waiting for shutdown.
 	select {
 	case err := <-serverErrors:
 		return errors.Wrap(err, "listening and serving")
 
-	case <-osSignals:
-		// TODO die based on signal
-		log.Println("caught signal, shutting down")
+	case sig := <-shutdown:
+		log.Printf("main : %v : Start shutdown", sig)
 
 		// Give outstanding requests a deadline for completion.
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.Web.ShutdownTimeout)
 		defer cancel()
 
-		if err := server.Shutdown(ctx); err != nil {
-			log.Println("gracefully shutting down server", "error", err)
-			if err := server.Close(); err != nil {
-				log.Println("closing server", "error", err)
-			}
+		// Asking listener to shutdown and load shed.
+		err := api.Shutdown(ctx)
+		if err != nil {
+			log.Printf("main : Graceful shutdown did not complete in %v : %v", cfg.Web.ShutdownTimeout, err)
+			err = api.Close()
+		}
+
+		// Log the status of this shutdown.
+		switch {
+		case sig == syscall.SIGSTOP:
+			return errors.New("integrity issue caused shutdown")
+		case err != nil:
+			return errors.Wrap(err, "could not stop server gracefully")
 		}
 	}
-
-	log.Println("done")
 
 	return nil
 }

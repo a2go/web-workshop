@@ -46,5 +46,5 @@ Added    schema/seeds.go
 ```
 + 	github.com/GuiaBolso/darwin v0.0.0-20170210191649-86919dfcf808
 + 	github.com/jmoiron/sqlx v1.2.0
-+ 	github.com/lib/pq v1.0.0
++ 	github.com/lib/pq v1.1.1
 ```

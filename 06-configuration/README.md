@@ -19,5 +19,17 @@ variables, command-line flags, config files, or configuration services.
 ```
 Modified cmd/sales-admin/main.go
 Modified cmd/sales-api/main.go
+Added    internal/platform/conf/LICENSE
+Added    internal/platform/conf/conf.go
+Added    internal/platform/conf/conf_test.go
+Added    internal/platform/conf/fields.go
+Added    internal/platform/conf/sources.go
+Added    internal/platform/conf/usage.go
 Modified internal/platform/database/database.go
+```
+
+## Dependency Changes:
+
+```
++ 	github.com/google/go-cmp v0.3.0
 ```

@@ -25,6 +25,9 @@ func main() {
 
 func run() error {
 
+	// =========================================================================
+	// Configuration
+
 	var cfg struct {
 		Web struct {
 			Address         string        `conf:"default:localhost:8000"`
@@ -53,13 +56,21 @@ func run() error {
 		return errors.Wrap(err, "parsing config")
 	}
 
+	// =========================================================================
+	// App Starting
+
+	log.Printf("main : Started")
+	defer log.Println("main : Completed")
+
 	out, err := conf.String(&cfg)
 	if err != nil {
 		return errors.Wrap(err, "generating config for output")
 	}
-	log.Printf("config:\n%v\n", out)
+	log.Printf("main : Config :\n%v\n", out)
 
-	// Initialize dependencies.
+	// =========================================================================
+	// Start Database
+
 	db, err := database.Open(database.Config{
 		User:       cfg.DB.User,
 		Password:   cfg.DB.Password,
@@ -74,42 +85,57 @@ func run() error {
 
 	productsHandler := handlers.Products{DB: db}
 
-	server := http.Server{
+	// =========================================================================
+	// Start API Service
+
+	api := http.Server{
 		Addr:         cfg.Web.Address,
 		Handler:      http.HandlerFunc(productsHandler.List),
 		ReadTimeout:  cfg.Web.ReadTimeout,
 		WriteTimeout: cfg.Web.WriteTimeout,
 	}
 
+	// Make a channel to listen for errors coming from the listener. Use a
+	// buffered channel so the goroutine can exit if we don't collect this error.
 	serverErrors := make(chan error, 1)
+
+	// Start the service listening for requests.
 	go func() {
-		log.Println("server listening on", server.Addr)
-		serverErrors <- server.ListenAndServe()
+		log.Printf("main : API listening on %s", api.Addr)
+		serverErrors <- api.ListenAndServe()
 	}()
 
-	osSignals := make(chan os.Signal, 1)
-	signal.Notify(osSignals, os.Interrupt, syscall.SIGTERM)
+	// Make a channel to listen for an interrupt or terminate signal from the OS.
+	// Use a buffered channel because the signal package requires it.
+	shutdown := make(chan os.Signal, 1)
+	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
+	// =========================================================================
+	// Shutdown
+
+	// Blocking main and waiting for shutdown.
 	select {
 	case err := <-serverErrors:
 		return errors.Wrap(err, "listening and serving")
 
-	case <-osSignals:
-		log.Println("caught signal, shutting down")
+	case <-shutdown:
+		log.Println("main : Start shutdown")
 
 		// Give outstanding requests a deadline for completion.
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.Web.ShutdownTimeout)
 		defer cancel()
 
-		if err := server.Shutdown(ctx); err != nil {
-			log.Println("gracefully shutting down server", "error", err)
-			if err := server.Close(); err != nil {
-				log.Println("closing server", "error", err)
-			}
+		// Asking listener to shutdown and load shed.
+		err := api.Shutdown(ctx)
+		if err != nil {
+			log.Printf("main : Graceful shutdown did not complete in %v : %v", cfg.Web.ShutdownTimeout, err)
+			err = api.Close()
+		}
+
+		if err != nil {
+			return errors.Wrap(err, "could not stop server gracefully")
 		}
 	}
-
-	log.Println("done")
 
 	return nil
 }
