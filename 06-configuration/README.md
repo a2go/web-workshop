@@ -2,10 +2,12 @@
 
 - Create `config` struct in `cmd/sales-api` and `cmd/sales-admin`.
 - Remove hardcoded HTTP & DB info.
-- Use `github.com/kelseyhightower/envconfig` to parse the environment.
-- Define `flag.Usage` to be a function that calls `envconfig.Usage` to print expected environment variables.
-- Add a flag `-config-only` that prints the config being used.
-
+- Copy the `internal/platform/conf` package into your project.
+- Use `conf.Parse` to populate your config structs.
+- Detect the `ErrHelpWanted` error and display `conf.Usage` in that case.
+- Unlike the `sales-api` program, the `sales-admin` config should include a
+  field of type `conf.Args` to capture command line arguments after flags are
+  processed.
 
 ## Discussion
 
@@ -18,10 +20,4 @@ variables, command-line flags, config files, or configuration services.
 Modified cmd/sales-admin/main.go
 Modified cmd/sales-api/main.go
 Modified internal/platform/database/database.go
-```
-
-## Dependency Changes:
-
-```
-+ 	github.com/kelseyhightower/envconfig v1.3.0
 ```

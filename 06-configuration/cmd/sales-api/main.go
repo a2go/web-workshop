@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,60 +11,45 @@ import (
 	"time"
 
 	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
+	"github.com/ardanlabs/garagesale/internal/platform/conf"
 	"github.com/ardanlabs/garagesale/internal/platform/database"
-	"github.com/kelseyhightower/envconfig"
 )
-
-// This is for parsing the environment.
-const envKey = "sales"
-
-type config struct {
-	DB struct {
-		User       string `default:"postgres"`
-		Password   string `default:"postgres" json:"-"` // Prevent the marshalling of secrets.
-		Host       string `default:"localhost"`
-		Name       string `default:"postgres"`
-		DisableTLS bool   `default:"false" split_words:"true"`
-	}
-	HTTP struct {
-		Address         string        `default:"localhost:8000"`
-		ReadTimeout     time.Duration `default:"5s"`
-		WriteTimeout    time.Duration `default:"5s"`
-		ShutdownTimeout time.Duration `default:"5s"`
-	}
-}
 
 func main() {
 
-	// Process command line flags.
-	var flags struct {
-		configOnly bool
+	var cfg struct {
+		DB struct {
+			User       string `conf:"default:postgres"`
+			Password   string `conf:"default:postgres,noprint"`
+			Host       string `conf:"default:localhost"`
+			Name       string `conf:"default:postgres"`
+			DisableTLS bool   `conf:"default:false"`
+		}
+		HTTP struct {
+			Address         string        `conf:"default:localhost:8000"`
+			ReadTimeout     time.Duration `conf:"default:5s"`
+			WriteTimeout    time.Duration `conf:"default:5s"`
+			ShutdownTimeout time.Duration `conf:"default:5s"`
+		}
 	}
-	flag.BoolVar(&flags.configOnly, "config-only", false, "only show parsed configuration then exit")
-	flag.Usage = func() {
-		fmt.Print("This program is a service for managing inventory and sales at a Garage Sale.\n\nUsage of sales-api:\n\nsales-api [flags]\n\n")
-		flag.CommandLine.SetOutput(os.Stdout)
-		flag.PrintDefaults()
-		fmt.Print("\nConfiguration:\n\n")
-		envconfig.Usage(envKey, &config{})
-	}
-	flag.Parse()
 
-	// Get configuration from environment.
-	var cfg config
-	if err := envconfig.Process(envKey, &cfg); err != nil {
+	if err := conf.Parse(os.Args[1:], "SALES", &cfg); err != nil {
+		if err == conf.ErrHelpWanted {
+			usage, err := conf.Usage("SALES", &cfg)
+			if err != nil {
+				log.Fatalf("error : generating config usage : %v", err)
+			}
+			fmt.Println(usage)
+			return
+		}
 		log.Fatalf("error: parsing config: %s", err)
 	}
 
-	// Print config and exit if requested.
-	if flags.configOnly {
-		enc := json.NewEncoder(os.Stdout)
-		enc.SetIndent("", "	")
-		if err := enc.Encode(cfg); err != nil {
-			log.Fatalf("error: encoding config as json: %s", err)
-		}
-		return
+	out, err := conf.String(&cfg)
+	if err != nil {
+		log.Fatalf("error : generating config for output : %v", err)
 	}
+	log.Printf("config:\n%v\n", out)
 
 	// Initialize dependencies.
 	db, err := database.Open(database.Config{

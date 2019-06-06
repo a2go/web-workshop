@@ -3,9 +3,7 @@ package main
 import (
 	"context"
 	"crypto/rsa"
-	"encoding/json"
 	_ "expvar" // Register the expvar handlers
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -18,45 +16,15 @@ import (
 
 	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
+	"github.com/ardanlabs/garagesale/internal/platform/conf"
 	"github.com/ardanlabs/garagesale/internal/platform/database"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/kelseyhightower/envconfig"
 	openzipkin "github.com/openzipkin/zipkin-go"
 	zipkinHTTP "github.com/openzipkin/zipkin-go/reporter/http"
 	"github.com/pkg/errors"
 	"go.opencensus.io/exporter/zipkin"
 	"go.opencensus.io/trace"
 )
-
-// This is for parsing the environment.
-const envKey = "sales"
-
-type config struct {
-	DB struct {
-		User       string `default:"postgres"`
-		Password   string `default:"postgres" json:"-"` // Prevent the marshalling of secrets.
-		Host       string `default:"localhost"`
-		Name       string `default:"postgres"`
-		DisableTLS bool   `default:"false" split_words:"true"`
-	}
-	HTTP struct {
-		Address         string        `default:"localhost:8000"`
-		Debug           string        `default:"localhost:6060"`
-		ReadTimeout     time.Duration `default:"5s"`
-		WriteTimeout    time.Duration `default:"5s"`
-		ShutdownTimeout time.Duration `default:"5s"`
-	}
-	Auth struct {
-		KeyID          string `default:"1" split_words:"true"`
-		PrivateKeyFile string `default:"private.pem" split_words:"true"`
-		Algorithm      string `default:"RS256"`
-	}
-	Trace struct {
-		URL         string  `default:"http://localhost:9411/api/v2/spans"`
-		Service     string  `default:"sales-api"`
-		Probability float64 `default:"1"`
-	}
-}
 
 func main() {
 	if err := run(); err != nil {
@@ -69,38 +37,57 @@ func run() error {
 
 	log := log.New(os.Stdout, "SALES : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 
-	// Process command line flags.
-	var flags struct {
-		configOnly bool
+	var cfg struct {
+		DB struct {
+			User       string `conf:"default:postgres"`
+			Password   string `conf:"default:postgres,noprint"`
+			Host       string `conf:"default:localhost"`
+			Name       string `conf:"default:postgres"`
+			DisableTLS bool   `conf:"default:false"`
+		}
+		HTTP struct {
+			Address         string        `conf:"default:localhost:8000"`
+			Debug           string        `conf:"default:localhost:6060"`
+			ReadTimeout     time.Duration `conf:"default:5s"`
+			WriteTimeout    time.Duration `conf:"default:5s"`
+			ShutdownTimeout time.Duration `conf:"default:5s"`
+		}
+		Auth struct {
+			KeyID          string `conf:"default:1"`
+			PrivateKeyFile string `conf:"default:private.pem"`
+			Algorithm      string `conf:"default:RS256"`
+		}
+		Trace struct {
+			URL         string  `conf:"default:http://localhost:9411/api/v2/spans"`
+			Service     string  `conf:"default:sales-api"`
+			Probability float64 `conf:"default:1"`
+		}
 	}
-	flag.BoolVar(&flags.configOnly, "config-only", false, "only show parsed configuration then exit")
-	flag.Usage = func() {
-		fmt.Print("This program is a service for managing inventory and sales at a Garage Sale.\n\nUsage of sales-api:\n\nsales-api [flags]\n\n")
-		flag.CommandLine.SetOutput(os.Stdout)
-		flag.PrintDefaults()
-		fmt.Print("\nConfiguration:\n\n")
-		envconfig.Usage(envKey, &config{})
-	}
-	flag.Parse()
 
-	// Get configuration from environment.
-	var cfg config
-	if err := envconfig.Process(envKey, &cfg); err != nil {
+	if err := conf.Parse(os.Args[1:], "SALES", &cfg); err != nil {
+		if err == conf.ErrHelpWanted {
+			usage, err := conf.Usage("SALES", &cfg)
+			if err != nil {
+				return errors.Wrap(err, "generating config usage")
+			}
+			fmt.Println(usage)
+			return nil
+		}
 		return errors.Wrap(err, "parsing config")
 	}
 
-	// Print config and exit if requested.
-	if flags.configOnly {
-		enc := json.NewEncoder(os.Stdout)
-		enc.SetIndent("", "	")
-		if err := enc.Encode(cfg); err != nil {
-			return errors.Wrap(err, "encoding config as json")
-		}
-		return nil
+	out, err := conf.String(&cfg)
+	if err != nil {
+		return errors.Wrap(err, "generating config for output")
 	}
+	log.Printf("config:\n%v\n", out)
 
 	// Initialize dependencies.
-	authenticator, err := createAuth(cfg)
+	authenticator, err := createAuth(
+		cfg.Auth.PrivateKeyFile,
+		cfg.Auth.KeyID,
+		cfg.Auth.Algorithm,
+	)
 	if err != nil {
 		return errors.Wrap(err, "constructing authenticator")
 	}
@@ -117,7 +104,12 @@ func run() error {
 	}
 	defer db.Close()
 
-	closer, err := registerTracer(cfg)
+	closer, err := registerTracer(
+		cfg.Trace.Service,
+		cfg.HTTP.Address,
+		cfg.Trace.URL,
+		cfg.Trace.Probability,
+	)
 	if err != nil {
 		return err
 	}
@@ -180,9 +172,9 @@ func run() error {
 	return nil
 }
 
-func createAuth(cfg config) (*auth.Authenticator, error) {
+func createAuth(privateKeyFile, keyID, algorithm string) (*auth.Authenticator, error) {
 
-	keyContents, err := ioutil.ReadFile(cfg.Auth.PrivateKeyFile)
+	keyContents, err := ioutil.ReadFile(privateKeyFile)
 	if err != nil {
 		return nil, errors.Wrap(err, "reading auth private key")
 	}
@@ -192,21 +184,21 @@ func createAuth(cfg config) (*auth.Authenticator, error) {
 		return nil, errors.Wrap(err, "parsing auth private key")
 	}
 
-	public := auth.NewSimpleKeyLookupFunc(cfg.Auth.KeyID, key.Public().(*rsa.PublicKey))
+	public := auth.NewSimpleKeyLookupFunc(keyID, key.Public().(*rsa.PublicKey))
 
-	return auth.NewAuthenticator(key, cfg.Auth.KeyID, cfg.Auth.Algorithm, public)
+	return auth.NewAuthenticator(key, keyID, algorithm, public)
 }
 
-func registerTracer(cfg config) (func() error, error) {
-	localEndpoint, err := openzipkin.NewEndpoint(cfg.Trace.Service, cfg.HTTP.Address)
+func registerTracer(service, httpAddr, traceURL string, probability float64) (func() error, error) {
+	localEndpoint, err := openzipkin.NewEndpoint(service, httpAddr)
 	if err != nil {
 		return nil, errors.Wrap(err, "creating the local zipkinEndpoint")
 	}
-	reporter := zipkinHTTP.NewReporter(cfg.Trace.URL)
+	reporter := zipkinHTTP.NewReporter(traceURL)
 
 	trace.RegisterExporter(zipkin.NewExporter(reporter, localEndpoint))
 	trace.ApplyConfig(trace.Config{
-		DefaultSampler: trace.ProbabilitySampler(cfg.Trace.Probability),
+		DefaultSampler: trace.ProbabilitySampler(probability),
 	})
 
 	return reporter.Close, nil
