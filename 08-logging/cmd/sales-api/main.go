@@ -28,7 +28,7 @@ func run() error {
 	log := log.New(os.Stdout, "SALES : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 
 	var cfg struct {
-		HTTP struct {
+		Web struct {
 			Address         string        `conf:"default:localhost:8000"`
 			ReadTimeout     time.Duration `conf:"default:5s"`
 			WriteTimeout    time.Duration `conf:"default:5s"`
@@ -77,10 +77,10 @@ func run() error {
 	productsHandler := handlers.Products{DB: db, Log: log}
 
 	server := http.Server{
-		Addr:         cfg.HTTP.Address,
+		Addr:         cfg.Web.Address,
 		Handler:      http.HandlerFunc(productsHandler.List),
-		ReadTimeout:  cfg.HTTP.ReadTimeout,
-		WriteTimeout: cfg.HTTP.WriteTimeout,
+		ReadTimeout:  cfg.Web.ReadTimeout,
+		WriteTimeout: cfg.Web.WriteTimeout,
 	}
 
 	serverErrors := make(chan error, 1)
@@ -100,7 +100,7 @@ func run() error {
 		log.Println("caught signal, shutting down")
 
 		// Give outstanding requests a deadline for completion.
-		ctx, cancel := context.WithTimeout(context.Background(), cfg.HTTP.ShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.Background(), cfg.Web.ShutdownTimeout)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {

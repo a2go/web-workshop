@@ -18,7 +18,7 @@ import (
 func main() {
 
 	var cfg struct {
-		HTTP struct {
+		Web struct {
 			Address         string        `conf:"default:localhost:8000"`
 			ReadTimeout     time.Duration `conf:"default:5s"`
 			WriteTimeout    time.Duration `conf:"default:5s"`
@@ -67,10 +67,10 @@ func main() {
 	productsHandler := handlers.Products{DB: db}
 
 	server := http.Server{
-		Addr:         cfg.HTTP.Address,
+		Addr:         cfg.Web.Address,
 		Handler:      http.HandlerFunc(productsHandler.List),
-		ReadTimeout:  cfg.HTTP.ReadTimeout,
-		WriteTimeout: cfg.HTTP.WriteTimeout,
+		ReadTimeout:  cfg.Web.ReadTimeout,
+		WriteTimeout: cfg.Web.WriteTimeout,
 	}
 
 	serverErrors := make(chan error, 1)
@@ -90,7 +90,7 @@ func main() {
 		log.Println("caught signal, shutting down")
 
 		// Give outstanding requests a deadline for completion.
-		ctx, cancel := context.WithTimeout(context.Background(), cfg.HTTP.ShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.Background(), cfg.Web.ShutdownTimeout)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {

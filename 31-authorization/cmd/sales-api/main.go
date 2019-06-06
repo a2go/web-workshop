@@ -34,7 +34,7 @@ func run() error {
 	log := log.New(os.Stdout, "SALES : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 
 	var cfg struct {
-		HTTP struct {
+		Web struct {
 			Address         string        `conf:"default:localhost:8000"`
 			Debug           string        `conf:"default:localhost:6060"`
 			ReadTimeout     time.Duration `conf:"default:5s"`
@@ -103,8 +103,8 @@ func run() error {
 
 	// Not concerned with shutting this down when the application is shutdown.
 	go func() {
-		log.Println("debug service listening on", cfg.HTTP.Debug)
-		err := http.ListenAndServe(cfg.HTTP.Debug, http.DefaultServeMux)
+		log.Println("debug service listening on", cfg.Web.Debug)
+		err := http.ListenAndServe(cfg.Web.Debug, http.DefaultServeMux)
 		log.Println("debug service closed", err)
 	}()
 
@@ -112,10 +112,10 @@ func run() error {
 	// Start API Service
 
 	server := http.Server{
-		Addr:         cfg.HTTP.Address,
+		Addr:         cfg.Web.Address,
 		Handler:      handlers.API(db, log, authenticator),
-		ReadTimeout:  cfg.HTTP.ReadTimeout,
-		WriteTimeout: cfg.HTTP.WriteTimeout,
+		ReadTimeout:  cfg.Web.ReadTimeout,
+		WriteTimeout: cfg.Web.WriteTimeout,
 	}
 
 	serverErrors := make(chan error, 1)
@@ -135,7 +135,7 @@ func run() error {
 		log.Println("caught signal, shutting down")
 
 		// Give outstanding requests a deadline for completion.
-		ctx, cancel := context.WithTimeout(context.Background(), cfg.HTTP.ShutdownTimeout)
+		ctx, cancel := context.WithTimeout(context.Background(), cfg.Web.ShutdownTimeout)
 		defer cancel()
 
 		if err := server.Shutdown(ctx); err != nil {
