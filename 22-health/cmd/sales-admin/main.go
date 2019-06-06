@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -57,7 +56,7 @@ func run() error {
 	}
 	defer db.Close()
 
-	switch flag.Arg(0) {
+	switch cfg.Args.Num(0) {
 	case "migrate":
 		if err := schema.Migrate(db); err != nil {
 			return errors.Wrap(err, "applying migrations")

@@ -6,7 +6,6 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -62,15 +61,15 @@ func run() error {
 	}
 
 	var err error
-	switch flag.Arg(0) {
+	switch cfg.Args.Num(0) {
 	case "migrate":
 		err = migrate(dbConfig)
 	case "seed":
 		err = seed(dbConfig)
 	case "useradd":
-		err = useradd(dbConfig, flag.Arg(1), flag.Arg(2))
+		err = useradd(dbConfig, cfg.Args.Num(1), cfg.Args.Num(2))
 	case "keygen":
-		err = keygen(flag.Arg(1))
+		err = keygen(cfg.Args.Num(1))
 	default:
 		err = errors.New("Must specify a command")
 	}
