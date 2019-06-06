@@ -7,9 +7,9 @@ program we will find relying on `request.Context` and `request.WithContext` to
 be annoying.
 
 - Add `ctx context.Context` as the first argument in the `web.Handler` type.
-- Make the adapter function in `web.go`pass down the first context which was
+- Make the adapter function in `web.go` pass down the first context which was
   derived from `r.Context()`.
-- Anything using `r.Context()` should instead use the passed `ctx`.
+- Anything else using `r.Context()` should instead use the passed `ctx`.
 - Make everything compile.
 
 
