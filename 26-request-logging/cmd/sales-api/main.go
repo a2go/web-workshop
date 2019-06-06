@@ -30,19 +30,19 @@ func run() error {
 	log := log.New(os.Stdout, "SALES : ", log.LstdFlags|log.Lmicroseconds|log.Lshortfile)
 
 	var cfg struct {
-		DB struct {
-			User       string `conf:"default:postgres"`
-			Password   string `conf:"default:postgres,noprint"`
-			Host       string `conf:"default:localhost"`
-			Name       string `conf:"default:postgres"`
-			DisableTLS bool   `conf:"default:false"`
-		}
 		HTTP struct {
 			Address         string        `conf:"default:localhost:8000"`
 			Debug           string        `conf:"default:localhost:6060"`
 			ReadTimeout     time.Duration `conf:"default:5s"`
 			WriteTimeout    time.Duration `conf:"default:5s"`
 			ShutdownTimeout time.Duration `conf:"default:5s"`
+		}
+		DB struct {
+			User       string `conf:"default:postgres"`
+			Password   string `conf:"default:postgres,noprint"`
+			Host       string `conf:"default:localhost"`
+			Name       string `conf:"default:postgres"`
+			DisableTLS bool   `conf:"default:false"`
 		}
 	}
 
