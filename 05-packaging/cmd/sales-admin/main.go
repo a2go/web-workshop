@@ -1,3 +1,5 @@
+// This program performs administrative tasks for the garage sale service.
+
 package main
 
 import (

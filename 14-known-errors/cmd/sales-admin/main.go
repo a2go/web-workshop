@@ -1,3 +1,5 @@
+// This program performs administrative tasks for the garage sale service.
+
 package main
 
 import (
@@ -19,6 +21,9 @@ func main() {
 }
 
 func run() error {
+
+	// =========================================================================
+	// Configuration
 
 	var cfg struct {
 		DB struct {

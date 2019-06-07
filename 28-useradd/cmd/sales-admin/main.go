@@ -1,3 +1,5 @@
+// This program performs administrative tasks for the garage sale service.
+
 package main
 
 import (
@@ -23,6 +25,9 @@ func main() {
 }
 
 func run() error {
+
+	// =========================================================================
+	// Configuration
 
 	var cfg struct {
 		DB struct {
@@ -67,6 +72,7 @@ func run() error {
 	default:
 		err = errors.New("Must specify a command")
 	}
+
 	if err != nil {
 		return err
 	}
