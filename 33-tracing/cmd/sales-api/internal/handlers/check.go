@@ -10,33 +10,32 @@ import (
 	"go.opencensus.io/trace"
 )
 
-// Checks holds handlers for service orchestration checks.
-type Checks struct {
+// Check provides support for orchestration health checks.
+type Check struct {
 	db *sqlx.DB
 
 	// ADD OTHER STATE LIKE THE LOGGER IF NEEDED.
 }
 
-// Health returns a 200 OK status if the service is ready to
-// receive requests.
-func (s *Checks) Health(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	ctx, span := trace.StartSpan(ctx, "handlers.Checks.Health")
+// Health validates the service is healthy and ready to accept requests.
+func (c *Check) Health(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	ctx, span := trace.StartSpan(ctx, "handlers.Check.Health")
 	defer span.End()
 
-	var response struct {
+	var health struct {
 		Status string `json:"status"`
 	}
 
 	// Check if the database is ready.
-	if err := database.StatusCheck(ctx, s.db); err != nil {
+	if err := database.StatusCheck(ctx, c.db); err != nil {
 
 		// If the database is not ready we will tell the client and use a 500
 		// status. Do not respond by just returning an error because further up in
 		// the call stack will interpret that as an unhandled error.
-		response.Status = "not ready"
-		return web.Respond(ctx, w, response, http.StatusInternalServerError)
+		health.Status = "db not ready"
+		return web.Respond(ctx, w, health, http.StatusInternalServerError)
 	}
 
-	response.Status = "ok"
-	return web.Respond(ctx, w, response, http.StatusOK)
+	health.Status = "ok"
+	return web.Respond(ctx, w, health, http.StatusOK)
 }
