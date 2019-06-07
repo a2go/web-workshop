@@ -8,7 +8,6 @@ import (
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"go.opencensus.io/trace"
 	"golang.org/x/crypto/bcrypt"
@@ -16,7 +15,7 @@ import (
 
 var (
 	// ErrAuthenticationFailure occurs when a user attempts to authenticate but
-	// their email or password is incorrect.
+	// anything goes wrong.
 	ErrAuthenticationFailure = errors.New("Authentication failed")
 )
 
@@ -46,7 +45,7 @@ func Create(ctx context.Context, db *sqlx.DB, n NewUser, now time.Time) (*User, 
 	_, err = db.ExecContext(
 		ctx, q,
 		u.ID, u.Name, u.Email,
-		u.PasswordHash, pq.StringArray(u.Roles),
+		u.PasswordHash, u.Roles,
 		u.DateCreated, u.DateUpdated,
 	)
 	if err != nil {
@@ -63,12 +62,10 @@ func Authenticate(ctx context.Context, db *sqlx.DB, now time.Time, email, passwo
 	ctx, span := trace.StartSpan(ctx, "user.Authenticate")
 	defer span.End()
 
-	const q = `SELECT user_id, roles, password_hash FROM users WHERE email = $1`
-	row := db.QueryRowContext(ctx, q, email)
+	const q = `SELECT * FROM users WHERE email = $1`
 
 	var u User
-	err := row.Scan(&u.ID, pq.Array(&u.Roles), &u.PasswordHash)
-	if err != nil {
+	if err := db.GetContext(ctx, &u, q, email); err != nil {
 
 		// Normally we would return ErrNotFound in this scenario but we do not want
 		// to leak to an unauthenticated user which emails are in the system.

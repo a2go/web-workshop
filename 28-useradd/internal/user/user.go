@@ -6,7 +6,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-	"github.com/lib/pq"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -35,7 +34,7 @@ func Create(ctx context.Context, db *sqlx.DB, n NewUser, now time.Time) (*User, 
 	_, err = db.ExecContext(
 		ctx, q,
 		u.ID, u.Name, u.Email,
-		u.PasswordHash, pq.StringArray(u.Roles),
+		u.PasswordHash, u.Roles,
 		u.DateCreated, u.DateUpdated,
 	)
 	if err != nil {
