@@ -38,6 +38,12 @@ func Errors(log *log.Logger) web.Middleware {
 				if err := web.RespondError(ctx, w, err); err != nil {
 					return err
 				}
+
+				// If we receive the shutdown err we need to return it
+				// back to the base handler to shutdown the service.
+				if ok := web.IsShutdown(err); ok {
+					return err
+				}
 			}
 
 			// Return nil to indicate the error has been handled.
