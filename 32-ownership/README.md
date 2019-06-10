@@ -17,5 +17,5 @@ Modified internal/product/models.go
 Modified internal/product/product.go
 Modified internal/product/product_test.go
 Modified internal/product/sales_test.go
-Modified internal/schema/migrations.go
+Modified internal/schema/migrate.go
 ```

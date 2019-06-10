@@ -19,9 +19,7 @@ Added    internal/platform/database/database.go
 Added    internal/product/models.go
 Added    internal/product/product.go
 Moved    schema/migrate.go -> internal/schema/migrate.go
-Moved    schema/migrations.go -> internal/schema/migrations.go
 Moved    schema/seed.go -> internal/schema/seed.go
-Moved    schema/seeds.go -> internal/schema/seeds.go
 Deleted  main.go
 ```
 

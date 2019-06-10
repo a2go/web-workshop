@@ -36,9 +36,7 @@ go build
 Added    docker-compose.yaml
 Modified main.go
 Added    schema/migrate.go
-Added    schema/migrations.go
 Added    schema/seed.go
-Added    schema/seeds.go
 ```
 
 ## Dependency Changes:
