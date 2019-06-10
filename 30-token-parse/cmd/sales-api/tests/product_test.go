@@ -27,7 +27,7 @@ func TestProducts(t *testing.T) {
 
 	tests := ProductTests{
 		app:        handlers.API(test.DB, test.Log, test.Authenticator),
-		adminToken: test.Token(t, "admin@example.com", "gophers"),
+		adminToken: test.Token("admin@example.com", "gophers"),
 	}
 
 	t.Run("List", tests.List)
