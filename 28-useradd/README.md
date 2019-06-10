@@ -11,7 +11,6 @@
 
 ```
 Modified cmd/sales-admin/main.go
-Modified cmd/sales-api/internal/handlers/check.go
 Added    internal/platform/auth/roles.go
 Modified internal/schema/migrate.go
 Modified internal/schema/seed.go

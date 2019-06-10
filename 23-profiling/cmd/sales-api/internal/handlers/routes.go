@@ -14,7 +14,7 @@ func API(db *sqlx.DB, log *log.Logger) http.Handler {
 	app := web.NewApp(log)
 
 	{
-		c := Checks{db: db}
+		c := Check{db: db}
 		app.Handle(http.MethodGet, "/v1/health", c.Health)
 	}
 

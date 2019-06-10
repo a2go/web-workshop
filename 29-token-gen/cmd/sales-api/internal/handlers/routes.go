@@ -17,7 +17,7 @@ func API(db *sqlx.DB, log *log.Logger, authenticator *auth.Authenticator) http.H
 	app := web.NewApp(log, mid.Logger(log), mid.Errors(log), mid.Metrics())
 
 	{
-		c := Checks{db: db}
+		c := Check{db: db}
 		app.Handle(http.MethodGet, "/v1/health", c.Health)
 	}
 

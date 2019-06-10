@@ -18,7 +18,7 @@ func API(db *sqlx.DB, log *log.Logger, authenticator *auth.Authenticator) http.H
 
 	{
 		// Register health check handler. This route is not authenticated.
-		c := Checks{db: db}
+		c := Check{db: db}
 		app.Handle(http.MethodGet, "/v1/health", c.Health)
 	}
 

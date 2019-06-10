@@ -11,7 +11,6 @@
 
 ```
 Modified cmd/sales-admin/main.go
-Modified cmd/sales-api/internal/handlers/check.go
 Modified cmd/sales-api/internal/handlers/routes.go
 Added    cmd/sales-api/internal/handlers/user.go
 Modified cmd/sales-api/main.go
