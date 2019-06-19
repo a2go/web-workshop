@@ -45,8 +45,8 @@ func Create(ctx context.Context, db *sqlx.DB, np NewProduct, now time.Time) (*Pr
 		Name:        np.Name,
 		Cost:        np.Cost,
 		Quantity:    np.Quantity,
-		DateCreated: now,
-		DateUpdated: now,
+		DateCreated: now.UTC(),
+		DateUpdated: now.UTC(),
 	}
 
 	const q = `
