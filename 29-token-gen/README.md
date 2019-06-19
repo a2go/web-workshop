@@ -1,10 +1,11 @@
 # 29. Login
 
-- Add a `keygen` command to `sales-admin` which can generate a x509 private key.
 - Add a `Claims` type to the `auth` package.
-- Add an `Authenticator` type to the `auth` package which generates a JWT for `Claims`.
-- Add an `Authenticate` function to the `user` package which finds a user by email and verifies their password.
+- Add an `Authenticate` function to the `user` package which finds a user by email and verifies their password. It should return a `auth.Claims`.
 - Add a handler that identifies a user from Basic Auth and responds with a Token.
+- Add an `Authenticator` type to the `auth` package which generates a JWT for `Claims`.
+- Add a `keygen` command to `sales-admin` which can generate a x509 private key.
+- Modify the API's `main` function to create an authenticator from a configurable key file and pass it to dependencies.
 
 
 ## File Changes:
