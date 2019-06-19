@@ -24,8 +24,8 @@ func Create(ctx context.Context, db *sqlx.DB, n NewUser, now time.Time) (*User, 
 		Email:        n.Email,
 		PasswordHash: hash,
 		Roles:        n.Roles,
-		DateCreated:  now.UTC(),
-		DateUpdated:  now.UTC(),
+		DateCreated:  now,
+		DateUpdated:  now,
 	}
 
 	const q = `INSERT INTO users
