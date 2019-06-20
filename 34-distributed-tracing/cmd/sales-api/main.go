@@ -14,6 +14,7 @@ import (
 	"syscall"
 	"time"
 
+	"contrib.go.opencensus.io/exporter/zipkin"
 	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
 	"github.com/ardanlabs/garagesale/internal/platform/conf"
@@ -22,7 +23,6 @@ import (
 	openzipkin "github.com/openzipkin/zipkin-go"
 	zipkinHTTP "github.com/openzipkin/zipkin-go/reporter/http"
 	"github.com/pkg/errors"
-	"go.opencensus.io/exporter/zipkin"
 	"go.opencensus.io/trace"
 )
 
@@ -120,6 +120,9 @@ func run() error {
 		return errors.Wrap(err, "connecting to db")
 	}
 	defer db.Close()
+
+	// =========================================================================
+	// Start Tracing Support
 
 	closer, err := registerTracer(
 		cfg.Trace.Service,

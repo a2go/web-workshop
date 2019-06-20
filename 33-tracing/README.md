@@ -41,6 +41,7 @@ Modified internal/user/user.go
 ## Dependency Changes:
 
 ```
++ 	contrib.go.opencensus.io/exporter/zipkin v0.1.1
 + 	github.com/openzipkin/zipkin-go v0.1.6
-+ 	go.opencensus.io v0.19.2
++ 	go.opencensus.io v0.21.0
 ```
