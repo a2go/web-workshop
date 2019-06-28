@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
-	"github.com/ardanlabs/garagesale/internal/platform/tests"
+	"github.com/ardanlabs/garagesale/internal/tests"
 )
 
 // TestUsers runs a series of tests to exercise User behavior.

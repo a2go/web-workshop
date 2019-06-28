@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/ardanlabs/garagesale/internal/platform/auth"
-	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 	"github.com/ardanlabs/garagesale/internal/product"
+	"github.com/ardanlabs/garagesale/internal/tests"
 )
 
 func TestSales(t *testing.T) {
-	db, teardown := databasetest.Setup(t)
+	db, teardown := tests.NewUnit(t)
 	defer teardown()
 
 	now := time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)

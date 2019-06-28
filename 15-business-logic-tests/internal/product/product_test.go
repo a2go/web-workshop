@@ -4,14 +4,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 	"github.com/ardanlabs/garagesale/internal/product"
 	"github.com/ardanlabs/garagesale/internal/schema"
+	"github.com/ardanlabs/garagesale/internal/tests"
 	"github.com/google/go-cmp/cmp"
 )
 
 func TestProducts(t *testing.T) {
-	db, teardown := databasetest.Setup(t)
+	db, teardown := tests.NewUnit(t)
 	defer teardown()
 
 	newP := product.NewProduct{
@@ -37,7 +37,7 @@ func TestProducts(t *testing.T) {
 }
 
 func TestProductList(t *testing.T) {
-	db, teardown := databasetest.Setup(t)
+	db, teardown := tests.NewUnit(t)
 	defer teardown()
 
 	if err := schema.Seed(db); err != nil {

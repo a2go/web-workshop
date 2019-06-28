@@ -13,8 +13,8 @@ import (
 	// NOTE: Models should not be imported, we want to test the exact JSON. We
 	// make the comparison process easier using the go-cmp library.
 	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
-	"github.com/ardanlabs/garagesale/internal/platform/database/databasetest"
 	"github.com/ardanlabs/garagesale/internal/schema"
+	"github.com/ardanlabs/garagesale/internal/tests"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -25,7 +25,7 @@ import (
 // subtest needs a fresh instance of the application it can make it or it
 // should be its own Test* function.
 func TestProducts(t *testing.T) {
-	db, teardown := databasetest.Setup(t)
+	db, teardown := tests.NewUnit(t)
 	defer teardown()
 
 	if err := schema.Seed(db); err != nil {
