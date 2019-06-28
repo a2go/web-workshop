@@ -11,9 +11,9 @@
 Modified cmd/sales-api/internal/handlers/product.go
 Modified cmd/sales-api/internal/handlers/routes.go
 Modified cmd/sales-api/tests/product_test.go
-Added    internal/platform/tests/tests.go
 Modified internal/platform/web/response.go
 Modified internal/product/models.go
 Modified internal/product/product.go
 Modified internal/product/product_test.go
+Modified internal/tests/tests.go
 ```

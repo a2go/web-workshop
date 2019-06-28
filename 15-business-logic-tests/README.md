@@ -8,6 +8,6 @@
 
 ```
 Added    internal/platform/database/databasetest/docker.go
-Added    internal/platform/database/databasetest/setup.go
 Added    internal/product/product_test.go
+Added    internal/tests/tests.go
 ```

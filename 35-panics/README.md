@@ -14,5 +14,6 @@ global default logger.
 ## File Changes:
 
 ```
+Modified cmd/sales-api/internal/handlers/routes.go
 Added    internal/mid/panics.go
 ```

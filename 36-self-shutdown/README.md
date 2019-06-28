@@ -19,6 +19,7 @@ Modified cmd/sales-api/tests/product_test.go
 Modified cmd/sales-api/tests/user_test.go
 Modified internal/mid/errors.go
 Modified internal/mid/logger.go
+Modified internal/mid/panics.go
 Modified internal/platform/web/errors.go
 Modified internal/platform/web/response.go
 Modified internal/platform/web/web.go
