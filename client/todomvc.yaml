@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: LoopBack Application
+  version: 1.0.0
+paths:
+  '/todos/{id}':
+    put:
+      x-controller-name: TodoController
+      x-operation-name: replaceTodo
+      tags:
+        - TodoController
+      responses:
+        '204':
+          description: Todo PUT success
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: number
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+        x-parameter-index: 1
+    patch:
+      x-controller-name: TodoController
+      x-operation-name: updateTodo
+      tags:
+        - TodoController
+      responses:
+        '204':
+          description: Todo PATCH success
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: number
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+        x-parameter-index: 1
+    get:
+      x-controller-name: TodoController
+      x-operation-name: findTodoById
+      tags:
+        - TodoController
+      responses:
+        '200':
+          description: Todo model instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: number
+          required: true
+        - name: items
+          in: query
+          schema:
+            type: boolean
+    delete:
+      x-controller-name: TodoController
+      x-operation-name: deleteTodo
+      tags:
+        - TodoController
+      responses:
+        '204':
+          description: Todo DELETE success
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: number
+          required: true
+  /todos:
+    post:
+      x-controller-name: TodoController
+      x-operation-name: createTodo
+      tags:
+        - TodoController
+      responses:
+        '200':
+          description: Todo model instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+    get:
+      x-controller-name: TodoController
+      x-operation-name: findTodos
+      tags:
+        - TodoController
+      responses:
+        '200':
+          description: Array of Todo model instances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+      parameters:
+        - name: filter
+          in: query
+          style: deepObject
+          explode: true
+          schema:
+            properties:
+              where:
+                type: object
+              fields:
+                type: object
+              offset:
+                type: integer
+                minimum: 0
+              limit:
+                type: integer
+                minimum: 0
+              skip:
+                type: integer
+                minimum: 0
+              order:
+                type: array
+                items:
+                  type: string
+            type: object
+servers:
+  - url: 'https://lb4.eu-gb.mybluemix.net'
+components:
+  schemas:
+    Todo:
+      title: Todo
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        desc:
+          type: string
+        isComplete:
+          type: boolean
+        remindAtAddress:
+          type: string
+        remindAtGeo:
+          type: string
+      required:
+        - title

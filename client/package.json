@@ -1,0 +1,21 @@
+{
+  "name": "nwea-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prism": "npx prism mock -h 0.0.0.0 todo-backend.yaml",
+    "redoc": "npx redoc-cli serve todo-backend.yaml",
+    "lint": "npx speccy lint todo-backend.yaml"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "@stoplight/prism-cli": "^3.1.1",
+    "redoc": "^2.0.0-rc.18",
+    "redoc-cli": "^0.9.2",
+    "speccy": "^0.11.0"
+  }
+}
