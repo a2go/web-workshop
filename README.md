@@ -63,7 +63,7 @@ We can use something called the default serve mux. We don't go into what this me
 
 One important part of writting Go is to leave no error unchecked, usually. If a function returns an error, that error should probably be part of control flow and maybe logged.
 
-You may have noticed that `http.ListenAndServe` returns an error. It is probably save to ignore any error that comes from it, but what if we had fat fingered our listen port as `";8000"` instead of `":8000"`? What do you think would happen?
+You may have noticed that `http.ListenAndServe` returns an error. It is probably safe to ignore any error that comes from it, but what if we had fat fingered our listen port as `";8000"` in our code instead of `":8000"`? What do you think would happen?
 
 Lets use the `log` package from the standard library to log this error. `log.Fatal` will end the program when called.
 
