@@ -10,7 +10,7 @@ brew install go
 
 # IDE
 
-Go can be written in any text editor without too much hassle, but an IDE will make your life a bit easier if you choose to use one. [VSCode](https://code.visualstudio.com/) with the [ms-vscode.go plugin](https://marketplace.visualstudio.com/items?itemName=ms-vscode.Go) is the most populare free solution. [Jenbrain's Goland](https://www.jetbrains.com/go/) is another option a lot of go developpers love, but is not free.
+Go can be written in any text editor without too much hassle, but an IDE will make your life a bit easier if you choose to use one. [VSCode](https://code.visualstudio.com/) with the [ms-vscode.go plugin](https://marketplace.visualstudio.com/items?itemName=ms-vscode.Go) is the most popular free solution. [Jetbrain's Goland](https://www.jetbrains.com/go/) is another option a lot of go developers love, but is not free.
 
 # Tooling
 The setup in this directory is entirely optional. It is not required to get up and running for workshop 0, but will help you to write better and more idiomatic code.
@@ -27,7 +27,7 @@ GO111MODULE=on go get -u golang.org/x/tools/gopls@v0.1
 
 So what's happening here? GO111MODULE=on is telling go to function in module mode rather than gopath mode, allowing us to use branches other than master. The `go get` command will fetch module requested and install it into your $GOPATH. The `-u` is telling go to check and fetch the latest version of the module and its dependencies within the specified version, even if we've already downloaded this module before. The `golang.org/x/tools/gopls` part is the module we're specifically requesting. And the `@v0.1` is telling `go get` that we specifically want the version 0.1, but not specifying a patch number (go will by default select the highest available).
 
-Something intersting to note about `go get` is that it's behavior changes depending on where you run it from. In order to download a tool, you must run it from outside an existing go project. When you run it from inside a project, it will actually add the module as a dependency to the project. This is incredibly useful, but can be frustrating when you don't realize it's happening.
+Something interesting to note about `go get` is that it's behavior changes depending on where you run it from. In order to download a tool, you must run it from outside an existing go project. When you run it from inside a project, it will actually add the module as a dependency to the project. This is incredibly useful, but can be frustrating when you don't realize it's happening.
 
 For more information [click me](https://dev.to/maelvls/why-is-go111module-everywhere-and-everything-about-go-modules-24k)
 
@@ -72,7 +72,7 @@ gofmt -l -w -s . # Formats all *.go files in the current directory and subdirect
 
 You can also run `go fmt` which is effectively a wrapper around `gofmt -l -w`, but it doesn't support the `-s` option, which finds places to simplify your code.
 
-The gofmt tool also offers some really cool tricks for refactorring your code. [You can find out more here](https://blog.golang.org/go-fmt-your-code)
+The gofmt tool also offers some really cool tricks for refactoring your code. [You can find out more here](https://blog.golang.org/go-fmt-your-code)
 
 ## Static Analysis and Linting
 
@@ -88,7 +88,7 @@ go vet ./...
 
 ### Golint
 
-While it doesn't come with go explicitly, there is a supported linter than looks for stylistic mistakes. These differ from the analysis mistakes in that they tend to be more focuessed on making your code readable rather than directly exposing potential bugs.
+While it doesn't come with go explicitly, there is a supported linter than looks for stylistic mistakes. These differ from the analysis mistakes in that they tend to be more focused on making your code readable rather than directly exposing potential bugs.
 
 To get the linter:
 
@@ -126,19 +126,19 @@ golangci-lint run ./... # runs the linters over the current directory and subdir
 golangci-lint run --fix ./...   # attempts to fix the problems the lintrs detect
 ```
 
-One of the nice things about golangci-lint is that it's highly configurable. The configurationg for this project can be found in the `.golangci.yaml` file in the top level directory. This can be especially valuable when choosing to ignore specific directories or apply special rules for a project or organization. The project adds new rules regularly, and in the near future will hopefully allow implementation of custom rules (currently on PR).
+One of the nice things about golangci-lint is that it's highly configurable. The configuration for this project can be found in the `.golangci.yaml` file in the top level directory. This can be especially valuable when choosing to ignore specific directories or apply special rules for a project or organization. The project adds new rules regularly, and in the near future will hopefully allow implementation of custom rules (currently on PR).
 
 [Click here for more information](https://github.com/golangci/golangci-lint)
 
 ## Debugging
 
-Most IDEs offer debugging built in, but in some situations that may not be sufficient, and not everyone wants to work within the confines of an IDE. [Delve](https://github.com/go-delve/delve) tends to be the debugger that most people use outside of IDEs. It's pretty simple and straitforward to use.
+Most IDEs offer debugging built in, but in some situations that may not be sufficient, and not everyone wants to work within the confines of an IDE. [Delve](https://github.com/go-delve/delve) tends to be the debugger that most people use outside of IDEs. It's pretty simple and strait forward to use.
 
 ## Public Release
 
 ### Go Get
 
-If you're putting your code on a public repo, your code is automatically available via the `go get` tool. By default, consumers will get your master branch, but you can improve that by adding versioning tags. Similarly, code that you store in private repos can be retrieved by anyone with access via `go get`, but they'll need to list the repo in the GOPRIVATE field of their `go env` to make sure the dependencies are pulled correctly.
+If you're putting your code on a public repo, your code is automatically available via the `go get` tool. By default, consumers will get your master branch, but you can improve that by adding version tags. Similarly, code that you store in private repos can be retrieved by anyone with access via `go get`, but they'll need to list the repo in the GOPRIVATE field of their `go env` to make sure the dependencies are pulled correctly.
 
 ### Goreleaser
 
