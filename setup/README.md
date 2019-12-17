@@ -1,5 +1,17 @@
 # Setup
 
+To install go, follow the instructions on [The Official Install Page](https://golang.org/doc/install).
+
+For MacOs, you can alternately run
+
+```
+brew install go
+```
+
+# IDE
+
+Go can be written in any text editor without too much hassle, but an IDE will make your life a bit easier if you choose to use one. [VSCode](https://code.visualstudio.com/) with the [ms-vscode.go plugin](https://marketplace.visualstudio.com/items?itemName=ms-vscode.Go) is the most populare free solution. [Jenbrain's Goland](https://www.jetbrains.com/go/) is another option a lot of go developpers love, but is not free.
+
 # Tooling
 The setup in this directory is entirely optional. It is not required to get up and running for workshop 0, but will help you to write better and more idiomatic code.
 
@@ -117,3 +129,30 @@ golangci-lint run --fix ./...   # attempts to fix the problems the lintrs detect
 One of the nice things about golangci-lint is that it's highly configurable. The configurationg for this project can be found in the `.golangci.yaml` file in the top level directory. This can be especially valuable when choosing to ignore specific directories or apply special rules for a project or organization. The project adds new rules regularly, and in the near future will hopefully allow implementation of custom rules (currently on PR).
 
 [Click here for more information](https://github.com/golangci/golangci-lint)
+
+## Debugging
+
+Most IDEs offer debugging built in, but in some situations that may not be sufficient, and not everyone wants to work within the confines of an IDE. [Delve](https://github.com/go-delve/delve) tends to be the debugger that most people use outside of IDEs. It's pretty simple and straitforward to use.
+
+## Public Release
+
+### Go Get
+
+If you're putting your code on a public repo, your code is automatically available via the `go get` tool. By default, consumers will get your master branch, but you can improve that by adding versioning tags. Similarly, code that you store in private repos can be retrieved by anyone with access via `go get`, but they'll need to list the repo in the GOPRIVATE field of their `go env` to make sure the dependencies are pulled correctly.
+
+### Goreleaser
+
+Another great option for releasing code is [Goreleaser](https://github.com/goreleaser/goreleaser). Using goreleaser will automatically build binaries for several platforms and allow you to upload those binaries to common distribution systems, like brew.
+
+
+# Additional resources
+
+Most of the commands that go runs directly can offer additional information about how to ues them with `go help`, for example:
+
+```
+go help vet
+go help test
+go help fmt
+```
+
+There's a pretty nice cheat sheet of commands [here](https://github.com/fedir/go-tooling-cheat-sheet/blob/master/go-tooling-cheat-sheet.pdf)
