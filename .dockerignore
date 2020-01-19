@@ -1,0 +1,9 @@
+.git
+.golangci.yaml
+coverage.out
+LICENSE
+main
+Makefile
+README.md
+small
+
