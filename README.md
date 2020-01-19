@@ -21,4 +21,5 @@ A2 Go, the developer meetup, is a forum for people working in or around Ann Arbo
 
 While each workshop is written with a user group meeting in mind, it could be used in another format. The git repository is structured such that you change branches for each workshop. The zero branch is a very basic hello world web application. Each branch has its own README which walks the attendee through steps to build whatever is being built in that workshop. Subsequent branches pick up where the previous workshop left off. Our goal is for someone with little to no Go experience to be able to start this workshop at step zero.
 
-To get started, clone this repo and change to the [workshop_0](https://github.com/a2go/web-workshop/tree/workshop_0) branch.
+To get started at the beginning, clone this repo and change to the [workshop_0](https://github.com/a2go/web-workshop/tree/workshop_0) branch.
+To start with a basic webserver, clone this repo and change to the [workshop_1](https://github.com/a2go/web-workshop/tree/workshop_1) branch.
