@@ -101,14 +101,17 @@ func (s *ServerHandler) SetLogger(logger *log.Logger) {
 
 // ServeHTTP satisfies Handler interface, sets up the Path Routing
 func (s *ServerHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	once := s.once
-	if once == nil {
-		s.once = &sync.Once{}
-		once = s.once
-	}
+	once := s.initOnce()
 	// on the first request only, lazily initialize
 	once.Do(s.RegisterHandlers)
 	s.mux.ServeHTTP(w, r)
+}
+
+func (s *ServerHandler) initOnce() *sync.Once {
+	if s.once == nil {
+		s.once = &sync.Once{}
+	}
+	return s.once
 }
 
 func (s *ServerHandler) RegisterHandlers() {
