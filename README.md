@@ -1,6 +1,6 @@
 # Workshop 1
 ## Getting started by knowing when to quit!
-In the course of development, it is important to have a rapid feedback cycle. 
+In the course of development, it is important to have a rapid feedback cycle.
 When you are building a web application, you want to run it, check it out, and then _**stop**_ it.
 
 You need some way to signal to your program that it should exit. Go by default will kill your program as soon as it receives any quit signals from the operating system.
@@ -34,7 +34,7 @@ When you `go run main.go` in the terminal, if you type "Control-C", your operati
 </details>
 
 This might be fine, but what if our program was in the middle of something important and we only want it to stop when it's safely done?
-We need to explicitly listen for that operating signal, and then Go will let our program pick when and how to exit. 
+We need to explicitly listen for that operating signal, and then Go will let our program pick when and how to exit.
 
 <details><summary>Example</summary>
 
@@ -76,7 +76,7 @@ Here we are making a [channel](https://tour.golang.org/concurrency/2), a typed c
 
 This particular channel is typed for Operating System signals, and can hold a buffer of up to 1 quit signal at a time.
 
-The `<-` is the Go channel `receive` operator, and it will block the program there until a signal on the quit channel is sent. 
+The `<-` is the Go channel `receive` operator, and it will block the program there until a signal on the quit channel is sent.
 
 </details>
 
@@ -129,6 +129,7 @@ This extracts the waiting functionality into something that can be called from a
 Now add a new file called `main_test.go`:
 
 ```go
+package main
 
 import (
 	"io/ioutil"
@@ -168,17 +169,50 @@ func TestWaiter(t *testing.T) {
 	})
 }
 ```
-If we run `go test`, then it will verify that Waiter listens, blocks, receives, and then returns. 
+If we run `go test`, then it will verify that Waiter listens, blocks, receives, and then returns.
 </details>
 
-### Making a web application
+### Making a Todo web application
 
+This branch starts with a simple, basic HTTP Server with graceful shutdown that
+provides a Todo List via HTML forms.
+
+Your job is to write tests first and then extend the existing code to satisfy the basic Todo CRUDL API for a new JSON front-end:
+
+| HTTP Method | URI | Content Type |
+|---|---|---|
+| DELETE | "/api" | "application/json" |
+| GET | "/api" | "application/json" |
+| OPTIONS | "/api" | "application/json" |
+| POST | "/api" | "application/json" |
+| DELETE | "/api/:id" | "application/json" |
+| GET | "/api/:id" | "application/json" |
+| PATCH | "/api/:id" | "application/json" |
+
+You will need to [serialize and deserialize JSON data](https://gobyexample.com/json)
+and add some additional routes and handlers.
+
+The application has this basic data model:
+
+```
+type Todo struct {
+	Id   int
+	Name string
+	Done bool
+}
+
+type TodoList struct {
+	items  []Todo
+	nextId int
+}
+```
+
+
+Note: Yeah, uuids are way better than integers, but this is simpler for now.
 
 # Workshop 0
 
 In this workshop we will build a simple, basic HTTP server. This assumes you have no experience with Go's net/http library.
-
-
 
 ## Getting Started
 
@@ -262,11 +296,13 @@ The end program should look something like this:
 
 ```
 package main
+
 import (
     "fmt"
     "log"
     "net/http"
 )
+
 func main() {
     http.HandleFunc("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintln(w, "Hello World")

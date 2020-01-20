@@ -2,14 +2,22 @@ package main
 
 import (
 	"context"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"sync"
 	"syscall"
 	"time"
 )
+
+type Todo struct {
+	Id   int
+	Name string
+	Done bool
+}
 
 func main() {
 	logger := log.New(os.Stdout,
@@ -62,7 +70,7 @@ func NewHTTPServer(logger *log.Logger) *http.Server {
 		addr = ":8080"
 	}
 
-	s := &ServerHandler{}
+	s := &ServerHandler{todos: &TodoList{}}
 	// pass logger
 	s.SetLogger(logger)
 
@@ -80,7 +88,10 @@ func NewHTTPServer(logger *log.Logger) *http.Server {
 type ServerHandler struct {
 	logger *log.Logger
 	mux    *http.ServeMux
-	once   sync.Once
+	tmpl   *template.Template
+	todos  *TodoList
+	nextId int
+	once   *sync.Once
 }
 
 // SetLogger provides external injection of logger
@@ -90,32 +101,101 @@ func (s *ServerHandler) SetLogger(logger *log.Logger) {
 
 // ServeHTTP satisfies Handler interface, sets up the Path Routing
 func (s *ServerHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	once := s.once
+	if once == nil {
+		s.once = &sync.Once{}
+		once = s.once
+	}
 	// on the first request only, lazily initialize
-	s.once.Do(func() {
-		if s.logger == nil {
-			s.logger = log.New(os.Stdout,
-				"INFO: ",
-				log.Ldate|log.Ltime|log.Lshortfile)
-			s.logger.Printf("Default Logger used")
-		}
-		s.mux = http.NewServeMux()
-		s.mux.HandleFunc("/redirect", s.RedirectToHome)
-		s.mux.HandleFunc("/health", HealthCheck)
-	})
-
+	once.Do(s.RegisterHandlers)
 	s.mux.ServeHTTP(w, r)
 }
 
+func (s *ServerHandler) RegisterHandlers() {
+	if s.logger == nil {
+		s.logger = log.New(os.Stdout,
+			"INFO: ",
+			log.Ldate|log.Ltime|log.Lshortfile)
+		s.logger.Printf("Default Logger used")
+	}
+	s.tmpl = template.Must(template.ParseFiles("template.html"))
+	s.mux = http.NewServeMux()
+	s.mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	s.mux.HandleFunc("/health", HealthCheck)
+	s.mux.HandleFunc("/", s.TodoForm)
+}
+
 // HealthCheck verifies externally that the program is still responding
-func HealthCheck(w http.ResponseWriter, r *http.Request) {
+func HealthCheck(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.Header().Set("Content-Length", "0")
 	w.WriteHeader(200)
 }
 
 // RedirectToHome Will Log the Request, and respond with a HTTP 303 to redirect to /
-func (s *ServerHandler) RedirectToHome(w http.ResponseWriter, r *http.Request) {
-	s.logger.Printf("Redirected request %v to /", r.RequestURI)
+func (s *ServerHandler) RedirectToHome(w http.ResponseWriter) {
 	w.Header().Add("location", "/")
 	w.WriteHeader(http.StatusSeeOther)
+}
+
+func (s ServerHandler) TodoForm(w http.ResponseWriter, r *http.Request) {
+	s.logger.Printf("TodoForm method %v request %v to /", r.Method, r.RequestURI)
+	s.logger.Printf("TodoForm Items before %v %v", s.todos.items, s.nextId)
+	switch r.Method {
+	case http.MethodGet:
+		s.logger.Printf("Get Items %v", s.todos.items)
+		s.tmpl.Execute(w, s.todos.items)
+	case http.MethodPost:
+		item := r.FormValue("item")
+		s.logger.Printf("Item %v", item)
+		id, _ := strconv.Atoi(item)
+		switch r.URL.Path {
+		case "/done":
+			s.todos.Check(id)
+		case "/not-done":
+			s.todos.UnCheck(id)
+		case "/delete":
+			s.todos.Delete(id)
+		default:
+			s.todos.Add(item)
+		}
+		s.RedirectToHome(w)
+		s.logger.Printf("TodoForm Items after %v %v", s.todos.items, s.nextId)
+	}
+}
+
+func (s *TodoList) Add(name string) {
+	s.items = append(s.items, Todo{s.nextId, name, false})
+	s.nextId++
+}
+
+type TodoList struct {
+	items  []Todo
+	nextId int
+}
+
+func (s *TodoList) Check(id int) {
+	for i, item := range s.items {
+		if item.Id == id {
+			s.items[i].Done = true
+		}
+	}
+}
+
+func (s *TodoList) UnCheck(id int) {
+	for i, item := range s.items {
+		if item.Id == id {
+			s.items[i].Done = false
+		}
+	}
+}
+
+func (s *TodoList) Delete(id int) {
+	var newList []Todo
+	for _, item := range s.items {
+		if item.Id != id {
+			newList = append(newList, item)
+		}
+	}
+	s.items = newList
 }

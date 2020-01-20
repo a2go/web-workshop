@@ -198,3 +198,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+#binaries
+main
+web-workshop
