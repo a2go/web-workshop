@@ -14,6 +14,7 @@ package main
 import (
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
@@ -21,12 +22,13 @@ func main() {
 	logger := log.New(os.Stdout,
 		"INFO: ",
 		log.Ldate|log.Ltime|log.Lshortfile)
-	logger.Printf("Starting up!")
+	logger.Printf("Starting up! Press CTRL-C to stop!")
 
-    // empty select blocks forever, but yields CPU
-	select{}
-
-    logger.Printf("I never get here!")
+	for {
+		time.Sleep(1 * time.Second)
+		log.Printf("Tick.")
+	}
+	logger.Printf("I never get here!")
 }
 ```
 When you `go run main.go` in the terminal, if you type "Control-C", your operating system will send an interrupt signal to your program. By default, golang will listen to these signals and stop your program for you.
