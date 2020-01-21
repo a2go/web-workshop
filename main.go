@@ -161,9 +161,9 @@ func (s ServerHandler) TodoForm(w http.ResponseWriter, r *http.Request) {
 }
 
 type Todo struct {
-	Id        int64
-	Title     string
-	Completed bool
+	Id        int64  `json:"id,omitempty"`
+	Title     string `json:"title,omitempty"`
+	Completed bool   `json:"completed,omitempty"`
 }
 
 type TodoList struct {

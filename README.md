@@ -198,26 +198,26 @@ The application has this basic data model:
 
 ```
 type Todo struct {
-	Id   int
-	Name string
-	Done bool
+	Id        int64  `json:"id,omitempty"`
+	Title     string `json:"title,omitempty"`
+	Completed bool   `json:"completed,omitempty"`
 }
 
 type TodoList struct {
 	items  []Todo
-	nextId int
+	nextId int64
 }
 ```
 
 Note: Yeah, uuids are way better than integers, but this is simpler for now.
 
-An example list HTTP Handler could be:
+An example Todo List API HTTP Handler could be:
 ```
 // ListTodos is an HTTP Handler for returning a list of Todos.
 func ListTodos(w http.ResponseWriter, r *http.Request) {
-	list := []Product{
-		{Name: "Comic Books", Cost: 50, Quantity: 42},
-		{Name: "McDonalds Toys", Cost: 75, Quantity: 120},
+	list := []Todo{
+		{Id: 1, Title: "Bring home milk", false},
+		{Id: 2, Title: "Drink more milk", false},
 	}
 
 	data, err := json.Marshal(list)
