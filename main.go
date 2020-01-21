@@ -13,12 +13,6 @@ import (
 	"time"
 )
 
-type Todo struct {
-	Id   int
-	Name string
-	Done bool
-}
-
 func main() {
 	logger := log.New(os.Stdout,
 		"INFO: ",
@@ -90,7 +84,6 @@ type ServerHandler struct {
 	mux    *http.ServeMux
 	tmpl   *template.Template
 	todos  *TodoList
-	nextId int
 	once   *sync.Once
 }
 
@@ -143,7 +136,7 @@ func (s *ServerHandler) RedirectToHome(w http.ResponseWriter) {
 
 func (s ServerHandler) TodoForm(w http.ResponseWriter, r *http.Request) {
 	s.logger.Printf("TodoForm method %v request %v to /", r.Method, r.RequestURI)
-	s.logger.Printf("TodoForm Items before %v %v", s.todos.items, s.nextId)
+	s.logger.Printf("TodoForm Items before %v %v", s.todos.items, s.todos.nextId)
 	switch r.Method {
 	case http.MethodGet:
 		s.logger.Printf("Get Items %v", s.todos.items)
@@ -151,7 +144,7 @@ func (s ServerHandler) TodoForm(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		item := r.FormValue("item")
 		s.logger.Printf("Item %v", item)
-		id, _ := strconv.Atoi(item)
+		id, _ := strconv.ParseInt(item, 10, 64)
 		switch r.URL.Path {
 		case "/done":
 			s.todos.Check(id)
@@ -163,8 +156,19 @@ func (s ServerHandler) TodoForm(w http.ResponseWriter, r *http.Request) {
 			s.todos.Add(item)
 		}
 		s.RedirectToHome(w)
-		s.logger.Printf("TodoForm Items after %v %v", s.todos.items, s.nextId)
+		s.logger.Printf("TodoForm Items after %v %v", s.todos.items, s.todos.nextId)
 	}
+}
+
+type Todo struct {
+	Id        int64
+	Title     string
+	Completed bool
+}
+
+type TodoList struct {
+	items  []Todo
+	nextId int64
 }
 
 func (s *TodoList) Add(name string) {
@@ -172,28 +176,23 @@ func (s *TodoList) Add(name string) {
 	s.nextId++
 }
 
-type TodoList struct {
-	items  []Todo
-	nextId int
-}
-
-func (s *TodoList) Check(id int) {
+func (s *TodoList) Check(id int64) {
 	for i, item := range s.items {
 		if item.Id == id {
-			s.items[i].Done = true
+			s.items[i].Completed = true
 		}
 	}
 }
 
-func (s *TodoList) UnCheck(id int) {
+func (s *TodoList) UnCheck(id int64) {
 	for i, item := range s.items {
 		if item.Id == id {
-			s.items[i].Done = false
+			s.items[i].Completed = false
 		}
 	}
 }
 
-func (s *TodoList) Delete(id int) {
+func (s *TodoList) Delete(id int64) {
 	var newList []Todo
 	for _, item := range s.items {
 		if item.Id != id {

@@ -1,0 +1,5 @@
+package todo
+
+//go:generate go run github.com/deepmap/oapi-codegen/cmd/oapi-codegen --generate types,server --package=todosrv -o server.gen.go todo-backend.yaml
+//go:generate go run github.com/deepmap/oapi-codegen/cmd/oapi-codegen --generate types,client --package=todoclient -o client.gen.go todo-backend.yaml
+// This placeholder file is here purely to generate a client and server using go generate ./...

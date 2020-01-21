@@ -55,7 +55,7 @@ func main() {
 	logger := log.New(os.Stdout,
 		"INFO: ",
 		log.Ldate|log.Ltime|log.Lshortfile)
-	logger.Printf("Starting up!")
+	logger.Printf("Starting up! Press CTRL-C to stop!")
 
 	// make a quit channel for operating system signals, buffered to size 1
 	quit := make(chan os.Signal, 1)
@@ -89,7 +89,7 @@ Getting good feedback on changes is most valuable when you’re trying to make a
 
 <details><summary>Example</summary>
 
-Let's change our `main.go` again:
+Let's change our `main.go` again to extract the Waiter function:
 ```go
 package main
 
@@ -104,7 +104,7 @@ func main() {
 	logger := log.New(os.Stdout,
 		"INFO: ",
 		log.Ldate|log.Ltime|log.Lshortfile)
-	logger.Printf("Starting up!")
+	logger.Printf("Starting up! Press CTRL-C to stop!")
 
 	Waiter(logger)
 	os.Exit(0)
@@ -209,8 +209,31 @@ type TodoList struct {
 }
 ```
 
-
 Note: Yeah, uuids are way better than integers, but this is simpler for now.
+
+An example list HTTP Handler could be:
+```
+// ListTodos is an HTTP Handler for returning a list of Todos.
+func ListTodos(w http.ResponseWriter, r *http.Request) {
+	list := []Product{
+		{Name: "Comic Books", Cost: 50, Quantity: 42},
+		{Name: "McDonalds Toys", Cost: 75, Quantity: 120},
+	}
+
+	data, err := json.Marshal(list)
+	if err != nil {
+		log.Println("error marshalling result", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write(data); err != nil {
+		log.Println("error writing result", err)
+	}
+}
+```
 
 # Workshop 0
 
