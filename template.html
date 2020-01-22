@@ -24,40 +24,40 @@
 
     <section class="items">
       <h2>Todo list</h2>
-      <ul>{{range .}}{{if .Done}}
+      <ul>{{range .}}{{if .Completed}}
         <li class="todo done">
           <span class="item-name">
-            <s>{{.Name}}</s>
+            <s>{{.Title}}</s>
           </span>
           <form method="post" action="/not-done">
             <input type="hidden" name="item" value="{{.Id}}"/>
             <input class="uncomplete"
                    type="submit"
-                   value="Mark not done '{{.Name}}'" />
+                   value="Mark not done '{{.Title}}'" />
           </form>
           <form method="post" action="/delete">
             <input type="hidden" name="item" value="{{.Id}}"/>
             <input class="delete"
                    type="submit"
-                   value="Delete '{{.Name}}'" />
+                   value="Delete '{{.Title}}'" />
           </form>
         </li>
 {{else}}
         <li class="todo">
           <span class="item-name">
-            {{.Name}}
+            {{.Title}}
           </span>
           <form method="post" action="/done">
             <input type="hidden" name="item" value="{{.Id}}"/>
             <input class="complete"
                    type="submit"
-                   value="Mark done '{{.Name}}'" />
+                   value="Mark done '{{.Title}}'" />
           </form>
           <form method="post" action="/delete">
             <input type="hidden" name="item" value="{{.Id}}"/>
             <input class="delete"
                    type="submit"
-                   value="Delete '{{.Name}}'" />
+                   value="Delete '{{.Title}}'" />
           </form>
         </li>
 {{end}}{{end}}</ul>
