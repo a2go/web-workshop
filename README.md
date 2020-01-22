@@ -131,20 +131,8 @@ This extracts the waiting functionality into something that can be called from a
 Now add a new file called `main_test.go`:
 
 ```go
-package main
-
-import (
-	"io/ioutil"
-	"log"
-	"os"
-	"os/signal"
-	"syscall"
-	"testing"
-	"time"
-)
-
 func TestWaiter(t *testing.T) {
-	t.Run("Wait with func", func(t *testing.T) {
+	t.Run("Signal Waiter graceful shutdown", func(t *testing.T) {
 		var finished bool
 		// Get the operating system process
 		proc, err := os.FindProcess(os.Getpid())
@@ -157,6 +145,11 @@ func TestWaiter(t *testing.T) {
 			Waiter(logger)
 			finished = true
 		}()
+
+		if finished {
+			t.Error("Waiter Exit before signal sent")
+		}
+
 		// if we signal too early, Waiter isn't listening yet
 		time.Sleep(10 * time.Millisecond)
 		//Send the SIGQUIT

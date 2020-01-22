@@ -26,7 +26,7 @@ func TestWaiter(t *testing.T) {
 			runServer(logger)
 			finished = true
 		}()
-		
+
 		if finished {
 			t.Error("runServer Exit before signal sent")
 		}
