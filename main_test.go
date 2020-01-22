@@ -13,7 +13,7 @@ import (
 )
 
 func TestWaiter(t *testing.T) {
-	t.Run("Wait with func", func(t *testing.T) {
+	t.Run("Signal runserver graceful shutdown", func(t *testing.T) {
 		var finished bool
 		// Get the operating system process
 		proc, err := os.FindProcess(os.Getpid())
@@ -26,6 +26,11 @@ func TestWaiter(t *testing.T) {
 			runServer(logger)
 			finished = true
 		}()
+		
+		if finished {
+			t.Error("runServer Exit before signal sent")
+		}
+
 		// if we signal too early, Waiter isn't listening yet
 		time.Sleep(10 * time.Millisecond)
 		//Send the SIGQUIT
