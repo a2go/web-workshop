@@ -54,7 +54,7 @@ func TestEcho(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			Echo(tt.args.w, tt.args.r)
+			ListProducts(tt.args.w, tt.args.r)
 			actual, _ := ioutil.ReadAll(httpTestWriter.Body)
 			assertStatus(t, httpTestWriter.Code, http.StatusOK)
 			assertResponseBody(t, tt.want, string(actual))
@@ -105,7 +105,7 @@ func TestHealthCheckHandler(t *testing.T) {
 
 	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(Echo)
+	handler := http.HandlerFunc(ListProducts)
 
 	// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
 	// directly and pass in our Request and ResponseRecorder.
@@ -117,7 +117,7 @@ func TestHealthCheckHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	want := "text/plain; charset=utf-8"
+	want := "application/json; charset=utf-8"
 	if contentType := rr.Header().Get("Content-Type"); contentType != want {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			contentType, want)

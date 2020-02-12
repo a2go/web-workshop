@@ -83,8 +83,8 @@ func runServer(logger *log.Logger) error {
 		}
 
 		if err != nil {
-			return err
 			log.Fatalf("main : could not stop server gracefully : %v", err)
+			return err
 		}
 	}
 	return nil
