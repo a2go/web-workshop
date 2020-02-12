@@ -13,6 +13,20 @@ import (
 )
 
 func main() {
+	logger := log.New(os.Stdout,
+		"INFO: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+	err := runServer(logger)
+	if err == nil {
+		logger.Println("finished clean")
+		os.Exit(0)
+	} else {
+		logger.Printf("Got error: %v", err)
+		os.Exit(1)
+	}
+}
+
+func runServer(logger *log.Logger) error {
 
 	// =========================================================================
 	// App Starting
@@ -69,9 +83,11 @@ func main() {
 		}
 
 		if err != nil {
+			return err
 			log.Fatalf("main : could not stop server gracefully : %v", err)
 		}
 	}
+	return nil
 }
 
 // Echo is a basic HTTP Handler.
