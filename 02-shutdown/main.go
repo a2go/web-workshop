@@ -57,7 +57,7 @@ func runServer(logger *log.Logger) error {
 	// Make a channel to listen for an interrupt or terminate signal from the OS.
 	// Use a buffered channel because the signal package requires it.
 	shutdown := make(chan os.Signal, 1)
-	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(shutdown, os.Interrupt, syscall.SIGQUIT, syscall.SIGTERM)
 
 	// =========================================================================
 	// Shutdown

@@ -119,16 +119,10 @@ func TestHealthCheckHandler(t *testing.T) {
 			status, http.StatusOK)
 	}
 
-	want := "text/plain"
+	want := "text/plain; charset=utf-8"
 	if contentType := rr.Header().Get("Content-Type"); contentType != want {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			contentType, want)
-	}
-
-	want = "0"
-	if contentLength := rr.Header().Get("Content-Length"); contentLength != want {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			contentLength, want)
 	}
 }
 
