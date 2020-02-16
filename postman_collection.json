@@ -1,0 +1,319 @@
+{
+	"info": {
+		"name": "Garage Sale Service",
+		"_postman_id": "ba470c37-e9bc-c4fb-1007-408c68907376",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"Token\", jsonData.token);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin@example.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "gophers",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"type": "any"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{SERVER}}/v1/users/token",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"v1",
+						"users",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Products",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{SERVER}}/v1/products",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"v1",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{SERVER}}/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"v1",
+						"products",
+						"a2b0639f-2cc6-44b8-b97b-15d69dbb511e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Puzzles\",\n\t\"cost\": 75,\n\t\"quantity\": 12\n}"
+				},
+				"url": {
+					"raw": "{{SERVER}}/v1/products",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"v1",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"comics\"\n}"
+				},
+				"url": {
+					"raw": "{{SERVER}}/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"v1",
+						"products",
+						"a2b0639f-2cc6-44b8-b97b-15d69dbb511e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete McDonalds Toys",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{SERVER}}/v1/products/72f8b983-3eb4-48db-9ed0-e45cc6bd716b",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"v1",
+						"products",
+						"72f8b983-3eb4-48db-9ed0-e45cc6bd716b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Sales",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{SERVER}}/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e/sales",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"v1",
+						"products",
+						"a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
+						"sales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Sales",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"quantity\": 2,\n\t\"paid\": 40\n}"
+				},
+				"url": {
+					"raw": "{{SERVER}}/v1/products/a2b0639f-2cc6-44b8-b97b-15d69dbb511e/sales",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"v1",
+						"products",
+						"a2b0639f-2cc6-44b8-b97b-15d69dbb511e",
+						"sales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{SERVER}}/v1/health",
+					"host": [
+						"{{SERVER}}"
+					],
+					"path": [
+						"v1",
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
