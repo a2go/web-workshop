@@ -33,11 +33,11 @@ func TestWaiter(t *testing.T) {
 
 		// if we signal too early, Waiter isn't listening yet
 		time.Sleep(10 * time.Millisecond)
-		//Send the SIGQUIT
+		// Send the SIGQUIT
 		proc.Signal(syscall.SIGQUIT)
 		// if we test finished too early, finished may not have been updated yet
 		time.Sleep(10 * time.Millisecond)
-		//reset signal notification
+		// reset signal notification
 		signal.Reset()
 		if !finished {
 			t.Error("runServer Did Not Exit")

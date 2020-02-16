@@ -131,6 +131,18 @@ This extracts the waiting functionality into something that can be called from a
 Now add a new file called `main_test.go`:
 
 ```go
+package main
+
+import (
+	"io/ioutil"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"testing"
+	"time"
+)
+
 func TestWaiter(t *testing.T) {
 	t.Run("Signal Waiter graceful shutdown", func(t *testing.T) {
 		var finished bool
@@ -163,6 +175,7 @@ func TestWaiter(t *testing.T) {
 		}
 	})
 }
+
 ```
 If we run `go test`, then it will verify that Waiter listens, blocks, receives, and then returns.
 </details>
