@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ardanlabs/garagesale/internal/product"
+	"github.com/a2go/garagesale/internal/product"
 	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
 )

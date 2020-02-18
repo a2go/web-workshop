@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/ardanlabs/garagesale/internal/platform/auth"
-	"github.com/ardanlabs/garagesale/internal/platform/web"
-	"github.com/ardanlabs/garagesale/internal/user"
+	"github.com/a2go/garagesale/internal/platform/auth"
+	"github.com/a2go/garagesale/internal/platform/web"
+	"github.com/a2go/garagesale/internal/user"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )

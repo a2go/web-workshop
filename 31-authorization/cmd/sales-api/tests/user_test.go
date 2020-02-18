@@ -6,8 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
-	"github.com/ardanlabs/garagesale/internal/tests"
+	"github.com/a2go/garagesale/cmd/sales-api/internal/handlers"
+	"github.com/a2go/garagesale/internal/tests"
 )
 
 // TestUsers runs a series of tests to exercise User behavior.

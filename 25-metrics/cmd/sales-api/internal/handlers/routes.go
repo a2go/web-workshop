@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ardanlabs/garagesale/internal/mid"
-	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"github.com/a2go/garagesale/internal/mid"
+	"github.com/a2go/garagesale/internal/platform/web"
 	"github.com/jmoiron/sqlx"
 )
 

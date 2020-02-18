@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"github.com/a2go/garagesale/internal/platform/web"
 )
 
 // Errors handles errors coming out of the call chain. It detects normal

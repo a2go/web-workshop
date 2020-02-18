@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ardanlabs/garagesale/internal/platform/conf"
+	"github.com/a2go/garagesale/internal/platform/conf"
 	"github.com/google/go-cmp/cmp"
 )
 

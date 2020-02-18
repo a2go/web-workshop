@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"github.com/a2go/garagesale/internal/platform/web"
 )
 
 // Logger writes some information about the request to the logs in the

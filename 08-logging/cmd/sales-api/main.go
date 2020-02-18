@@ -10,9 +10,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ardanlabs/garagesale/cmd/sales-api/internal/handlers"
-	"github.com/ardanlabs/garagesale/internal/platform/conf"
-	"github.com/ardanlabs/garagesale/internal/platform/database"
+	"github.com/a2go/garagesale/cmd/sales-api/internal/handlers"
+	"github.com/a2go/garagesale/internal/platform/conf"
+	"github.com/a2go/garagesale/internal/platform/database"
 	"github.com/pkg/errors"
 )
 

@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/ardanlabs/garagesale/internal/platform/database"
-	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"github.com/a2go/garagesale/internal/platform/database"
+	"github.com/a2go/garagesale/internal/platform/web"
 	"github.com/jmoiron/sqlx"
 )
 

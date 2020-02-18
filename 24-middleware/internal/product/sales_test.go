@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ardanlabs/garagesale/internal/product"
-	"github.com/ardanlabs/garagesale/internal/tests"
+	"github.com/a2go/garagesale/internal/product"
+	"github.com/a2go/garagesale/internal/tests"
 )
 
 func TestSales(t *testing.T) {

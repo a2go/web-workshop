@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"runtime"
 
-	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"github.com/a2go/garagesale/internal/platform/web"
 )
 
 // m contains the global program counters for the application.

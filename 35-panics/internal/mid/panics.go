@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"runtime/debug"
 
-	"github.com/ardanlabs/garagesale/internal/platform/web"
+	"github.com/a2go/garagesale/internal/platform/web"
 	"github.com/pkg/errors"
 	"go.opencensus.io/trace"
 )

@@ -27,7 +27,7 @@ To get started at the beginning, clone this repo and change to the [workshop_0](
 To start with a basic webserver, clone this repo and change to the [workshop_1](https://github.com/a2go/web-workshop/tree/workshop_1) branch.
 # service-training
 
-This project is the training material for the [`service`][service] repo broken
+This project is the training material for the [`service`](https://github.com/ardanlabs/service) repo broken
 out into steps.
 
 ## Requirements

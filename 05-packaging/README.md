@@ -7,7 +7,7 @@
 
 ## Links:
 
-https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html
+https://www.a2go.com/blog/2017/02/package-oriented-design.html
 
 ## File Changes:
 

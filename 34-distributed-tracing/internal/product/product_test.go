@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ardanlabs/garagesale/internal/platform/auth"
-	"github.com/ardanlabs/garagesale/internal/product"
-	"github.com/ardanlabs/garagesale/internal/schema"
-	"github.com/ardanlabs/garagesale/internal/tests"
+	"github.com/a2go/garagesale/internal/platform/auth"
+	"github.com/a2go/garagesale/internal/product"
+	"github.com/a2go/garagesale/internal/schema"
+	"github.com/a2go/garagesale/internal/tests"
 	"github.com/google/go-cmp/cmp"
 )
 

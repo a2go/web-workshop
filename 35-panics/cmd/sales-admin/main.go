@@ -13,11 +13,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/ardanlabs/garagesale/internal/platform/auth"
-	"github.com/ardanlabs/garagesale/internal/platform/conf"
-	"github.com/ardanlabs/garagesale/internal/platform/database"
-	"github.com/ardanlabs/garagesale/internal/schema"
-	"github.com/ardanlabs/garagesale/internal/user"
+	"github.com/a2go/garagesale/internal/platform/auth"
+	"github.com/a2go/garagesale/internal/platform/conf"
+	"github.com/a2go/garagesale/internal/platform/database"
+	"github.com/a2go/garagesale/internal/schema"
+	"github.com/a2go/garagesale/internal/user"
 	"github.com/pkg/errors"
 )
 
