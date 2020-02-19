@@ -26,19 +26,6 @@ func TestEcho(t *testing.T) {
 		want string
 	}{
 		{
-			name: "No specific path",
-			args: args{
-				w: httpTestWriter,
-				r: &http.Request{
-					Method: "GET",
-					URL: &url.URL{
-						Path: "/",
-					},
-				},
-			},
-			want: "You asked to GET /\n",
-		},
-		{
 			name: "Posting to /foo/bar",
 			args: args{
 				w: httpTestWriter,
@@ -49,7 +36,7 @@ func TestEcho(t *testing.T) {
 					},
 				},
 			},
-			want: "You asked to POST /foo/bar\n",
+			want: "[{\"name\":\"Comic Books\",\"cost\":50,\"quantity\":42},{\"name\":\"McDonalds Toys\",\"cost\":75,\"quantity\":120}]",
 		},
 	}
 	for _, tt := range tests {
@@ -57,7 +44,7 @@ func TestEcho(t *testing.T) {
 			ListProducts(tt.args.w, tt.args.r)
 			actual, _ := ioutil.ReadAll(httpTestWriter.Body)
 			assertStatus(t, httpTestWriter.Code, http.StatusOK)
-			assertResponseBody(t, tt.want, string(actual))
+			assertResponseBody(t, string(actual), tt.want)
 		})
 	}
 }
@@ -93,35 +80,6 @@ func TestWaiter(t *testing.T) {
 			t.Error("runServer Did Not Exit")
 		}
 	})
-}
-
-func TestHealthCheckHandler(t *testing.T) {
-	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
-	// pass 'nil' as the third parameter.
-	req, err := http.NewRequest("GET", "/health", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(ListProducts)
-
-	// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
-	// directly and pass in our Request and ResponseRecorder.
-	handler.ServeHTTP(rr, req)
-
-	// Check the status code is what we expect.
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-
-	want := "application/json; charset=utf-8"
-	if contentType := rr.Header().Get("Content-Type"); contentType != want {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			contentType, want)
-	}
 }
 
 func assertEqual(t *testing.T, a interface{}, b interface{}, message string) {
