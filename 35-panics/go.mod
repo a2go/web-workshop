@@ -5,7 +5,6 @@ go 1.12
 require (
 	contrib.go.opencensus.io/exporter/zipkin v0.1.1
 	github.com/GuiaBolso/darwin v0.0.0-20170210191649-86919dfcf808
-	github.com/apache/thrift v0.12.0 // indirect
 	github.com/cznic/ql v1.2.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-chi/chi v4.0.2+incompatible
@@ -18,9 +17,11 @@ require (
 	github.com/lib/pq v1.1.1
 	github.com/openzipkin/zipkin-go v0.1.6
 	github.com/pkg/errors v0.8.1
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/testify v1.2.2 // indirect
 	go.opencensus.io v0.21.0
 	golang.org/x/crypto v0.0.0-20190320223903-b7391e95e576
-	google.golang.org/api v0.2.0 // indirect
+	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.27.0
 )
