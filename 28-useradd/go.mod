@@ -15,7 +15,7 @@ require (
 	github.com/lib/pq v1.1.1
 	github.com/pkg/errors v0.8.1
 	github.com/stretchr/testify v1.3.0 // indirect
-	golang.org/x/crypto v0.1.0
+	golang.org/x/crypto v0.17.0
 	google.golang.org/appengine v1.6.0 // indirect
 	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
