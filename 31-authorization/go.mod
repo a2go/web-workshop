@@ -1,6 +1,6 @@
 module github.com/a2go/garagesale
 
-go 1.23.0
+go 1.24.0
 
 require (
 	github.com/GuiaBolso/darwin v0.0.0-20170210191649-86919dfcf808
@@ -13,7 +13,7 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.1.1
 	github.com/pkg/errors v0.8.1
-	golang.org/x/crypto v0.35.0
+	golang.org/x/crypto v0.45.0
 	gopkg.in/go-playground/validator.v9 v9.27.0
 )
 
